@@ -1,0 +1,2 @@
+﻿variant,dataset,seed,num_windows,rounds_per_window,total_rounds,clients_per_round,avg_window_ndcg,best_test_ndcg,final_test_ndcg,max_drop,boundary_max_drop,avg_boundary_drop,window_variance,loss_oscillation,avg_ecr,avg_edge_density,stability_score,elapsed_seconds
+Ours-Full,amazon-video games,2024,5,120,600,5062,0.4668827950407394,0.5123982772827148,0.5123982772827148,0.3259482900561274,0.3259482900561274,0.25184045114186,0.0016274982240385345,0.0713355450864169,0.011997529752716623,0.2490609772158567,0.14033462849697614,1029.0802035331726

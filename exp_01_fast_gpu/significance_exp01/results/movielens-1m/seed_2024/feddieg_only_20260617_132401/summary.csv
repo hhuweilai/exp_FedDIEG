@@ -1,0 +1,2 @@
+﻿method,dataset,seed,rounds,clients_per_round,microbatch_size,lr,best_round,best_val_ndcg,best_test_hr,best_test_ndcg,best_test_recall,total_time_seconds
+FedDIEG,movielens-1m,2024,600,604,512,0.0012,590,0.5501624606303032,0.7382450331125828,0.49151935703707056,0.7382450331125828,16.32547879219055

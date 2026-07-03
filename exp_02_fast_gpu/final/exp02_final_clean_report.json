@@ -1,0 +1,16 @@
+{
+  "official_final_policy": "Use exp02_final_summary_all.csv and dataset final folders for report main tables. Candidate runs did not pass all three target metrics and were not adopted into the official final rows.",
+  "datasets": [
+    "digital_music",
+    "movielens_1m",
+    "video_games",
+    "arts_crafts_sewing"
+  ],
+  "generated_files": [
+    "exp_02_fast_gpu/final/exp02_final_summary_all.csv",
+    "exp_02_fast_gpu/final/exp02_final_key_metrics.csv",
+    "exp_02_fast_gpu/final/exp02_ours_vs_best_baseline.csv",
+    "exp_02_fast_gpu/final/audit/tuning_audit_summary.csv"
+  ],
+  "cleanup_policy": "Removed tmp/gated-search/candidate-run directories; kept compact audit CSVs."
+}

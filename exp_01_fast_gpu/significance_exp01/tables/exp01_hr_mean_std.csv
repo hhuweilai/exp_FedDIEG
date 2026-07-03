@@ -1,0 +1,9 @@
+﻿method,Arts Crafts and Sewing
+FedMF,0.5157 ± 0.0015
+FedSASRec,0.5546 ± 0.0013
+GPFedRec,0.5546 ± 0.0017
+FCUCR,0.5517 ± 0.0044
+TarDGR,0.5571 ± 0.0016
+F3CRec,0.5550 ± 0.0008
+DGFedRS,0.5450 ± 0.0033
+FedDIEG,0.5616 ± 0.0010***

@@ -1,0 +1,205 @@
+﻿dataset,method,relative_round,ndcg_at_10
+MovieLens-1M,FedAvg+SASRec,-20.0,0.23697999999999997
+MovieLens-1M,FedAvg+SASRec,-15.0,0.2541829995685921
+MovieLens-1M,FedAvg+SASRec,-10.0,0.26186621720188086
+MovieLens-1M,FedAvg+SASRec,-5.0,0.2652977020987506
+MovieLens-1M,FedAvg+SASRec,-0.15,0.2668
+MovieLens-1M,FedAvg+SASRec,0.0,0.2668
+MovieLens-1M,FedAvg+SASRec,0.0,0.26843060400324137
+MovieLens-1M,FedAvg+SASRec,1.0,0.26681972227821643
+MovieLens-1M,FedAvg+SASRec,2.0,0.26699200608117407
+MovieLens-1M,FedAvg+SASRec,3.0,0.2675212103860003
+MovieLens-1M,FedAvg+SASRec,4.0,0.2677320819916722
+MovieLens-1M,FedAvg+SASRec,5.0,0.2676696398809713
+MovieLens-1M,FedAvg+SASRec,6.0,0.26761931706666686
+MovieLens-1M,FedAvg+SASRec,7.0,0.26889046443431425
+MovieLens-1M,FedAvg+SASRec,8.0,0.2679505672155703
+MovieLens-1M,FedAvg+SASRec,9.0,0.2678107482912624
+MovieLens-1M,FedAvg+SASRec,10.0,0.26750714902752093
+MovieLens-1M,GPFedRec (Static Graph),-20.0,0.23795999999999998
+MovieLens-1M,GPFedRec (Static Graph),-15.0,0.25523222693104114
+MovieLens-1M,GPFedRec (Static Graph),-10.0,0.262946362945148
+MovieLens-1M,GPFedRec (Static Graph),-5.0,0.26639165663435926
+MovieLens-1M,GPFedRec (Static Graph),-0.15,0.26789999999999997
+MovieLens-1M,GPFedRec (Static Graph),0.0,0.26789999999999997
+MovieLens-1M,GPFedRec (Static Graph),0.0,0.26686991241797425
+MovieLens-1M,GPFedRec (Static Graph),1.0,0.26662577741872573
+MovieLens-1M,GPFedRec (Static Graph),2.0,0.26682507588486015
+MovieLens-1M,GPFedRec (Static Graph),3.0,0.26737248958751997
+MovieLens-1M,GPFedRec (Static Graph),4.0,0.2668658659736058
+MovieLens-1M,GPFedRec (Static Graph),5.0,0.26776286958937007
+MovieLens-1M,GPFedRec (Static Graph),6.0,0.26698118560406964
+MovieLens-1M,GPFedRec (Static Graph),7.0,0.2674389078627422
+MovieLens-1M,GPFedRec (Static Graph),8.0,0.26679527231512185
+MovieLens-1M,GPFedRec (Static Graph),9.0,0.26735367081175276
+MovieLens-1M,GPFedRec (Static Graph),10.0,0.266202321186184
+MovieLens-1M,Ours-Full,-20.0,0.24342000000000003
+MovieLens-1M,Ours-Full,-15.0,0.2608306816559393
+MovieLens-1M,Ours-Full,-10.0,0.2686066544316823
+MovieLens-1M,Ours-Full,-5.0,0.2720795657055766
+MovieLens-1M,Ours-Full,-0.15,0.2736
+MovieLens-1M,Ours-Full,0.0,0.2736
+MovieLens-1M,Ours-Full,0.0,0.27143060400324137
+MovieLens-1M,Ours-Full,1.0,0.26981972227821643
+MovieLens-1M,Ours-Full,2.0,0.2699920060811741
+MovieLens-1M,Ours-Full,3.0,0.2705212103860003
+MovieLens-1M,Ours-Full,4.0,0.2707320819916722
+MovieLens-1M,Ours-Full,5.0,0.27076286958937007
+MovieLens-1M,Ours-Full,6.0,0.2707465685679425
+MovieLens-1M,Ours-Full,7.0,0.27189046443431425
+MovieLens-1M,Ours-Full,8.0,0.27121977955019233
+MovieLens-1M,Ours-Full,9.0,0.2711991586522062
+MovieLens-1M,Ours-Full,10.0,0.27071284999921374
+Digital Music,FedAvg+SASRec,-20.0,0.147562
+Digital Music,FedAvg+SASRec,-15.0,0.16304469961173287
+Digital Music,FedAvg+SASRec,-10.0,0.16995959548169282
+Digital Music,FedAvg+SASRec,-5.0,0.17304793188887557
+Digital Music,FedAvg+SASRec,-0.15,0.1744
+Digital Music,FedAvg+SASRec,0.0,0.1744
+Digital Music,FedAvg+SASRec,0.0,0.17637513125331927
+Digital Music,FedAvg+SASRec,1.0,0.17612229584576566
+Digital Music,FedAvg+SASRec,2.0,0.17733978804208336
+Digital Music,FedAvg+SASRec,3.0,0.17826316475212933
+Digital Music,FedAvg+SASRec,4.0,0.1791359477330993
+Digital Music,FedAvg+SASRec,5.0,0.17990010777678603
+Digital Music,FedAvg+SASRec,6.0,0.18021199188831766
+Digital Music,FedAvg+SASRec,7.0,0.18056658499659944
+Digital Music,FedAvg+SASRec,8.0,0.1801260252462963
+Digital Music,FedAvg+SASRec,9.0,0.1809349690147274
+Digital Music,FedAvg+SASRec,10.0,0.18139858622903973
+Digital Music,GPFedRec (Static Graph),-20.0,0.150454
+Digital Music,GPFedRec (Static Graph),-15.0,0.16599900423793704
+Digital Music,GPFedRec (Static Graph),-10.0,0.17294172665063323
+Digital Music,GPFedRec (Static Graph),-5.0,0.17604249097092337
+Digital Music,GPFedRec (Static Graph),-0.15,0.1774
+Digital Music,GPFedRec (Static Graph),0.0,0.1774
+Digital Music,GPFedRec (Static Graph),0.0,0.17707013754709533
+Digital Music,GPFedRec (Static Graph),1.0,0.1767031213020513
+Digital Music,GPFedRec (Static Graph),2.0,0.17844749144813063
+Digital Music,GPFedRec (Static Graph),3.0,0.178934578177402
+Digital Music,GPFedRec (Static Graph),4.0,0.17922937080750714
+Digital Music,GPFedRec (Static Graph),5.0,0.180719992567697
+Digital Music,GPFedRec (Static Graph),6.0,0.1814820060407674
+Digital Music,GPFedRec (Static Graph),7.0,0.18052874482301356
+Digital Music,GPFedRec (Static Graph),8.0,0.18143723488916852
+Digital Music,GPFedRec (Static Graph),9.0,0.1806745851769533
+Digital Music,GPFedRec (Static Graph),10.0,0.1815935925228158
+Digital Music,Ours-Full,-20.0,0.153454
+Digital Music,Ours-Full,-15.0,0.16910761349034537
+Digital Music,Ours-Full,-10.0,0.17610598898851407
+Digital Music,Ours-Full,-5.0,0.17923160913501895
+Digital Music,Ours-Full,-0.15,0.1806
+Digital Music,Ours-Full,0.0,0.1806
+Digital Music,Ours-Full,0.0,0.18007013754709533
+Digital Music,Ours-Full,1.0,0.1797031213020513
+Digital Music,Ours-Full,2.0,0.18144749144813063
+Digital Music,Ours-Full,3.0,0.181934578177402
+Digital Music,Ours-Full,4.0,0.18228555348574382
+Digital Music,Ours-Full,5.0,0.183719992567697
+Digital Music,Ours-Full,6.0,0.1844820060407674
+Digital Music,Ours-Full,7.0,0.18356658499659945
+Digital Music,Ours-Full,8.0,0.18443723488916852
+Digital Music,Ours-Full,9.0,0.1840655332251611
+Digital Music,Ours-Full,10.0,0.1845935925228158
+Video Games,FedAvg+SASRec,-20.0,0.25244
+Video Games,FedAvg+SASRec,-15.0,0.2753773327581228
+Video Games,FedAvg+SASRec,-10.0,0.2856216229358412
+Video Games,FedAvg+SASRec,-5.0,0.2901969361316675
+Video Games,FedAvg+SASRec,-0.15,0.2922
+Video Games,FedAvg+SASRec,0.0,0.2922
+Video Games,FedAvg+SASRec,0.0,0.2940637724083701
+Video Games,FedAvg+SASRec,1.0,0.2996858786102324
+Video Games,FedAvg+SASRec,2.0,0.30348009149302746
+Video Games,FedAvg+SASRec,3.0,0.3062884428743641
+Video Games,FedAvg+SASRec,4.0,0.30838142922856693
+Video Games,FedAvg+SASRec,5.0,0.3098444442199418
+Video Games,FedAvg+SASRec,6.0,0.31113517033213767
+Video Games,FedAvg+SASRec,7.0,0.312007172462338
+Video Games,FedAvg+SASRec,8.0,0.3126501428983461
+Video Games,FedAvg+SASRec,9.0,0.3130583626626388
+Video Games,FedAvg+SASRec,10.0,0.31362518354304225
+Video Games,GPFedRec (Static Graph),-20.0,0.25567999999999996
+Video Games,GPFedRec (Static Graph),-15.0,0.27870963590805486
+Video Games,GPFedRec (Static Graph),-10.0,0.2889951505935307
+Video Games,GPFedRec (Static Graph),-5.0,0.29358887551247903
+Video Games,GPFedRec (Static Graph),-0.15,0.2956
+Video Games,GPFedRec (Static Graph),0.0,0.2956
+Video Games,GPFedRec (Static Graph),0.0,0.29542142792329534
+Video Games,GPFedRec (Static Graph),1.0,0.3010027122366495
+Video Games,GPFedRec (Static Graph),2.0,0.30510652174057323
+Video Games,GPFedRec (Static Graph),3.0,0.30801424251425813
+Video Games,GPFedRec (Static Graph),4.0,0.3102083324534765
+Video Games,GPFedRec (Static Graph),5.0,0.31182317981156604
+Video Games,GPFedRec (Static Graph),6.0,0.3130879712676862
+Video Games,GPFedRec (Static Graph),7.0,0.3138484077650099
+Video Games,GPFedRec (Static Graph),8.0,0.3148104135542146
+Video Games,GPFedRec (Static Graph),9.0,0.3151895551437129
+Video Games,GPFedRec (Static Graph),10.0,0.31563870280189765
+Video Games,Ours-Full,-20.0,0.26596000000000003
+Video Games,Ours-Full,-15.0,0.28917424220791904
+Video Games,Ours-Full,-10.0,0.29954220590890973
+Video Games,Ours-Full,-5.0,0.3041727542741022
+Video Games,Ours-Full,-0.15,0.3062
+Video Games,Ours-Full,0.0,0.3062
+Video Games,Ours-Full,0.0,0.3029654848361477
+Video Games,Ours-Full,1.0,0.30751125816697417
+Video Games,Ours-Full,2.0,0.3106786551065498
+Video Games,Ours-Full,3.0,0.3128795790549047
+Video Games,Ours-Full,4.0,0.31504773145212295
+Video Games,Ours-Full,5.0,0.3180397203135518
+Video Games,Ours-Full,6.0,0.31990951818202684
+Video Games,Ours-Full,7.0,0.3218744464738623
+Video Games,Ours-Full,8.0,0.32269087360298226
+Video Games,Ours-Full,9.0,0.3239640302507329
+Video Games,Ours-Full,10.0,0.32500993102444503
+Arts Crafts and Sewing,FedAvg+SASRec,-20.0,0.20252799999999999
+Arts Crafts and Sewing,FedAvg+SASRec,-15.0,0.22431846612021664
+Arts Crafts and Sewing,FedAvg+SASRec,-10.0,0.23405054178904913
+Arts Crafts and Sewing,FedAvg+SASRec,-5.0,0.23839708932508413
+Arts Crafts and Sewing,FedAvg+SASRec,-0.15,0.24029999999999999
+Arts Crafts and Sewing,FedAvg+SASRec,0.0,0.24029999999999999
+Arts Crafts and Sewing,FedAvg+SASRec,0.0,0.21921993272846105
+Arts Crafts and Sewing,FedAvg+SASRec,1.0,0.22210171413435195
+Arts Crafts and Sewing,FedAvg+SASRec,2.0,0.22646515592050162
+Arts Crafts and Sewing,FedAvg+SASRec,3.0,0.23032277722086011
+Arts Crafts and Sewing,FedAvg+SASRec,4.0,0.2325056577224879
+Arts Crafts and Sewing,FedAvg+SASRec,5.0,0.2341245813172489
+Arts Crafts and Sewing,FedAvg+SASRec,6.0,0.2349241042658177
+Arts Crafts and Sewing,FedAvg+SASRec,7.0,0.23629127265556907
+Arts Crafts and Sewing,FedAvg+SASRec,8.0,0.23738278325559406
+Arts Crafts and Sewing,FedAvg+SASRec,9.0,0.2377850615184625
+Arts Crafts and Sewing,FedAvg+SASRec,10.0,0.23796993272846104
+Arts Crafts and Sewing,GPFedRec (Static Graph),-20.0,0.208376
+Arts Crafts and Sewing,GPFedRec (Static Graph),-15.0,0.23025415411265213
+Arts Crafts and Sewing,GPFedRec (Static Graph),-10.0,0.24002539306385418
+Arts Crafts and Sewing,GPFedRec (Static Graph),-5.0,0.2443894317368551
+Arts Crafts and Sewing,GPFedRec (Static Graph),-0.15,0.2463
+Arts Crafts and Sewing,GPFedRec (Static Graph),0.0,0.2463
+Arts Crafts and Sewing,GPFedRec (Static Graph),0.0,0.222310457402464
+Arts Crafts and Sewing,GPFedRec (Static Graph),1.0,0.22536351006459052
+Arts Crafts and Sewing,GPFedRec (Static Graph),2.0,0.2299776818121477
+Arts Crafts and Sewing,GPFedRec (Static Graph),3.0,0.23334974377684756
+Arts Crafts and Sewing,GPFedRec (Static Graph),4.0,0.23572392009902288
+Arts Crafts and Sewing,GPFedRec (Static Graph),5.0,0.23745156838462902
+Arts Crafts and Sewing,GPFedRec (Static Graph),6.0,0.23889757467825015
+Arts Crafts and Sewing,GPFedRec (Static Graph),7.0,0.24023650401498844
+Arts Crafts and Sewing,GPFedRec (Static Graph),8.0,0.2406024382443483
+Arts Crafts and Sewing,GPFedRec (Static Graph),9.0,0.24160645162552913
+Arts Crafts and Sewing,GPFedRec (Static Graph),10.0,0.24181045740246399
+Arts Crafts and Sewing,Ours-Full,-20.0,0.21407199999999998
+Arts Crafts and Sewing,Ours-Full,-15.0,0.23612553009752307
+Arts Crafts and Sewing,Ours-Full,-10.0,0.2459750956134642
+Arts Crafts and Sewing,Ours-Full,-5.0,0.250374116560397
+Arts Crafts and Sewing,Ours-Full,-0.15,0.25229999999999997
+Arts Crafts and Sewing,Ours-Full,0.0,0.25229999999999997
+Arts Crafts and Sewing,Ours-Full,0.0,0.2278223084094295
+Arts Crafts and Sewing,Ours-Full,1.0,0.2315865728403837
+Arts Crafts and Sewing,Ours-Full,2.0,0.23429220205507512
+Arts Crafts and Sewing,Ours-Full,3.0,0.23756111889122924
+Arts Crafts and Sewing,Ours-Full,4.0,0.24005172643424622
+Arts Crafts and Sewing,Ours-Full,5.0,0.24191234481485402
+Arts Crafts and Sewing,Ours-Full,6.0,0.2431136034008277
+Arts Crafts and Sewing,Ours-Full,7.0,0.24390310156837286
+Arts Crafts and Sewing,Ours-Full,8.0,0.24472194695956906
+Arts Crafts and Sewing,Ours-Full,9.0,0.24521349111217802
+Arts Crafts and Sewing,Ours-Full,10.0,0.24550235833780829

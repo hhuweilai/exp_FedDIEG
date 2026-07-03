@@ -1,0 +1,11 @@
+{
+    "dataset": "amazon-digital music",
+    "min_user_inter": 5,
+    "min_item_inter": 5,
+    "random_seed": 42,
+    "num_users": 12381,
+    "num_items": 9906,
+    "num_interactions": 123518,
+    "density": 0.0010071083661745504,
+    "sparsity": 0.9989928916338254
+}

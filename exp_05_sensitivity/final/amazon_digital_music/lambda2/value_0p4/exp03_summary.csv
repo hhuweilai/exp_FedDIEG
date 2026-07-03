@@ -1,0 +1,2 @@
+﻿variant,dataset,seed,num_windows,rounds_per_window,total_rounds,clients_per_round,avg_window_ndcg,best_test_ndcg,final_test_ndcg,max_drop,boundary_max_drop,avg_boundary_drop,window_variance,loss_oscillation,avg_ecr,avg_edge_density,stability_score,elapsed_seconds
+Ours-Full,amazon-digital music,42,5,120,600,1238,0.2804635373007372,0.3266797993417476,0.3266797993417476,0.13895421380148174,0.13895421380148174,0.11650638700832341,0.0014827924680848171,0.07263153988092683,0.013134345179745441,0.26467474421109316,0.14085260624026819,247.6901819705963

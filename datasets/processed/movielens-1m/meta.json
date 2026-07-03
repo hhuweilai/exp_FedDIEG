@@ -1,0 +1,11 @@
+{
+    "dataset": "movielens-1m",
+    "min_user_inter": 5,
+    "min_item_inter": 5,
+    "random_seed": 42,
+    "num_users": 6040,
+    "num_items": 3416,
+    "num_interactions": 999611,
+    "density": 0.048448041549699894,
+    "sparsity": 0.9515519584503
+}

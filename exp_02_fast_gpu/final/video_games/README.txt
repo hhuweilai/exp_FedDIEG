@@ -1,0 +1,1 @@
+Video Games Experiment 2 final result.\nBaselines are retained from the aligned final/video_games run.\nFedDIEG is replaced by the tuned real run from final/video_games_feddieg_tuned.\nBest baseline by Avg NDCG: GPFedRec 0.470499\nFedDIEG Avg NDCG: 0.466474\nRelative Avg NDCG gain vs best baseline: -0.86%\n

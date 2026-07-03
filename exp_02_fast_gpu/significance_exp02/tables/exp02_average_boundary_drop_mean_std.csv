@@ -1,0 +1,8 @@
+﻿method,display_method,Arts Crafts and Sewing
+FedMF,FedMF,0.1279 +- 0.0019
+FedSASRec,FedSASRec,0.0776 +- 0.0010
+GPFedRec,GPFedRec,0.0790 +- 0.0007
+FCUCR,FCUCR,0.0866 +- 0.0022
+F3CRec,F3CRec,0.0810 +- 0.0011
+DGFedRS,DGFedRS,0.0776 +- 0.0012
+FedDIEG,Ours,0.0810 +- 0.0022

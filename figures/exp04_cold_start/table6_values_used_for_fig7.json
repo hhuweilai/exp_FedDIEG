@@ -1,0 +1,70 @@
+{
+  "movielens-1m": {
+    "FedSASRec": {
+      "initial": 0.2698,
+      "growth": -0.0004,
+      "auc": 0.2679
+    },
+    "GPFedRec": {
+      "initial": 0.2689,
+      "growth": -0.0003,
+      "auc": 0.267
+    },
+    "Ours": {
+      "initial": 0.2706,
+      "growth": 0.0002,
+      "auc": 0.2702
+    }
+  },
+  "amazon-digital_music": {
+    "FedSASRec": {
+      "initial": 0.1774,
+      "growth": 0.0004,
+      "auc": 0.1794
+    },
+    "GPFedRec": {
+      "initial": 0.1784,
+      "growth": 0.0004,
+      "auc": 0.1799
+    },
+    "Ours": {
+      "initial": 0.1776,
+      "growth": 0.0007,
+      "auc": 0.1819
+    }
+  },
+  "amazon-video_games": {
+    "FedSASRec": {
+      "initial": 0.2952,
+      "growth": 0.0019,
+      "auc": 0.3079
+    },
+    "GPFedRec": {
+      "initial": 0.2966,
+      "growth": 0.002,
+      "auc": 0.3097
+    },
+    "Ours": {
+      "initial": 0.3032,
+      "growth": 0.0016,
+      "auc": 0.3138
+    }
+  },
+  "amazon-arts_crafts_and_sewing": {
+    "FedSASRec": {
+      "initial": 0.2433,
+      "growth": 0.0025,
+      "auc": 0.2317
+    },
+    "GPFedRec": {
+      "initial": 0.2473,
+      "growth": 0.0026,
+      "auc": 0.2352
+    },
+    "Ours": {
+      "initial": 0.2493,
+      "growth": 0.0026,
+      "auc": 0.2389
+    }
+  }
+}

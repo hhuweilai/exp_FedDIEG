@@ -1,0 +1,21 @@
+﻿level,dataset,sweep_key,symbol,code_param,best_value_by_ndcg,ndcg_range_pct,stability_range
+dataset,amazon-arts crafts and sewing,K,K,feddieg_neighbors,20,0.4936034896644379,0.0014088326018767416
+dataset,amazon-digital music,K,K,feddieg_neighbors,20,0.5333511192345828,0.001861574653132858
+dataset,amazon-video games,K,K,feddieg_neighbors,40,0.5515574278735451,0.0030149952625006804
+dataset,movielens-1m,K,K,feddieg_neighbors,40,0.3503387012775363,0.004248918543625468
+overall,ALL,K,K,feddieg_neighbors,"20,20,40,40",0.4822126845125255,
+dataset,amazon-arts crafts and sewing,rho,rho,edge_ema,0.9,0.5140305400108999,0.02883832671596609
+dataset,amazon-digital music,rho,rho,edge_ema,0.5,0.4718111567611625,0.030601009999164486
+dataset,amazon-video games,rho,rho,edge_ema,0.5,0.8125154654535026,0.030849780968250168
+dataset,movielens-1m,rho,rho,edge_ema,0,0.16966656960857932,0.030617681892071702
+overall,ALL,rho,rho,edge_ema,"0.9,0.5,0.5,0",0.49200593295853606,
+dataset,amazon-arts crafts and sewing,lambda1,lambda_1,lambda_temp,0.1,0.7822876767728908,0.0037312418486518673
+dataset,amazon-digital music,lambda1,lambda_1,lambda_temp,0,0.754734178716732,0.007072081234172634
+dataset,amazon-video games,lambda1,lambda_1,lambda_temp,0.005,0.8867811448840773,0.006597169162624844
+dataset,movielens-1m,lambda1,lambda_1,lambda_temp,0,0.7938828546379145,0.004881655050096634
+overall,ALL,lambda1,lambda_1,lambda_temp,"0.1,0,0.005,0",0.8044214637529037,
+dataset,amazon-arts crafts and sewing,lambda2,lambda_2,lambda_struct,0,0.4043799384441468,0.0028573883306153847
+dataset,amazon-digital music,lambda2,lambda_2,lambda_struct,0,0.4967750105375214,0.004127937751526561
+dataset,amazon-video games,lambda2,lambda_2,lambda_struct,0.1,0.5899848651811727,0.0018525956308154956
+dataset,movielens-1m,lambda2,lambda_2,lambda_struct,0.4,0.14162405927317523,0.0046169409553018514
+overall,ALL,lambda2,lambda_2,lambda_struct,"0,0,0.1,0.4",0.40819096835900404,

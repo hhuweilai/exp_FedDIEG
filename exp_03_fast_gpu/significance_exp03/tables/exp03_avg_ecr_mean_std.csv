@@ -1,0 +1,5 @@
+﻿variant,display_variant,Arts Crafts and Sewing
+Ours-Plain,Plain,0.9287 +- 0.0011
+Ours-NoTemp,w/o Temp,0.0710 +- 0.0008
+Ours-NoStruct,w/o Struct,0.6137 +- 0.0041
+Ours-Full,Full,0.0129 +- 0.0004***

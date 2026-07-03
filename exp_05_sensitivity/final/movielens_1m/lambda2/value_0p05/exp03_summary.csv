@@ -1,0 +1,2 @@
+﻿variant,dataset,seed,num_windows,rounds_per_window,total_rounds,clients_per_round,avg_window_ndcg,best_test_ndcg,final_test_ndcg,max_drop,boundary_max_drop,avg_boundary_drop,window_variance,loss_oscillation,avg_ecr,avg_edge_density,stability_score,elapsed_seconds
+Ours-Full,movielens-1m,42,5,120,600,604,0.40904127110198313,0.5123656358577084,0.44805504345646935,0.10347279252125852,0.10338836121267736,0.03939775883068326,0.007769981978258912,0.04683167004544925,0.009595101247748181,0.4089304635761589,0.3050887235183372,139.13635921478271

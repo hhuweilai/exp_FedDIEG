@@ -1,0 +1,11 @@
+{
+    "dataset": "amazon-arts crafts and sewing",
+    "min_user_inter": 5,
+    "min_item_inter": 5,
+    "random_seed": 42,
+    "num_users": 45346,
+    "num_items": 21050,
+    "num_interactions": 392935,
+    "density": 0.0004116514321710935,
+    "sparsity": 0.9995883485678289
+}

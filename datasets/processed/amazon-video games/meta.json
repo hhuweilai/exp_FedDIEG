@@ -1,0 +1,11 @@
+{
+    "dataset": "amazon-video games",
+    "min_user_inter": 5,
+    "min_item_inter": 5,
+    "random_seed": 42,
+    "num_users": 50626,
+    "num_items": 16882,
+    "num_interactions": 453881,
+    "density": 0.0005310611019716833,
+    "sparsity": 0.9994689388980283
+}

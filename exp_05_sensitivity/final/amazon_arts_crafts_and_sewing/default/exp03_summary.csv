@@ -1,0 +1,2 @@
+﻿variant,dataset,seed,num_windows,rounds_per_window,total_rounds,clients_per_round,avg_window_ndcg,best_test_ndcg,final_test_ndcg,max_drop,boundary_max_drop,avg_boundary_drop,window_variance,loss_oscillation,avg_ecr,avg_edge_density,stability_score,elapsed_seconds
+Ours-Full,amazon-arts crafts and sewing,42,5,120,600,4534,0.37004925142689127,0.40812556772727004,0.40758840382314593,0.10190924254008571,0.10190924254008571,0.0768226995700832,0.0013747566002742125,0.06852892427252612,0.012858850080199234,0.24936976179973533,0.2674970663827956,898.1279604434967

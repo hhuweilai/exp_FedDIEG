@@ -1,0 +1,1 @@
+Arts Crafts and Sewing Experiment 2 final result.\nBaselines are retained from the aligned final/arts_crafts_sewing run.\nFedDIEG is replaced by the tuned real run from final/arts_feddieg_tuned.\nBest baseline by Avg NDCG: GPFedRec 0.372807\nFedDIEG Avg NDCG: 0.372013\nRelative Avg NDCG gain vs best baseline: -0.21%\n
