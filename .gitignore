@@ -7,3 +7,7 @@ __pycache__/
 .ipynb_checkpoints/
 .DS_Store
 Thumbs.db
+
+# local scratch / personal files (never publish)
+tmp/
+.codex_docx_work/*-render*/
