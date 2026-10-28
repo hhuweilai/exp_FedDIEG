@@ -1,13 +1,82 @@
+# ---------------------------------------------------------------------------
+# exp_FedDIEG / .gitignore
+#
+# 本仓库是「已清理的实验结果」仓库：exp_01~exp_05、figures/、datasets/ 下的
+# csv / json / png / py / sh / txt / md 都是需要版本化的正式产物，
+# 请勿忽略。下面只排除本地环境、临时文件、大体积模型与归档等不该入库的内容。
+# ---------------------------------------------------------------------------
+
+# ---------- Python ----------
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
+*.pyd
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+
+# ---------- 虚拟环境 ----------
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# ---------- 测试 / 类型检查 / 覆盖率缓存 ----------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+
+# ---------- 模型权重与大型二进制 ----------
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.h5
+
+# ---------- 压缩包 ----------
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+# ---------- 日志与临时文件 ----------
 *.log
 *.tmp
 *.part
 *.bak*
-.ipynb_checkpoints/
+*.old
+*.orig
+nohup.out
+
+# ---------- 编辑器 / IDE ----------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ---------- 操作系统 ----------
 .DS_Store
 Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
 
-# local scratch / personal files (never publish)
+# ---------- 本地草稿 / 个人文件（永不发布） ----------
 tmp/
-.codex_docx_work/*-render*/
+.codex_docx_work/
