@@ -1,0 +1,2 @@
+﻿dataset,mode,participation_rate,seed,num_windows,rounds_per_window,total_rounds,clients_per_round,avg_window_ndcg,final_window_ndcg,avg_window_hr,mean_staleness,p90_staleness,avg_ecr,avg_boundary_drop,elapsed_seconds
+movielens-1m,upload_only,0.5,42,5,120,600,3020,0.505446685752313,0.4781830704699177,0.7424157236693528,1.0014900803565978,3.0,0.0032458721610500014,0.05950715154835083,168.97854948043823

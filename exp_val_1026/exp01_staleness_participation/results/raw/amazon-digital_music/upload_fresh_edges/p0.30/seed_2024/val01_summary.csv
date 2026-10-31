@@ -1,0 +1,2 @@
+﻿dataset,mode,participation_rate,seed,num_windows,rounds_per_window,total_rounds,clients_per_round,avg_window_ndcg,final_window_ndcg,avg_window_hr,mean_staleness,p90_staleness,avg_ecr,avg_boundary_drop,elapsed_seconds
+amazon-digital music,upload_fresh_edges,0.3,2024,5,120,600,3714,0.32335091659519244,0.3647214970266553,0.5004557866918358,2.323641061782837,6.0,0.012755326987333475,0.13600339036424441,318.5621054172516

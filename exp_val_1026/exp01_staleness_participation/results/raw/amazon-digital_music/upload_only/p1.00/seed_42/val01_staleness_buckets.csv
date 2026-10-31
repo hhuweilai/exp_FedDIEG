@@ -1,0 +1,11 @@
+﻿dataset,mode,participation_rate,seed,window,bucket_type,bucket,n_users,mean_ndcg,mean_hr,mean_staleness,mean_uploads
+amazon-digital music,upload_only,1.0,42,1,staleness,0,3178,0.2825658012573039,0.4288860918816866,0.0,120.0
+amazon-digital music,upload_only,1.0,42,1,uploads,32+,3178,0.2825658012573039,0.4288860918816866,0.0,120.0
+amazon-digital music,upload_only,1.0,42,2,staleness,0,3535,0.3376538943030372,0.49504950495049505,0.0,240.0
+amazon-digital music,upload_only,1.0,42,2,uploads,32+,3535,0.3376538943030372,0.49504950495049505,0.0,240.0
+amazon-digital music,upload_only,1.0,42,3,staleness,0,3571,0.37002113530763353,0.5446653598431812,0.0,360.0
+amazon-digital music,upload_only,1.0,42,3,uploads,32+,3571,0.37002113530763353,0.5446653598431812,0.0,360.0
+amazon-digital music,upload_only,1.0,42,4,staleness,0,3657,0.3883565447191609,0.5674049767569046,0.0,480.0
+amazon-digital music,upload_only,1.0,42,4,uploads,32+,3657,0.3883565447191609,0.5674049767569046,0.0,480.0
+amazon-digital music,upload_only,1.0,42,5,staleness,0,3449,0.37180793866899675,0.5604523050159467,0.0,600.0
+amazon-digital music,upload_only,1.0,42,5,uploads,32+,3449,0.37180793866899675,0.5604523050159467,0.0,600.0
