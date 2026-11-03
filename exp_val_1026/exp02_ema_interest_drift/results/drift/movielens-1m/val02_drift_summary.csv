@@ -1,0 +1,18 @@
+﻿dataset,row_type,threshold,n_users,share_of_users,note
+movielens-1m,drift_quantile,0.1,59,0.0097682119205298,按漂移分数取最高的 quantile 比例 → 用户数
+movielens-1m,drift_quantile,0.2,117,0.019370860927152317,按漂移分数取最高的 quantile 比例 → 用户数
+movielens-1m,drift_quantile,0.25,146,0.024172185430463577,按漂移分数取最高的 quantile 比例 → 用户数
+movielens-1m,drift_quantile,0.33,192,0.031788079470198675,按漂移分数取最高的 quantile 比例 → 用户数
+movielens-1m,drift_quantile,0.5,291,0.04817880794701987,按漂移分数取最高的 quantile 比例 → 用户数
+movielens-1m,drift_absolute,0.1,412,0.06821192052980132,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+movielens-1m,drift_absolute,0.15,291,0.04817880794701987,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+movielens-1m,drift_absolute,0.2,196,0.03245033112582781,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+movielens-1m,drift_absolute,0.25,110,0.018211920529801324,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+movielens-1m,drift_absolute,0.3,62,0.010264900662251655,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+movielens-1m,cohort,,146,0.024172185430463577,最终 drift cohort 人数
+movielens-1m,cohort,,102,0.016887417218543047,最终 stable cohort 人数（逐边界 + 活动量分层匹配）
+movielens-1m,primary_share,,133,0.910958904109589,主类别确实换了（cat_old != cat_new）的 drift 用户数 / 占比
+movielens-1m,onset_distribution,2,21,0.14383561643835616,onset = 窗口 2 的 drift 用户数
+movielens-1m,onset_distribution,3,42,0.2876712328767123,onset = 窗口 3 的 drift 用户数
+movielens-1m,onset_distribution,4,30,0.2054794520547945,onset = 窗口 4 的 drift 用户数
+movielens-1m,onset_distribution,5,53,0.363013698630137,onset = 窗口 5 的 drift 用户数

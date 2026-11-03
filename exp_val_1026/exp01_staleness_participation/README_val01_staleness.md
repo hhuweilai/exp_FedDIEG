@@ -141,7 +141,33 @@ Amazon 数据集用户更多（12381 个），单次略慢。两个数据集全�
 2. **右端桶人很少**，会抖动；`val01_figure_data.csv` 里 `n_users < 100` 的点直接忽略。
 3. **100% 参与率只有一个点**（陈旧度恒为 0），它只用来当"参与率效应"的基准，不参与斜率判断。
 
-## 7. 已知局限（写报告要带上）
+## 7. 三项前置检验（汇报前建议做）
+
+主实验证明"摘要陈旧"影响极小。三项检验用来排除三个可能的反驳，
+只跑 MovieLens-1M 的低参与率（0.1 / 0.3）× 3 种子，结果写到 `results/checks/`，不影响正式结果。
+
+| 检验 | 命令附加参数 | 回答什么 | 判据 |
+|---|---|---|---|
+| 1 图权重 | `--feddieg-graph-mix 0.2` | 效应是否被 5% 的小图权重淹没 | 陈旧损失 ≥0.005 → 可救；≈0.001 → 闭合 |
+| 2 边更新范围 | `--update-scope all` | "边更新滞后"是否有害 | 收益 ≥0.005 → 滞后才是问题 |
+| 3 摘要漂移 | `--drift-sample-users 2000` | 9 轮不更新到底让摘要差多少 | 最旧桶 cos >0.9 → 本来就几乎没变旧 |
+
+一键运行（约 60 分钟，24 次运行）：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\val01_run_checks.ps1
+python val01_checks_report.py
+```
+
+```bash
+bash exp_val_1026/exp01_staleness_participation/val01_run_checks.sh
+python val01_checks_report.py
+```
+
+只想先跑其中一项：`-Only drift`（PowerShell）/ `ONLY=drift`（bash）。
+汇总结果在 `results/checks/checks_report.md` 与 `checks_summary.csv`。
+
+## 8. 已知局限（写报告要带上）
 
 1. `upload_fresh_edges` 是不可部署的 oracle，只能作为"消除陈旧能挽回多少"的上界。
 2. 陈旧度与上传次数负相关，逐用户层面看到的相关性主要是训练机会的效应；

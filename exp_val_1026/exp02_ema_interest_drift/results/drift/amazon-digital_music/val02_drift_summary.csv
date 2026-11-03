@@ -1,0 +1,18 @@
+﻿dataset,row_type,threshold,n_users,share_of_users,note
+amazon-digital music,drift_quantile,0.1,29,0.002342298683466602,按漂移分数取最高的 quantile 比例 → 用户数
+amazon-digital music,drift_quantile,0.2,57,0.004603828446813666,按漂移分数取最高的 quantile 比例 → 用户数
+amazon-digital music,drift_quantile,0.25,71,0.005734593328487198,按漂移分数取最高的 quantile 比例 → 用户数
+amazon-digital music,drift_quantile,0.33,93,0.007511509571117034,按漂移分数取最高的 quantile 比例 → 用户数
+amazon-digital music,drift_quantile,0.5,141,0.011388417736854858,按漂移分数取最高的 quantile 比例 → 用户数
+amazon-digital music,drift_absolute,0.1,105,0.00848073661255149,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+amazon-digital music,drift_absolute,0.15,73,0.005896131168726274,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+amazon-digital music,drift_absolute,0.2,51,0.004119214926096438,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+amazon-digital music,drift_absolute,0.25,27,0.002180760843227526,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+amazon-digital music,drift_absolute,0.3,19,0.001534609482271222,drift_excess ≥ 绝对阈值 的用户数（按最佳 onset 计）
+amazon-digital music,cohort,,93,0.007511509571117034,最终 drift cohort 人数
+amazon-digital music,cohort,,46,0.003715370325498748,最终 stable cohort 人数（逐边界 + 活动量分层匹配）
+amazon-digital music,primary_share,,91,0.978494623655914,主类别确实换了（cat_old != cat_new）的 drift 用户数 / 占比
+amazon-digital music,onset_distribution,2,48,0.5161290322580645,onset = 窗口 2 的 drift 用户数
+amazon-digital music,onset_distribution,3,15,0.16129032258064516,onset = 窗口 3 的 drift 用户数
+amazon-digital music,onset_distribution,4,16,0.17204301075268819,onset = 窗口 4 的 drift 用户数
+amazon-digital music,onset_distribution,5,14,0.15053763440860216,onset = 窗口 5 的 drift 用户数

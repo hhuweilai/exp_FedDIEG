@@ -1,0 +1,2 @@
+﻿dataset,rho,seed,graph_gate,new_edge_init,graph_strength,graph_mix,edge_ema,num_windows,rounds_per_window,total_rounds,clients_per_round,n_drift,n_stable,all_avg_ndcg,all_final_ndcg,avg_ecr,elapsed_seconds
+amazon-digital music,0.95,777,raw,ema,paper,0.2,0.95,5,120,600,12381,93,46,0.35326274334976054,0.37946510423816227,0.0006206050871090459,384.6390995979309

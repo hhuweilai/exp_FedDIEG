@@ -1,0 +1,46 @@
+{
+  "dataset": "amazon-digital music",
+  "num_windows": 5,
+  "boundaries": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "n_usable": 281,
+  "n_drift": 93,
+  "n_stable": 46,
+  "drift_quantile": 0.33,
+  "stable_quantile": 0.33,
+  "drift_threshold": 0.11349092017649912,
+  "stable_threshold": 0.000475862741849857,
+  "min_inter_per_window": 2,
+  "min_inter_pooled": 6,
+  "require_sustained": false,
+  "category_mode": null,
+  "cohort_seed": 2026,
+  "drift_onset_distribution": {
+    "2": 48,
+    "3": 15,
+    "4": 16,
+    "5": 14
+  },
+  "auto_relax": true,
+  "auto_relax_rung": 3,
+  "auto_relax_used": true,
+  "min_cohort": 60,
+  "chosen_params": {
+    "min_inter_per_window": 2,
+    "min_inter_pooled": 6,
+    "drift_quantile": 0.33,
+    "stable_quantile": 0.33,
+    "min_drift_excess": 0.05,
+    "require_sustained": false,
+    "include_last_boundary": true
+  },
+  "category_meta": {
+    "category_mode": "cooccur",
+    "num_categories": 18,
+    "item_coverage": 0.6450635978195033
+  }
+}

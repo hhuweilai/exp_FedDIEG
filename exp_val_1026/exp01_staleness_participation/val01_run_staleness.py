@@ -108,6 +108,23 @@ class Val01Config(Exp2Config):
     lambda_struct: float = 0.20
     edge_ema: float = 0.80
     graph_block_size: int = 2048
+    # 前置检验用的两个开关（默认关闭，不影响主实验）
+    update_scope: str = "sampled"      # sampled=只重算被抽样用户的边；all=每轮重算全部活跃用户的边
+    drift_sample_users: int = 0        # >0 时在每个窗口末测量"缓存摘要 vs 新鲜摘要"的差异
+
+
+DRIFT_FIELDS = [
+    "dataset",
+    "mode",
+    "participation_rate",
+    "seed",
+    "window",
+    "bucket",
+    "n_users",
+    "mean_cos",
+    "mean_l2",
+    "mean_staleness",
+]
 
 
 BUCKET_FIELDS = [
@@ -401,6 +418,70 @@ def summarize_buckets(
     return rows
 
 
+@torch.no_grad()
+def measure_drift(
+    cfg: Val01Config,
+    window_idx: int,
+    model: FedDIEGModel,
+    data: FastData,
+    summary_bank: torch.Tensor,
+    staleness: torch.Tensor,
+    sample_users: torch.Tensor,
+) -> List[Dict[str, object]]:
+    """前置检验 3：直接量"缓存摘要"与"此刻重算的新鲜摘要"差多少。
+
+    对固定抽样用户算 cos(缓存, 新鲜) 与 L2 距离，再按自身陈旧度分桶。
+    这条曲线回答"9 轮不更新的摘要到底旧了多少"，从而解释主实验里
+    新鲜化只值 0.0013 NDCG 的原因（若 cos 一直很高，说明摘要几乎没漂移）。
+    """
+    if sample_users.numel() == 0:
+        return []
+    model.eval()
+    cos_all = torch.zeros(sample_users.numel(), device=summary_bank.device)
+    l2_all = torch.zeros_like(cos_all)
+    ptr = 0
+    for users in batched_indices(sample_users, cfg.microbatch_size):
+        seq = data.train_seq[users]
+        output = model(seq)
+        local_feats, short = (output if isinstance(output, tuple) else (output, None))
+        fresh = short if short is not None else masked_sequence_mean(local_feats, seq)
+        cached = summary_bank[users]
+        cos_all[ptr : ptr + users.numel()] = F.cosine_similarity(cached, fresh, dim=-1, eps=1e-8)
+        l2_all[ptr : ptr + users.numel()] = (cached - fresh).norm(dim=-1)
+        ptr += users.numel()
+
+    stale_vals = staleness[sample_users].tolist()
+    cos_cpu = cos_all.tolist()
+    l2_cpu = l2_all.tolist()
+
+    groups: Dict[str, List[int]] = {}
+    for i, value in enumerate(stale_vals):
+        name = bucket_name(int(value), STALENESS_BUCKETS) if value < NEVER_UPLOADED else None
+        if name is not None:
+            groups.setdefault(name, []).append(i)
+
+    rows: List[Dict[str, object]] = []
+    for name, _, _ in STALENESS_BUCKETS:
+        indices = groups.get(name)
+        if not indices:
+            continue
+        rows.append(
+            {
+                "dataset": cfg.dataset,
+                "mode": cfg.server_mode,
+                "participation_rate": cfg.participation_rate,
+                "seed": cfg.seed,
+                "window": window_idx,
+                "bucket": name,
+                "n_users": len(indices),
+                "mean_cos": float(np.mean([cos_cpu[i] for i in indices])),
+                "mean_l2": float(np.mean([l2_cpu[i] for i in indices])),
+                "mean_staleness": float(np.mean([stale_vals[i] for i in indices])),
+            }
+        )
+    return rows
+
+
 # --------------------------------------------------------------------------------------
 # 参与序列：所有 mode 共用，保证"只改变是否使用陈旧摘要"
 # --------------------------------------------------------------------------------------
@@ -443,7 +524,17 @@ def run_single(cfg: Val01Config, windows: List[FastData], device: torch.device, 
     generator = torch.Generator(device=device)
     generator.manual_seed(cfg.seed)
 
+    # 前置检验 3 用的固定抽样用户（跨 mode / 跨 seed 口径一致，便于比较）
+    drift_users = torch.zeros(0, dtype=torch.long, device=device)
+    if cfg.drift_sample_users and cfg.drift_sample_users > 0:
+        eligible = torch.nonzero(windows[0].train_mask.sum(dim=1) > 0, as_tuple=False).flatten()
+        drift_gen = torch.Generator(device=device)
+        drift_gen.manual_seed(cfg.seed + 13)
+        perm = torch.randperm(eligible.numel(), generator=drift_gen, device=device)
+        drift_users = eligible[perm[: min(int(cfg.drift_sample_users), int(eligible.numel()))]]
+
     bucket_rows: List[Dict[str, object]] = []
+    drift_rows: List[Dict[str, object]] = []
     window_ndcgs: List[float] = []
     window_hrs: List[float] = []
     window_staleness: List[float] = []
@@ -560,9 +651,15 @@ def run_single(cfg: Val01Config, windows: List[FastData], device: torch.device, 
                         n_uploads[users] += 1
 
             staleness = staleness_now()
+            # 前置检验 2（--update-scope all）：每轮把"全部活跃用户"的邻居都重算一遍，
+            # 而不是只重算当轮被抽样的用户 → 隔离"边更新滞后"与"摘要陈旧"
+            if cfg.update_scope == "all":
+                update_users = torch.nonzero(active_clients, as_tuple=False).flatten()
+            else:
+                update_users = sampled
             window_ecs.append(
                 update_graph(
-                    sampled,
+                    update_users,
                     summary_bank,
                     active_clients,
                     graph_neighbors,
@@ -613,6 +710,13 @@ def run_single(cfg: Val01Config, windows: List[FastData], device: torch.device, 
 
         # 每窗口落盘一次，长跑中断也能保住结果
         write_csv(out_dir / "val01_staleness_buckets.csv", bucket_rows, BUCKET_FIELDS)
+
+        # 前置检验 3（--drift-sample-users N）：量"缓存摘要 vs 新鲜摘要"差多少
+        if cfg.drift_sample_users and cfg.drift_sample_users > 0:
+            drift_rows.extend(
+                measure_drift(cfg, window_idx, model, data, summary_bank, staleness, drift_users)
+            )
+            write_csv(out_dir / "val01_drift_buckets.csv", drift_rows, DRIFT_FIELDS)
 
     summary = {
         "dataset": cfg.dataset,
@@ -687,6 +791,21 @@ def parse_args() -> argparse.Namespace:
         default=ROOT / "exp_val_1026" / "exp01_staleness_participation" / "results" / "raw",
     )
     parser.add_argument("--out-dir", type=Path, default=None)
+    # ---- 前置检验用的开关（默认关闭，不影响主实验）----
+    parser.add_argument(
+        "--update-scope",
+        choices=["sampled", "all"],
+        default="sampled",
+        help="图更新范围：sampled=只重算当轮被抽样用户的邻居（现状）；"
+        "all=每轮重算全部活跃用户的邻居（用于隔离'边更新滞后'与'摘要陈旧'）",
+    )
+    parser.add_argument(
+        "--drift-sample-users",
+        type=int,
+        default=0,
+        help=">0 时在每个窗口末抽样这么多用户，测量缓存摘要与新鲜摘要的余弦/L2 差，"
+        "写入 val01_drift_buckets.csv（用于解释'新鲜化值多少'）",
+    )
     return parser.parse_args()
 
 
@@ -734,6 +853,8 @@ def main() -> None:
         edge_ema=args.edge_ema,
         graph_block_size=args.graph_block_size,
         server_mode=args.mode,
+        update_scope=args.update_scope,
+        drift_sample_users=args.drift_sample_users,
     )
 
     if not (0.0 < cfg.participation_rate <= 1.0):

@@ -1,0 +1,120 @@
+{
+  "dataset": "amazon-digital music",
+  "num_windows": 5,
+  "num_users": 12381,
+  "num_items": 9906,
+  "num_categories": 18,
+  "category_names": [
+    "pseudo-00",
+    "pseudo-01",
+    "pseudo-02",
+    "pseudo-03",
+    "pseudo-04",
+    "pseudo-05",
+    "pseudo-06",
+    "pseudo-07",
+    "pseudo-08",
+    "pseudo-09",
+    "pseudo-10",
+    "pseudo-11",
+    "pseudo-12",
+    "pseudo-13",
+    "pseudo-14",
+    "pseudo-15",
+    "pseudo-16",
+    "pseudo-17"
+  ],
+  "category_source": "cooccur",
+  "item_coverage": 0.6450635978195033,
+  "config": {
+    "dataset": "amazon-digital music",
+    "num_windows": 5,
+    "inject_onset": 3,
+    "min_inter": 2,
+    "require_all_post": false,
+    "inject_fraction": 1.0,
+    "max_inject_users": 200,
+    "min_pool": 30,
+    "target_category_mode": "rare",
+    "min_items_per_category": 30,
+    "min_inter_pooled": 3,
+    "min_spike_inter": 2,
+    "min_drift_excess": 0.05,
+    "max_real_users": 250,
+    "min_real_cohort": 25,
+    "num_categories": 18,
+    "category_mode": "auto",
+    "genres_file": null,
+    "partition_scope": "window1",
+    "proj_dim": 64,
+    "random_seed": 2026,
+    "cohort_seed": 2026,
+    "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+    "out_dir": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios\\amazon-digital_music",
+    "force": true
+  },
+  "real": {
+    "min_inter_pooled": 2,
+    "min_spike_inter": 2,
+    "min_drift_excess": 0.0,
+    "num_real_sustained": 40,
+    "num_real_transient": 24,
+    "num_real_stable": 22,
+    "num_jump_checkable_users": 363,
+    "any_jump_users": 363,
+    "median_drift_excess": 0.062499999999999944,
+    "auto_relax_ladder": [
+      {
+        "rung": 0,
+        "min_inter_pooled": 3,
+        "min_drift_excess": 0.05,
+        "num_real_sustained": 13,
+        "num_real_transient": 6
+      },
+      {
+        "rung": 1,
+        "min_inter_pooled": 2,
+        "min_drift_excess": 0.02,
+        "num_real_sustained": 24,
+        "num_real_transient": 15
+      },
+      {
+        "rung": 2,
+        "min_inter_pooled": 2,
+        "min_drift_excess": 0.0,
+        "num_real_sustained": 40,
+        "num_real_transient": 24
+      }
+    ],
+    "auto_relax_rung": 2
+  },
+  "inject": {
+    "inject_onset": 3,
+    "inject_windows_default": [
+      3,
+      4,
+      5
+    ],
+    "min_inter_used": 2,
+    "min_inter_ladder": [
+      {
+        "rung": 0,
+        "min_inter": 2,
+        "pool_before_exclude": 301
+      }
+    ],
+    "inject_fraction": 1.0,
+    "target_category_mode": "rare",
+    "min_items_per_category": 30,
+    "num_inj": 100,
+    "num_pair": 100,
+    "num_pairs": 100,
+    "median_target_rarity": 0.0
+  },
+  "warnings": [
+    "real_transient 只有 24 人（< 25）：该数据集上的真实 arm 只能作方向性参考，主证据请用注入 arm。"
+  ],
+  "real_arm_definition": "pre=窗口1..b-1, spike=窗口b, post=窗口b+1..W；real_sustained=主类别跳变且之后保持新类别，real_transient=主类别跳变但之后回到旧类别，real_stable=可判定边界上从未跳变（按 activity+同 onset 配对）",
+  "inject_arm_definition": "把 onset 窗口（sustained: 及其后所有窗口 / transient: 仅 onset 窗口）内该用户的 itemId 替换为目标类别的物品；pair 组做同样的替换，但目标类别 = 自己的旧主类别（同类别重采样）",
+  "leakage_note": "真实 arm 的分组用到了 onset 之后的窗口（事后分组），只决定统计哪些用户，不进入模型、不影响任何在线决策；在线算法每个窗口只能看到该窗口已到达的交互。"
+}

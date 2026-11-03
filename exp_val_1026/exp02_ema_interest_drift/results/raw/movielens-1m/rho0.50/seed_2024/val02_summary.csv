@@ -1,0 +1,2 @@
+﻿dataset,rho,seed,graph_gate,new_edge_init,graph_strength,graph_mix,edge_ema,num_windows,rounds_per_window,total_rounds,clients_per_round,n_drift,n_stable,all_avg_ndcg,all_final_ndcg,avg_ecr,elapsed_seconds
+movielens-1m,0.5,2024,raw,ema,paper,0.2,0.5,5,120,600,6040,146,102,0.5151348282982131,0.4764753589867448,0.0019830631912554964,170.667649269104

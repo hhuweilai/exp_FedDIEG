@@ -1,0 +1,46 @@
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "boundaries": [
+    2,
+    3,
+    4,
+    5
+  ],
+  "n_usable": 582,
+  "n_drift": 146,
+  "n_stable": 102,
+  "drift_quantile": 0.25,
+  "stable_quantile": 0.25,
+  "drift_threshold": 0.22530162135685533,
+  "stable_threshold": 0.08957420064121649,
+  "min_inter_per_window": 3,
+  "min_inter_pooled": 20,
+  "require_sustained": false,
+  "category_mode": null,
+  "cohort_seed": 2026,
+  "drift_onset_distribution": {
+    "2": 21,
+    "3": 42,
+    "4": 30,
+    "5": 53
+  },
+  "auto_relax": true,
+  "auto_relax_rung": 0,
+  "auto_relax_used": false,
+  "min_cohort": 60,
+  "chosen_params": {
+    "min_inter_per_window": 3,
+    "min_inter_pooled": 20,
+    "drift_quantile": 0.25,
+    "stable_quantile": 0.25,
+    "min_drift_excess": 0.15,
+    "require_sustained": false,
+    "include_last_boundary": true
+  },
+  "category_meta": {
+    "category_mode": "cooccur",
+    "num_categories": 18,
+    "item_coverage": 0.9341334894613583
+  }
+}
