@@ -246,9 +246,11 @@ def summarise_curve(curve: pd.DataFrame, metric: str, rounds: int) -> pd.DataFra
         record["plateau_n_users"] = n_users
         record["max_rel_round"] = max_rel
         if np.isfinite(record["pre_level"]):
-            record["delta_during"] = record["during_level"] - record["pre_level"]
-            record["delta_post"] = record["post_level"] - record["pre_level"]
-            record["delta_plateau"] = record["plateau_level"] - record["pre_level"]
+            for name in ("during", "post1", "post2", "post", "plateau"):
+                if np.isfinite(record.get(f"{name}_level", float("nan"))):
+                    record[f"delta_{name}"] = record[f"{name}_level"] - record["pre_level"]
+                else:
+                    record[f"delta_{name}"] = float("nan")
         rows.append(record)
     return pd.DataFrame(rows)
 
@@ -339,13 +341,20 @@ def build_tradeoff(
         base_track = -pick_delta(excess_peer, "sustained", 0.0, "post")
         for rho in rhos:
             attack_trans = -pick_delta(excess_peer, "transient", float(rho), "during")
+            # ★ 撤销后要分两段看：
+            #   post1 = 撤销发生的那个窗口（"还赖着不走"= 迟滞）
+            #   post2 = 再下一个窗口（"永久残留"= 真正的过度更新）
+            residual_post1 = -pick_delta(excess_peer, "transient", float(rho), "post1")
+            residual_post2 = -pick_delta(excess_peer, "transient", float(rho), "post2")
             residual_trans = -pick_delta(excess_peer, "transient", float(rho), "post")
             tracked_sust = -pick_delta(excess_peer, "sustained", float(rho), "post")
-            over = (
-                residual_trans / attack_trans
-                if np.isfinite(attack_trans) and attack_trans > PEER_NOISE_FLOOR
-                else float("nan")
-            )
+            tracked_sust_post2 = -pick_delta(excess_peer, "sustained", float(rho), "post2")
+
+            def _ratio(num: float, den: float) -> float:
+                return num / den if np.isfinite(den) and den > PEER_NOISE_FLOOR and np.isfinite(num) else float("nan")
+
+            over_early = _ratio(residual_post1, attack_trans)
+            over = _ratio(residual_post2, attack_trans)      # 主判定用它（是否永久残留）
             under = (
                 1.0 - max(tracked_sust, 0.0) / base_track
                 if np.isfinite(base_track) and base_track > PEER_NOISE_FLOOR and np.isfinite(tracked_sust)
@@ -364,10 +373,14 @@ def build_tradeoff(
                     "dataset": dataset,
                     "rho": float(rho),
                     "over_update": over,
+                    "over_update_early": over_early,
                     "under_update": under,
                     "transient_attack_during": attack_trans,
+                    "transient_residual_post1": residual_post1,
+                    "transient_residual_post2": residual_post2,
                     "transient_residual_post": residual_trans,
                     "sustained_tracked_post": tracked_sust,
+                    "sustained_tracked_post2": tracked_sust_post2,
                     "sustained_tracked_at_rho0": base_track,
                     "summary_drift_excess_during": drift_during,
                     "summary_drift_excess_post": drift_post,
@@ -429,7 +442,9 @@ def build_verdict(
             f"（噪声地板 {PEER_NOISE_FLOOR}）；同一口径下持续变化的跟进量={tracked:.3f}",
         )
 
-        # ② 撤销后图是否回退（过度更新）
+        # ② 撤销后图是否回退（过度更新）。分两段：
+        #    撤销窗口（迟滞，一个窗口内还赖着不走）与再下一个窗口（永久残留）。
+        over_early = float(part["over_update_early"].iloc[0]) if not part.empty else float("nan")
         if not np.isfinite(over):
             add(
                 dataset,
@@ -443,8 +458,9 @@ def build_verdict(
                 dataset,
                 "② 短期扰动撤销后图能回退（过度更新不成立）",
                 bool(over < 0.5),
-                f"ρ={reference_rho:.2f} over_update={over:.2f}"
-                f"（= 撤销后仍残留扰动期改动量的 {over * 100:.0f}%；<0.5 视为能回退）",
+                f"ρ={reference_rho:.2f} 撤销窗口残留 over_update_early={over_early:.2f}、"
+                f"再下一个窗口残留 over_update={over:.2f}"
+                f"（后者 = 永久残留比例，<0.5 视为最终能回退；前者 >0.5 说明至少要晚一个窗口）",
             )
 
         # ③ 持续变化是否被跟上（更新滞后）
@@ -462,8 +478,18 @@ def build_verdict(
         # ④ 是否存在两全的固定 ρ
         candidates = tradeoff[tradeoff["dataset"] == dataset]
         ok = candidates[(candidates["over_update"] <= 0.5) & (candidates["under_update"] <= 0.5)]
+        measurable = candidates[np.isfinite(candidates["under_update"]) & np.isfinite(candidates["over_update"])]
         if ok.empty:
-            detail = "没有任何 ρ 同时满足两个条件 → 固定 EMA 存在结构性权衡"
+            if measurable.empty:
+                detail = (
+                    "该数据集上无法判定：over_update / under_update 全部为 nan"
+                    "（关系质量指标没有分辨力，通常发生在极稀疏数据集上）"
+                )
+            else:
+                detail = (
+                    "没有任何 ρ 同时满足两个条件 → 固定 EMA 存在结构性权衡；"
+                    "可判定的 ρ 有 " + ", ".join(f"{r:.2f}" for r in measurable["rho"].tolist())
+                )
         else:
             names = ", ".join(f"{r:.2f}" for r in ok["rho"].tolist())
             detail = f"满足 over_update≤0.5 且 under_update≤0.5 的 ρ: {names}"
@@ -727,10 +753,11 @@ def make_excess_figure(excess: pd.DataFrame, out_path: Path, reference_rho: floa
 
 
 def make_tradeoff_figure(tradeoff: pd.DataFrame, out_path: Path) -> None:
-    """横轴过度更新、纵轴更新滞后，每个 ρ 一个点。
+    """两个面板：上行"最终是否残留"（over_update）、下行"撤销窗口内是否还赖着"（over_update_early）。
 
-    某个 ρ 下"扰动期净改动低于噪声地板"时 over_update 是 NaN（图没动，无从谈过度更新）——
-    这种点按 x=0 画成**空心点**并标注 "no update"，否则最关键的"ρ 大时图根本不更新"会被悄悄丢掉。
+    为什么必须画两行：只看"最终残留"会得到「ρ=0 落在左下角 = 两全」的结论，
+    但 ρ=0 在撤销窗口内的残留是扰动幅度的 1.04 倍 —— **撤销晚了一整个窗口**。
+    把 early 单独画出来，"没有任何 ρ 同时做到及时撤销 + 完全跟随"才看得见。
     """
     if tradeoff.empty:
         print(f"[figure] 没有权衡数据，跳过 {out_path.name}")
@@ -741,38 +768,60 @@ def make_tradeoff_figure(tradeoff: pd.DataFrame, out_path: Path) -> None:
         print(f"[figure] matplotlib 不可用：{exc}")
         return
     datasets = list(dict.fromkeys(tradeoff["dataset"]))
-    fig, axes = plt.subplots(1, len(datasets), figsize=(5.8 * len(datasets), 4.8), squeeze=False)
-    for col_idx, dataset in enumerate(datasets):
-        ax = axes[0][col_idx]
-        part = tradeoff[tradeoff["dataset"] == dataset].sort_values("rho")
-        part = part[np.isfinite(part["under_update"])]
-        if part.empty:
-            ax.set_visible(False)
-            continue
-        xs = part["over_update"].to_numpy(dtype=np.float64)
-        no_update = ~np.isfinite(xs)
-        xs = np.where(no_update, 0.0, xs)
-        ys = part["under_update"].to_numpy(dtype=np.float64)
-        ax.plot(xs, ys, color="#888888", linewidth=1.1, linestyle="--", zorder=1)
-        for idx, row in enumerate(part.itertuples()):
-            color = RHO_COLORS.get(round(float(row.rho), 2), "#333333")
-            if no_update[idx]:
-                ax.scatter(xs[idx], ys[idx], s=110, facecolors="white", edgecolors=color, linewidths=2.0, zorder=2)
-                label = f"ρ={row.rho:.2f} (graph did not update)"
-            else:
-                ax.scatter(xs[idx], ys[idx], s=110, color=color, zorder=2)
-                label = f"ρ={row.rho:.2f}"
-            ax.annotate(label, (xs[idx], ys[idx]), textcoords="offset points", xytext=(9, 7), fontsize=8)
-        ax.axvline(0.5, color="#bbbbbb", linestyle=":", linewidth=1.0)
-        ax.axhline(0.5, color="#bbbbbb", linestyle=":", linewidth=1.0)
-        ax.set_xlim(-0.08, 1.15)
-        ax.set_ylim(-0.08, 1.15)
-        ax.set_xlabel("over-update: residual after revert / change during fluctuation\n(0 also used for ρ where the graph did not move at all)")
-        ax.set_ylabel("under-update: 1 − tracked change / tracked change at ρ=0")
-        ax.set_title(f"{dataset} (ideal = bottom-left corner)", fontsize=9.5)
-        ax.grid(True, linestyle="--", alpha=0.3)
-    fig.suptitle("Trade-off of a single fixed EMA coefficient: over-update vs under-update", fontsize=11)
-    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    plottable = [
+        ds for ds in datasets
+        if np.isfinite(tradeoff[tradeoff["dataset"] == ds]["under_update"]).any()
+    ]
+    if not plottable:
+        print(f"[figure] 没有可判定的 ρ（over/under_update 全为 nan），跳过 {out_path.name}")
+        return
+    datasets = plottable
+    panels = (
+        ("over_update_early", "over-update INSIDE the revert window\n(residual right after the evidence stopped)"),
+        ("over_update", "over-update AFTER the revert window\n(permanent residual)"),
+    )
+    fig, axes = plt.subplots(
+        len(panels), len(datasets), figsize=(5.8 * len(datasets), 4.6 * len(panels)), squeeze=False
+    )
+    for row_idx, (column, xlabel) in enumerate(panels):
+        for col_idx, dataset in enumerate(datasets):
+            ax = axes[row_idx][col_idx]
+            part = tradeoff[tradeoff["dataset"] == dataset].sort_values("rho")
+            part = part[np.isfinite(part["under_update"])]
+            if part.empty:
+                ax.set_visible(False)
+                continue
+            xs = part[column].to_numpy(dtype=np.float64)
+            no_point = ~np.isfinite(xs)
+            xs_plot = np.where(no_point, 0.0, xs)
+            ys = part["under_update"].to_numpy(dtype=np.float64)
+            ax.plot(xs_plot, ys, color="#888888", linewidth=1.1, linestyle="--", zorder=1)
+            for idx, row in enumerate(part.itertuples()):
+                color = RHO_COLORS.get(round(float(row.rho), 2), "#333333")
+                if no_point[idx]:
+                    ax.scatter(xs_plot[idx], ys[idx], s=110, facecolors="white",
+                               edgecolors=color, linewidths=2.0, zorder=2)
+                    label = f"ρ={row.rho:.2f} (graph did not update)"
+                else:
+                    ax.scatter(xs_plot[idx], ys[idx], s=110, color=color, zorder=2)
+                    label = f"ρ={row.rho:.2f}"
+                ax.annotate(label, (xs_plot[idx], ys[idx]), textcoords="offset points",
+                            xytext=(9, 7), fontsize=8)
+            ax.axvline(0.5, color="#bbbbbb", linestyle=":", linewidth=1.0)
+            ax.axhline(0.5, color="#bbbbbb", linestyle=":", linewidth=1.0)
+            x_lo = min(-0.05, float(np.nanmin(xs_plot)) - 0.06)
+            y_lo = min(-0.05, float(np.nanmin(ys)) - 0.06)
+            ax.set_xlim(x_lo, max(1.12, float(np.nanmax(xs_plot)) + 0.12))
+            ax.set_ylim(y_lo, max(1.12, float(np.nanmax(ys)) + 0.12))
+            ax.set_xlabel(xlabel, fontsize=8.5)
+            ax.set_ylabel("under-update: 1 − tracked change / change at ρ=0", fontsize=8.5)
+            ax.set_title(f"{dataset} — ideal = bottom-left", fontsize=9.5)
+            ax.grid(True, linestyle="--", alpha=0.3)
+    fig.suptitle(
+        "No fixed EMA coefficient is both timely on undo\nand faithful on sustained change",
+        fontsize=10,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.92))
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=240)
     plt.close(fig)
@@ -908,21 +957,24 @@ def write_report(
         "两个指标都是**成对差值口径**（注入组 − 配对对照），所以「物品被替换」这个动作本身的影响被对照掉了；"
         "主指标是 `old_peer_share`（邻居里「仍属于用户旧兴趣」的边权占比），因为它有方向、且在 ρ 小时不会像 "
         "Jaccard turnover 那样饱和到 1。\n\n"
-        "- `over_update` = 撤销后残留的净偏离 ÷ 扰动期的净偏离。"
-        "≈1 = 图改了就回不来（把一次性噪声当持久变化）；≈0 = 完全撤销。\n"
+        "- `over_update_early` = **撤销发生那个窗口**的残留 ÷ 扰动期改动。>0.5 = 撤销至少要晚一个窗口（迟滞）。\n"
+        "- `over_update` = **再下一个窗口**的残留 ÷ 扰动期改动。>0.5 = 永久残留（真正意义上的过度更新）。\n"
         "- `under_update` = 1 − 持续变化场景的净跟进量 ÷ ρ=0 的净跟进量。"
         "0 = 完全跟上；1 = 完全不更新（更新滞后）。\n"
         "- `summary_residual_ratio` = 撤销后摘要的残余偏离 ÷ 扰动期偏离。"
-        "它 <1 说明「兴趣摘要本身恢复了」，此时图若没恢复，责任就在边权更新规则。\n"
+        "它 <1 说明「兴趣摘要本身恢复了」，此时图若没恢复，责任就在边权更新规则；"
+        "它 ≥1 说明摘要根本没恢复，残留主要来自客户端/摘要层而不是 EMA。\n"
         "- 理想固定 ρ 应同时给出 `over_update≈0` 与 `under_update≈0`。\n"
     )
     columns = [
         "dataset",
         "rho",
+        "over_update_early",
         "over_update",
         "under_update",
         "transient_attack_during",
-        "transient_residual_post",
+        "transient_residual_post1",
+        "transient_residual_post2",
         "sustained_tracked_post",
         "sustained_tracked_at_rho0",
         "summary_residual_ratio",
@@ -933,7 +985,7 @@ def write_report(
     lines.append("## 3. 自动判定\n")
     lines.append(
         f"判定规则：关系质量的噪声地板 {PEER_NOISE_FLOOR}，NDCG 的噪声地板 {NDCG_NOISE_FLOOR}；"
-        "`over_update < 0.5` 视为能回退，`under_update > 0.5` 视为明显滞后。\n"
+        "`over_update < 0.5`（再下一个窗口的残留）视为最终能回退，`under_update > 0.5` 视为明显滞后。\n"
     )
     if not verdict.empty:
         lines.append(_to_markdown(verdict[["dataset", "check", "holds", "detail"]]))
@@ -967,9 +1019,12 @@ def write_report(
         "（能撤销）还是停在 sustained 的水平（过度更新）。\n"
         "- `val03_fig_pair_excess.png`：★★ 主结论图 —— 已经是「注入组 − 配对对照」的净效应，"
         "而且把所有 ρ 画在同一张里（颜色=ρ）。低 ρ 会是「先掉下去、撤不回来」，高 ρ 基本贴着 0。\n"
-        "- `val03_fig_rho_tradeoff.png`：★★ 关键图。横轴 over-update、纵轴 under-update，每个点一个 ρ。"
-        "点若沿反对角线分布、没有一个落在左下角，就说明**固定 EMA 无法同时兼顾**。"
-        "空心点表示该 ρ 下图根本没动（扰动期净改动低于噪声地板）。\n"
+        "- `val03_fig_rho_tradeoff.png`：★★ 关键图，**两行**。上行横轴是「撤销窗口内的残留」"
+        "（衡量撤销是否及时），下行是「撤销后第二窗的残留」（衡量是否永久损伤）。"
+        "空心点 = 该 ρ 下图根本没动。"
+        "★ 读法：ρ=0 在下行已经靠近左下角（最终能撤销），但在上行远离左下角（**晚一整窗才撤销**）；"
+        "ρ≥0.5 在上行下行都远离。因此**没有任何 ρ 同时做到「及时撤销 + 完全跟随 + 图稳定」**，"
+        "但这也不能简单写成「ρ=0 就够用」——它的代价是撤销延迟与最大抖动，见 `val03_findings.md` §4、§9。\n"
         "- `val03_fig_arm_synthetic.png`：注入 arm 的原始水平（含配对对照）。注意在 ρ 大时两条线会几乎重合，"
         "那正是「图冻结」的直接证据。\n"
         "- `val03_fig_arm_real.png`：真实数据答案（无人工注入），与注入 arm 的结论对照着写。\n"
@@ -1060,9 +1115,11 @@ def main() -> None:
     excess_turn = summarise_curve(excess, "turnover_from_pre", rounds) if not excess.empty else pd.DataFrame()
     excess_drift = summarise_curve(excess, "summary_drift", rounds) if not excess.empty else pd.DataFrame()
 
-    lag = compute_lag_50(curves.get("turnover_from_pre", pd.DataFrame()), "turnover_from_pre", rounds)
+    lag = compute_lag_50(
+        curves.get(PRIMARY_METRIC, pd.DataFrame()), PRIMARY_METRIC, rounds
+    )
     if not lag.empty:
-        lag.to_csv(tables_dir / "val03_lag_turnover.csv", index=False, encoding="utf-8-sig")
+        lag.to_csv(tables_dir / f"val03_lag_{PRIMARY_METRIC}.csv", index=False, encoding="utf-8-sig")
 
     tradeoff = build_tradeoff(
         excess_peer, excess_turn, excess_drift, summaries[PRIMARY_METRIC], dataset_list, rhos

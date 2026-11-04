@@ -1,0 +1,2 @@
+﻿dataset,scenario,rho,seed,graph_gate,new_edge_init,graph_strength,graph_mix,num_windows,rounds_per_window,total_rounds,clients_per_round,inject_onset,inject_windows,n_inj,n_pair,n_real_sustained,n_real_transient,n_real_stable,inject_cos_mean,inject_rows_replaced,all_avg_ndcg,all_final_ndcg,avg_ecr,elapsed_seconds
+amazon-digital music,sustained,0.0,2024,raw,ema,paper,0.2,5,120,600,12381,3,3 4 5,100,100,40,24,22,nan,1650,0.34215450511226414,0.3692880970096201,0.4844063721597195,363.04949831962585

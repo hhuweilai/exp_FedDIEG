@@ -100,6 +100,7 @@ exp_val_1026/exp03_transient_vs_sustained/
 ├─ val03_build_scenarios.py    ① 场景构造（不训练）：真实队列 + 注入配对 + 类别视图
 ├─ val03_run_scenario.py       ② 一次完整训练（5 个组一起测）
 ├─ val03_aggregate.py          ③ 曲线 + 过度更新/滞后指标 + 自动结论 + 出图
+├─ val03_paired_test.py        ④ 逐对配对检验（ΔNDCG vs Δold-peer / Wilcoxon / 相关性）
 ├─ val03_run_basic.ps1 / .sh   一键跑完：①②③ 全自动（默认两个数据集，约 3 小时）
 ├─ val03_run_pilot.ps1 / .sh   冒烟：两个数据集 × 2 场景 × 2 ρ × 40 轮/窗口（约 15 分钟）
 ├─ README_val03_transient.md   本文件
@@ -108,7 +109,7 @@ exp_val_1026/exp03_transient_vs_sustained/
    ├─ raw/<dataset>/<scenario>/rho<ρ>/seed_<s>/   正式结果
    ├─ raw_strong/...           放大图影响的敏感性结果（-GraphStrength strong）
    ├─ raw_warm/...             新边 warm 初始化（-NewEdgeInit warm，会消掉"图冻住"）
-   ├─ aggregated/              主结果：figures/ + tables/ + val03_report.md
+   ├─ aggregated/              主结果：figures/ + tables/ + val03_report.md + ★ val03_findings.md
    └─ archive/                 pilot 试跑
 ```
 
@@ -157,6 +158,9 @@ python ...\val03_run_scenario.py --dataset "movielens-1m" --scenario transient -
 
 # ③ 聚合出图
 python ...\val03_aggregate.py
+
+# ④ 逐对配对检验（ΔNDCG vs Δold-peer + Wilcoxon + 相关性；结论图之外的统计支撑）
+python ...\val03_paired_test.py --datasets "movielens-1m"
 ```
 
 `val03_run_scenario.py --self-check` 会把"未被注入的数据帧"与实验二的 `load_rolling_windows`
@@ -200,10 +204,12 @@ python ...\val03_aggregate.py
 | `tables/val03_curve_<metric>.csv` | 各指标曲线（含 `n_users`、用户级 SEM） |
 | `tables/val03_pair_excess.csv` | 成对差值（`inj − pair`）曲线 |
 | `tables/val03_window_summary.csv` | 每个 (数据集, 场景, 组, ρ) 的 `pre / during / post1 / post2 / plateau` 水平 |
-| `tables/val03_tradeoff.csv` | ★ `over_update` / `under_update` / 命中率 / 摘要残余比 |
-| `tables/val03_lag_turnover.csv` | 邻居 turnover 达到 50% 最大变化所需轮数 |
+| `tables/val03_tradeoff.csv` | ★ `over_update_early` / `over_update` / `under_update` / 摘要残余比 |
+| `tables/val03_lag_old_peer_share.csv` | 关系质量达到 50% 最大变化所需轮数（窗口粒度=10 轮，容易饱和，看趋势即可） |
+| `tables/val03_ndcg_paired_test.csv` | ★★ 逐对配对检验（ΔNDCG / Δold-peer / Wilcoxon / 相关），第④步产出 |
 | `tables/val03_verdict.csv` | 自动结论判定（逐数据集，7 行） |
 | `val03_report.md` | 已填好数字的报告骨架 |
+| `val03_findings.md` | ★★ 人工整理后的结论（**引用数字以它为准**） |
 
 ## 8. 怎么判断结论（`val03_verdict.csv` 自动执行）
 
@@ -213,9 +219,9 @@ python ...\val03_aggregate.py
 | 行 | 判定 | 含义 |
 |---|---|---|
 | ① | 扰动窗口里注入组的 old-peer 占比**净下降** > 0.02 | 短期扰动**确实进了图**（不是"什么都没发生"） |
-| ② | `over_update` < 0.5 | 撤销后图能**回退** → "过度更新"不成立；≥0.5 → 图改了就回不来 |
+| ② | `over_update`（再下一个窗口的残留）< 0.5 | 撤销后图能**回退** → "过度更新"不成立；≥0.5 → 图改了就回不来。另看 `over_update_early`（撤销窗口的残留）：>0.5 = 至少晚一个窗口才回退 |
 | ③ | `under_update` ≤ 0.5 | 持续变化被**跟上**；>0.5 → 更新滞后 |
-| ④ | 存在某个 ρ 同时满足 ②③ | 有 → 固定 EMA 够用（任务书第 8 节停止信号 2 成立）；没有 → 需要自适应 |
+| ④ | 存在某个 ρ 同时满足 ②③ | 有 → 固定 EMA 够用（任务书第 8 节停止信号 2 成立）；没有 → 需要自适应。**注意**：命中时若唯一满足的 ρ 就是 0，必须同时讨论"关掉 EMA"的代价（撤销延迟 + 图抖动） |
 | ⑤ | 摘要恢复（残余比<0.5）但图没恢复（over_update≥0.5） | 责任在**边权更新规则**，不在"摘要记忆" |
 | ⑥ | NDCG 的 DID < −0.002 | 图的变化**有推荐代价**（否则只能说"关系层面有问题"） |
 | ⑦ | 真实 `real_sustained` / `real_transient` 的 old-peer 变化（描述性） | 真实数据上的方向性核对 |
@@ -230,14 +236,20 @@ python ...\val03_aggregate.py
 | ②③都不成立 | 固定 EMA 两端都错，且没有一个 ρ 能两全 → 最强的"需要自适应"证据 |
 
 另外必须注意：**如果某个 ρ 下 ①都不成立**（扰动期净下降 < 0.02），说明该 ρ 下图根本没动
-（ρ≥0.5 时这是实验二已经发现的"图冻结"），此时 ② 的"能回退"是假象，**报告里必须写成"图没动"而不是"能撤销"**。
+（ρ≥0.5 时这就是"图冻结"），此时 ② 的"能回退"是假象，**报告里必须写成"图没动"而不是"能撤销"**。
 
-> 实测提示（pilot 量级）：在论文默认 ρ=0.8 下，MovieLens-1M 上 ① 大概率**不成立** —— 图几乎不更新，
-> 所以"短期波动导致不必要的图更新"在**现状配置**下不成立。这时报告主线要改成：
-> **低 ρ（0~0.3）会跟、但撤不回来（over_update≈0.4~1）；高 ρ（≥0.5）干脆不动（under_update≈1）**，
-> 两者合起来说明"不存在两全的固定 ρ"。因此：
-> - 主图请以 `val03_fig_pair_excess.png`（全 ρ）与 `val03_fig_rho_tradeoff.png` 为主；
-> - 单看 ρ=0.8 的 `val03_fig_arm_synthetic.png` 会是平的，那是"图冻结"的直接证据，要照实写。
+> **本次实测结论**（36 次运行跑完后的实际结果，细节见 `val03_findings.md`）：
+> - ρ=0.8：①**不成立**（扰动期净下降 0.014≈0）→ 现状配置下**没有**"过度更新"；③ 也不成立（只跟上 29%）。
+> - ρ=0.0：①成立（0.164，3/3 种子），图跟着扰动走；`over_update_early`≈1.0（**整整一个撤销窗口没回来**），
+>   但 `over_update`≈0（**再下一个窗口完全恢复**）；③ 完全跟上（0.303），代价是 ECR 0.161/轮（图每轮大改）。
+> - ρ=0.5：①成立但很小（0.067）；`over_update`≈0.6–0.7（**撤不回**，3/3 种子），③ 只跟上 22%。
+>   （两个口径略有差别：`val03_tradeoff.csv` 是曲线加权、`val03_ndcg_paired_test.csv` 是逐对等权，
+>   差 ≤0.04；上面取约数。）
+> - **没有任何 ρ 同时做到"跟得上 + 及时撤销 + 图稳定"**：ρ=0 只输在"及时"和"抖动"，ρ≥0.5 输在另外两条。
+>   ⚠️ 只按"最终是否回到基线"打分的话 ρ=0 是最接近可接受的 —— 这就是任务书停止信号 2 的**部分命中**，
+>   报告里必须正面论证"为什么 ρ=0 不够"，不能回避。
+> - 而且**推荐损失与图变化无关**（NDCG 差距在三个 ρ 上几乎相同：0.195 / 0.218 / 0.183），
+>   所以"过度更新"这条失效路径**不足以单独支撑一个新算法**；研究问题应转到"证据是否值得写进摘要"。
 
 ## 9. 已知局限（写报告要带上）
 

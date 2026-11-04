@@ -1,0 +1,61 @@
+﻿dataset,scenario,group,rho,metric,pre_level,peak_abs_delta,lag_reach_50
+amazon-digital music,sustained,inj,0.0,old_peer_share,0.10096752721073197,0.028942951322385585,10.0
+amazon-digital music,sustained,inj,0.5,old_peer_share,0.07988088002081305,0.019626645924508038,10.0
+amazon-digital music,sustained,inj,0.8,old_peer_share,0.05346429926951921,0.005151425475036928,10.0
+amazon-digital music,sustained,pair,0.0,old_peer_share,0.09623461252674435,0.021051598526785995,10.0
+amazon-digital music,sustained,pair,0.5,old_peer_share,0.07736264278595507,0.031305037013717785,40.0
+amazon-digital music,sustained,pair,0.8,old_peer_share,0.05702103864997009,0.006435706572240768,10.0
+amazon-digital music,sustained,real_stable,0.0,old_peer_share,0.10432483975726047,0.0710361203586257,130.0
+amazon-digital music,sustained,real_stable,0.5,old_peer_share,0.09754777724904137,0.04099416154841048,160.0
+amazon-digital music,sustained,real_stable,0.8,old_peer_share,0.07399414779075485,0.018023561531164065,10.0
+amazon-digital music,sustained,real_sustained,0.0,old_peer_share,0.0693338782693473,0.04699205444311376,190.0
+amazon-digital music,sustained,real_sustained,0.5,old_peer_share,0.07592593003657194,0.012378958834409037,10.0
+amazon-digital music,sustained,real_sustained,0.8,old_peer_share,0.07206627937155452,0.009259610388591175,10.0
+amazon-digital music,sustained,real_transient,0.0,old_peer_share,0.11859711645803318,0.04749001048516699,140.0
+amazon-digital music,sustained,real_transient,0.5,old_peer_share,0.12475465311005209,0.02926862564291062,250.0
+amazon-digital music,sustained,real_transient,0.8,old_peer_share,0.08949838166868467,0.04638145729466496,250.0
+amazon-digital music,transient,inj,0.0,old_peer_share,0.10096752721073197,0.020169183049466063,10.0
+amazon-digital music,transient,inj,0.5,old_peer_share,0.07988088002081305,0.021579345572772163,10.0
+amazon-digital music,transient,inj,0.8,old_peer_share,0.05346429926951921,0.004695826578906388,10.0
+amazon-digital music,transient,pair,0.0,old_peer_share,0.09623461252674435,0.035906159702726426,270.0
+amazon-digital music,transient,pair,0.5,old_peer_share,0.07736264278595507,0.029185201261010527,50.0
+amazon-digital music,transient,pair,0.8,old_peer_share,0.05702103864997009,0.0070924043720028696,10.0
+amazon-digital music,transient,real_stable,0.0,old_peer_share,0.10144677515863026,0.05866263387071309,170.0
+amazon-digital music,transient,real_stable,0.5,old_peer_share,0.08695511276355303,0.026820314829997263,10.0
+amazon-digital music,transient,real_stable,0.8,old_peer_share,0.07168036899056986,0.01793138536298744,10.0
+amazon-digital music,transient,real_sustained,0.0,old_peer_share,0.0717330509968339,0.04947897017476347,180.0
+amazon-digital music,transient,real_sustained,0.5,old_peer_share,0.07489027271368594,0.013510313484087655,10.0
+amazon-digital music,transient,real_sustained,0.8,old_peer_share,0.07208007540073326,0.009236745271504823,10.0
+amazon-digital music,transient,real_transient,0.0,old_peer_share,0.11387466913835351,0.06641192956391828,370.0
+amazon-digital music,transient,real_transient,0.5,old_peer_share,0.12030185474259407,0.03413187407401448,250.0
+amazon-digital music,transient,real_transient,0.8,old_peer_share,0.08946854650222379,0.04626521290100495,250.0
+movielens-1m,sustained,inj,0.0,old_peer_share,0.40143833971685833,0.24014292690489028,10.0
+movielens-1m,sustained,inj,0.5,old_peer_share,0.21806349612657194,0.09907233194459841,250.0
+movielens-1m,sustained,inj,0.8,old_peer_share,0.15750336480941282,0.1301458104669461,20.0
+movielens-1m,sustained,pair,0.0,old_peer_share,0.44830179530270825,0.08205948353852655,10.0
+movielens-1m,sustained,pair,0.5,old_peer_share,0.33783521985999126,0.17308897129936923,20.0
+movielens-1m,sustained,pair,0.8,old_peer_share,0.08474245982180381,0.18057697375277923,20.0
+movielens-1m,sustained,real_stable,0.0,old_peer_share,0.6163566924514527,0.3927447385092381,10.0
+movielens-1m,sustained,real_stable,0.5,old_peer_share,0.4715078953448704,0.06941806911987353,20.0
+movielens-1m,sustained,real_stable,0.8,old_peer_share,0.09859115025812527,0.04088538481672581,10.0
+movielens-1m,sustained,real_sustained,0.0,old_peer_share,0.4531947584145448,0.4239611835472963,10.0
+movielens-1m,sustained,real_sustained,0.5,old_peer_share,0.33136274799930326,0.16947023549653364,250.0
+movielens-1m,sustained,real_sustained,0.8,old_peer_share,0.15110087838644784,0.09159218727921442,370.0
+movielens-1m,sustained,real_transient,0.0,old_peer_share,0.5201841668667306,0.44182198070131373,10.0
+movielens-1m,sustained,real_transient,0.5,old_peer_share,0.40787719197452715,0.05520917158617272,250.0
+movielens-1m,sustained,real_transient,0.8,old_peer_share,0.21809302073383902,0.14506858389851057,370.0
+movielens-1m,transient,inj,0.0,old_peer_share,0.40143833971685833,0.2498548218642759,10.0
+movielens-1m,transient,inj,0.5,old_peer_share,0.21806349612657194,0.06906885729183126,20.0
+movielens-1m,transient,inj,0.8,old_peer_share,0.15750336480941282,0.10026785864294327,20.0
+movielens-1m,transient,pair,0.0,old_peer_share,0.44830179530270825,0.269810637658773,250.0
+movielens-1m,transient,pair,0.5,old_peer_share,0.33783521985999126,0.1334674636868865,20.0
+movielens-1m,transient,pair,0.8,old_peer_share,0.08474245982180381,0.17429981980961848,140.0
+movielens-1m,transient,real_stable,0.0,old_peer_share,0.6169430462248398,0.38358139384823475,10.0
+movielens-1m,transient,real_stable,0.5,old_peer_share,0.4707459611055158,0.06854423898555484,10.0
+movielens-1m,transient,real_stable,0.8,old_peer_share,0.09624233905029485,0.047280200801417385,10.0
+movielens-1m,transient,real_sustained,0.0,old_peer_share,0.4539846404483824,0.4206733525758891,10.0
+movielens-1m,transient,real_sustained,0.5,old_peer_share,0.32818375785242426,0.1687344017099928,250.0
+movielens-1m,transient,real_sustained,0.8,old_peer_share,0.149381775852067,0.09194802169151828,370.0
+movielens-1m,transient,real_transient,0.0,old_peer_share,0.5200476051687296,0.4338914199636534,10.0
+movielens-1m,transient,real_transient,0.5,old_peer_share,0.4090112813715659,0.052603777652650674,20.0
+movielens-1m,transient,real_transient,0.8,old_peer_share,0.21689153214763707,0.14638283775249605,370.0

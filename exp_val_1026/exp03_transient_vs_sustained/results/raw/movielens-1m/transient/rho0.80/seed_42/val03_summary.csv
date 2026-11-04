@@ -1,0 +1,2 @@
+﻿dataset,scenario,rho,seed,graph_gate,new_edge_init,graph_strength,graph_mix,num_windows,rounds_per_window,total_rounds,clients_per_round,inject_onset,inject_windows,n_inj,n_pair,n_real_sustained,n_real_transient,n_real_stable,inject_cos_mean,inject_rows_replaced,all_avg_ndcg,all_final_ndcg,avg_ecr,elapsed_seconds
+movielens-1m,transient,0.8,42,raw,ema,paper,0.2,5,120,600,6040,3,3,19,19,36,65,50,nan,2934,0.5101228530748194,0.4782003390466659,0.00010677971989328702,190.9130837917328
