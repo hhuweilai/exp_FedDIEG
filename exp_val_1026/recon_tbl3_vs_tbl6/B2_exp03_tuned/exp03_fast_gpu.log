@@ -1,0 +1,170 @@
+Output directory: F:\exp_FedDIEG\tmp\recon_tuned
+Device: cuda
+GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+Config: {
+  "dataset": "movielens-1m",
+  "methods": [
+    "FedMF",
+    "FedSASRec",
+    "GPFedRec",
+    "FCUCR",
+    "TarDGR",
+    "F3CRec",
+    "DGFedRS",
+    "FedDIEG"
+  ],
+  "seed": 42,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "microbatch_size": 512,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "local_epochs": 1,
+  "lr": 0.0012,
+  "feddieg_lr": null,
+  "latent_dim": 64,
+  "max_len": 50,
+  "top_k": 10,
+  "eval_every": 10,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "gpfedrec_neighbors": 5,
+  "gpfedrec_mix": 0.1,
+  "gpfedrec_warmup_rounds": 20,
+  "fcucR_kb_len": 5,
+  "fcucR_noise_std": 0.01,
+  "fcucR_distill_weight": 0.1,
+  "tardgr_retrieval_topk": 10,
+  "tardgr_retrieval_temp": 0.1,
+  "tardgr_retrieval_mix": 0.2,
+  "tardgr_warmup_rounds": 20,
+  "f3crec_replay_topk": 8,
+  "f3crec_replay_mix": 0.15,
+  "f3crec_temporal_beta": 0.15,
+  "f3crec_memory_momentum": 0.6,
+  "f3crec_warmup_rounds": 20,
+  "dgfedrs_aug_ratio": 0.15,
+  "dgfedrs_aug_mix": 0.3,
+  "dgfedrs_noise_std": 0.02,
+  "dgfedrs_schedule_power": 1.0,
+  "feddieg_neighbors": 10,
+  "feddieg_graph_mix": 0.02,
+  "feddieg_warmup_rounds": 20,
+  "feddieg_neighbor_temp": 0.05,
+  "feddieg_min_sim": 0.2,
+  "feddieg_tail_power": 4.0,
+  "feddieg_final_loss_weight": 0.2,
+  "feddieg_memory_momentum": 0.8,
+  "feddieg_short_score_mix": 0.0,
+  "feddieg_confidence_power": 0.0,
+  "feddieg_agreement_power": 0.0,
+  "feddieg_score_residual_mix": 0.0,
+  "feddieg_score_local_mix": 0.0,
+  "feddieg_boundary_refresh_rate": 0.0,
+  "feddieg_boundary_refresh_momentum": 0.5,
+  "num_threads": 4,
+  "variants": [
+    "Ours-Full"
+  ],
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "lambda_temp": 0.01,
+  "lambda_struct": 0.2,
+  "edge_ema": 0.8,
+  "ecr_update_scope": "sampled",
+  "stability_ecr_weight": 0.05,
+  "stability_drop_weight": 1.0,
+  "graph_block_size": 2048,
+  "oscillation_window": 10
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+
+[Ours-Full] Exp3 fast GPU start
+[Ours-Full] lambda_temp=0.01 lambda_struct=0.2 edge_ema=0.8 memory_momentum=0.8
+
+[Ours-Full] Window 1/5 | eval_users=1429
+[Ours-Full] W1 initial | Test NDCG 0.0398 | BoundaryDrop 0.0000
+[Ours-Full] W1 R010/120 G010 | Loss 1.1871 | ECR 0.0000 | Test NDCG 0.2224 | 1.04s
+[Ours-Full] W1 R020/120 G020 | Loss 1.0505 | ECR 0.0000 | Test NDCG 0.2299 | 1.35s
+[Ours-Full] W1 R030/120 G030 | Loss 1.0744 | ECR 0.0000 | Test NDCG 0.2258 | 1.50s
+[Ours-Full] W1 R040/120 G040 | Loss 1.0353 | ECR 0.0000 | Test NDCG 0.2213 | 1.02s
+[Ours-Full] W1 R050/120 G050 | Loss 0.9722 | ECR 0.0000 | Test NDCG 0.2280 | 1.21s
+[Ours-Full] W1 R060/120 G060 | Loss 0.9652 | ECR 0.0000 | Test NDCG 0.2364 | 1.34s
+[Ours-Full] W1 R070/120 G070 | Loss 0.9802 | ECR 0.0000 | Test NDCG 0.2394 | 1.36s
+[Ours-Full] W1 R080/120 G080 | Loss 0.9700 | ECR 0.0000 | Test NDCG 0.2414 | 1.08s
+[Ours-Full] W1 R090/120 G090 | Loss 0.9480 | ECR 0.0000 | Test NDCG 0.2566 | 0.95s
+[Ours-Full] W1 R100/120 G100 | Loss 0.9079 | ECR 0.0000 | Test NDCG 0.2668 | 0.99s
+[Ours-Full] W1 R110/120 G110 | Loss 0.9142 | ECR 0.0000 | Test NDCG 0.2653 | 1.25s
+[Ours-Full] W1 R120/120 G120 | Loss 0.8724 | ECR 0.0000 | Test NDCG 0.2735 | 1.35s
+
+[Ours-Full] Window 2/5 | eval_users=1421
+[Ours-Full] W2 initial | Test NDCG 0.2532 | BoundaryDrop 0.0204
+[Ours-Full] W2 R010/120 G130 | Loss 0.9028 | ECR 0.1084 | Test NDCG 0.2598 | 1.32s
+[Ours-Full] W2 R020/120 G140 | Loss 0.8847 | ECR 0.0405 | Test NDCG 0.2799 | 0.67s
+[Ours-Full] W2 R030/120 G150 | Loss 0.8904 | ECR 0.0207 | Test NDCG 0.2998 | 0.68s
+[Ours-Full] W2 R040/120 G160 | Loss 0.8930 | ECR 0.0112 | Test NDCG 0.3100 | 0.79s
+[Ours-Full] W2 R050/120 G170 | Loss 0.8385 | ECR 0.0000 | Test NDCG 0.3247 | 0.61s
+[Ours-Full] W2 R060/120 G180 | Loss 0.8394 | ECR 0.0005 | Test NDCG 0.3404 | 0.73s
+[Ours-Full] W2 R070/120 G190 | Loss 0.8078 | ECR 0.0008 | Test NDCG 0.3431 | 0.77s
+[Ours-Full] W2 R080/120 G200 | Loss 0.8022 | ECR 0.0009 | Test NDCG 0.3466 | 0.73s
+[Ours-Full] W2 R090/120 G210 | Loss 0.7793 | ECR 0.0003 | Test NDCG 0.3485 | 0.63s
+[Ours-Full] W2 R100/120 G220 | Loss 0.7967 | ECR 0.0000 | Test NDCG 0.3596 | 0.72s
+[Ours-Full] W2 R110/120 G230 | Loss 0.7560 | ECR 0.0000 | Test NDCG 0.3697 | 0.75s
+[Ours-Full] W2 R120/120 G240 | Loss 0.7719 | ECR 0.0000 | Test NDCG 0.3687 | 0.91s
+
+[Ours-Full] Window 3/5 | eval_users=1763
+[Ours-Full] W3 initial | Test NDCG 0.3409 | BoundaryDrop 0.0279
+[Ours-Full] W3 R010/120 G250 | Loss 0.7866 | ECR 0.0345 | Test NDCG 0.3587 | 0.73s
+[Ours-Full] W3 R020/120 G260 | Loss 0.7670 | ECR 0.0219 | Test NDCG 0.3717 | 0.76s
+[Ours-Full] W3 R030/120 G270 | Loss 0.7607 | ECR 0.0211 | Test NDCG 0.3850 | 0.74s
+[Ours-Full] W3 R040/120 G280 | Loss 0.7696 | ECR 0.0081 | Test NDCG 0.3997 | 0.66s
+[Ours-Full] W3 R050/120 G290 | Loss 0.7427 | ECR 0.0038 | Test NDCG 0.4077 | 0.72s
+[Ours-Full] W3 R060/120 G300 | Loss 0.7257 | ECR 0.0058 | Test NDCG 0.4185 | 0.70s
+[Ours-Full] W3 R070/120 G310 | Loss 0.7026 | ECR 0.0019 | Test NDCG 0.4221 | 0.70s
+[Ours-Full] W3 R080/120 G320 | Loss 0.7182 | ECR 0.0021 | Test NDCG 0.4285 | 0.76s
+[Ours-Full] W3 R090/120 G330 | Loss 0.7034 | ECR 0.0016 | Test NDCG 0.4387 | 0.75s
+[Ours-Full] W3 R100/120 G340 | Loss 0.6850 | ECR 0.0012 | Test NDCG 0.4423 | 0.76s
+[Ours-Full] W3 R110/120 G350 | Loss 0.6969 | ECR 0.0000 | Test NDCG 0.4434 | 0.75s
+[Ours-Full] W3 R120/120 G360 | Loss 0.6932 | ECR 0.0000 | Test NDCG 0.4492 | 0.75s
+
+[Ours-Full] Window 4/5 | eval_users=1547
+[Ours-Full] W4 initial | Test NDCG 0.4479 | BoundaryDrop 0.0013
+[Ours-Full] W4 R010/120 G370 | Loss 0.6626 | ECR 0.0419 | Test NDCG 0.4610 | 0.66s
+[Ours-Full] W4 R020/120 G380 | Loss 0.6872 | ECR 0.0317 | Test NDCG 0.4637 | 0.67s
+[Ours-Full] W4 R030/120 G390 | Loss 0.6669 | ECR 0.0228 | Test NDCG 0.4703 | 0.83s
+[Ours-Full] W4 R040/120 G400 | Loss 0.6455 | ECR 0.0249 | Test NDCG 0.4806 | 0.64s
+[Ours-Full] W4 R050/120 G410 | Loss 0.6515 | ECR 0.0124 | Test NDCG 0.4836 | 0.71s
+[Ours-Full] W4 R060/120 G420 | Loss 0.6190 | ECR 0.0112 | Test NDCG 0.4904 | 0.68s
+[Ours-Full] W4 R070/120 G430 | Loss 0.6335 | ECR 0.0113 | Test NDCG 0.4951 | 0.65s
+[Ours-Full] W4 R080/120 G440 | Loss 0.6139 | ECR 0.0163 | Test NDCG 0.5011 | 0.70s
+[Ours-Full] W4 R090/120 G450 | Loss 0.6156 | ECR 0.0079 | Test NDCG 0.5068 | 0.69s
+[Ours-Full] W4 R100/120 G460 | Loss 0.6073 | ECR 0.0081 | Test NDCG 0.5083 | 0.71s
+[Ours-Full] W4 R110/120 G470 | Loss 0.6197 | ECR 0.0021 | Test NDCG 0.5118 | 0.72s
+[Ours-Full] W4 R120/120 G480 | Loss 0.5870 | ECR 0.0035 | Test NDCG 0.5139 | 0.61s
+
+[Ours-Full] Window 5/5 | eval_users=1738
+[Ours-Full] W5 initial | Test NDCG 0.4178 | BoundaryDrop 0.0961
+[Ours-Full] W5 R010/120 G490 | Loss 0.6411 | ECR 0.0726 | Test NDCG 0.4231 | 0.59s
+[Ours-Full] W5 R020/120 G500 | Loss 0.6555 | ECR 0.0882 | Test NDCG 0.4287 | 0.59s
+[Ours-Full] W5 R030/120 G510 | Loss 0.6463 | ECR 0.0510 | Test NDCG 0.4361 | 0.60s
+[Ours-Full] W5 R040/120 G520 | Loss 0.5961 | ECR 0.0397 | Test NDCG 0.4387 | 0.64s
+[Ours-Full] W5 R050/120 G530 | Loss 0.6234 | ECR 0.0280 | Test NDCG 0.4388 | 0.66s
+[Ours-Full] W5 R060/120 G540 | Loss 0.6282 | ECR 0.0159 | Test NDCG 0.4415 | 0.65s
+[Ours-Full] W5 R070/120 G550 | Loss 0.6040 | ECR 0.0141 | Test NDCG 0.4454 | 0.64s
+[Ours-Full] W5 R080/120 G560 | Loss 0.6085 | ECR 0.0142 | Test NDCG 0.4416 | 0.65s
+[Ours-Full] W5 R090/120 G570 | Loss 0.5915 | ECR 0.0103 | Test NDCG 0.4505 | 0.68s
+[Ours-Full] W5 R100/120 G580 | Loss 0.6033 | ECR 0.0066 | Test NDCG 0.4493 | 0.56s
+[Ours-Full] W5 R110/120 G590 | Loss 0.6217 | ECR 0.0082 | Test NDCG 0.4518 | 0.52s
+[Ours-Full] W5 R120/120 G600 | Loss 0.5925 | ECR 0.0082 | Test NDCG 0.4553 | 0.61s
+[Ours-Full] outputs updated.
+
+Done. Experiment 3 outputs are in: F:\exp_FedDIEG\tmp\recon_tuned

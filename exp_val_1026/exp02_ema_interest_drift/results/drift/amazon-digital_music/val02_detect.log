@@ -1,0 +1,63 @@
+Output directory: F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\drift\amazon-digital_music
+Config: {
+  "dataset": "amazon-digital music",
+  "num_windows": 5,
+  "category_mode": "auto",
+  "genres_file": null,
+  "num_categories": 18,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "min_inter_per_window": 3,
+  "min_inter_pooled": 20,
+  "null_trials": 10,
+  "drift_quantile": 0.25,
+  "stable_quantile": 0.25,
+  "min_drift_excess": 0.15,
+  "require_sustained": false,
+  "include_last_boundary": true,
+  "auto_relax": true,
+  "min_cohort": 60,
+  "max_drift_users": 400,
+  "max_stable_users": 400,
+  "cohort_seed": 2026,
+  "random_seed": 2026,
+  "out_dir": null
+}
+[data] amazon-digital music: users=12381, items=9906, interactions=123518, windows=5
+[data] 各窗口交互数: [24703, 24704, 24703, 24704, 24704]
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 24703 条，投影维度 64，簇数 18
+[partition] 物品覆盖率 64.51%，类别数 18
+[partition] 警告：物品覆盖率 < 90%，未覆盖物品的交互不计入类别分布
+[data] (用户, 窗口) 无交互的格子：36518 / 61905
+[data] 注意：该数据集用户行为很集中，跨窗口漂移可观测的用户有限
+[drift] 阶梯 0(默认): 边界两侧 ≥3 条 / 前后各 ≥20 条 / 取最高 25% 分位 (绝对下限 0.15) → drift=8 stable=0
+[drift] 阶梯 1(放宽1): 边界两侧 ≥2 条 / 前后各 ≥14 条 / 取最高 25% 分位 (绝对下限 0.12) → drift=15 stable=0
+[drift] 阶梯 2(放宽2): 边界两侧 ≥2 条 / 前后各 ≥10 条 / 取最高 30% 分位 (绝对下限 0.10) → drift=34 stable=16
+[drift] 阶梯 3(放宽3): 边界两侧 ≥2 条 / 前后各 ≥6 条 / 取最高 33% 分位 (绝对下限 0.05) → drift=93 stable=46
+[drift] 采用阶梯 3（默认阈值不足 60 人，已自动放宽；稀疏数据集上的漂移结论会明显弱于 MovieLens-1M，报告里要写明）
+[drift] 参与识别的边界（onset 窗口）：[2, 3, 4, 5]
+[drift] 边界 t=2: 边界两侧可用用户 114, 持续性可验证 70 / 通过 32, TVD 中位数 0.708, 零点中位数 0.614, excess 中位数 0.098
+[drift] 边界 t=3: 边界两侧可用用户 103, 持续性可验证 68 / 通过 23, TVD 中位数 0.633, 零点中位数 0.612, excess 中位数 0.037
+[drift] 边界 t=4: 边界两侧可用用户 92, 持续性可验证 66 / 通过 22, TVD 中位数 0.643, 零点中位数 0.614, excess 中位数 0.040
+[drift] 边界 t=5: 边界两侧可用用户 74, 持续性可验证 0 / 通过 0, TVD 中位数 0.601, 零点中位数 0.606, excess 中位数 0.036
+[drift] 可用用户（至少一个边界两侧都够活跃）: 281 / 12381
+[drift] drift 阈值 = max(0.05, 33% 分位) = 0.113；stable 阈值 = 33% 分位 = 0.000
+[drift] 对照组候选: 93
+[drift] 最终 cohort: drift=93  stable=46
+
+================ 漂移识别结论 ================
+  采用的阈值：边界两侧 ≥2 条 / 前后各 ≥6 条 / 取最高 33% 分位（绝对下限 0.05）  ← 已自动放宽
+  兴趣变化组 93 人（漂移分数最高的 33%，阈值 0.113），其中主类别确实改变 91 人
+  稳定对照组 46 人（漂移分数最低的 33%，阈值 0.000，已按 onset + 活动量分层匹配）
+  onset 分布：{2: 48, 3: 15, 4: 16, 5: 14}
+  drift_excess 分位：p10=0.131, p50=0.221, p90=0.350
+  对照组 drift_excess 分位：p50=0.000, p90=0.000
+==============================================
+
+输出：F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\drift\amazon-digital_music
+  val02_drift_users.csv   ← cohort 清单（训练脚本默认读它）
+  val02_counts.npz        ← 类别计数张量（训练脚本算 old/new peer 占比用）
+
+下一步：
+  python exp_val_1026/exp02_ema_interest_drift/val02_run_ema.py --rho 0.8 --seed 42

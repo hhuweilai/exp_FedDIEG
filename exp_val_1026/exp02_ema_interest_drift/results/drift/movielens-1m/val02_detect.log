@@ -1,0 +1,58 @@
+Output directory: F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\drift\movielens-1m
+Config: {
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "category_mode": "auto",
+  "genres_file": null,
+  "num_categories": 18,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "min_inter_per_window": 3,
+  "min_inter_pooled": 20,
+  "null_trials": 10,
+  "drift_quantile": 0.25,
+  "stable_quantile": 0.25,
+  "min_drift_excess": 0.15,
+  "require_sustained": false,
+  "include_last_boundary": true,
+  "auto_relax": true,
+  "min_cohort": 60,
+  "max_drift_users": 400,
+  "max_stable_users": 400,
+  "cohort_seed": 2026,
+  "random_seed": 2026,
+  "out_dir": null
+}
+[data] movielens-1m: users=6040, items=3416, interactions=999611, windows=5
+[data] 各窗口交互数: [199922, 199922, 199922, 199922, 199923]
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[partition] 物品覆盖率 93.41%，类别数 18
+[data] (用户, 窗口) 无交互的格子：22169 / 30200
+[data] 注意：该数据集用户行为很集中，跨窗口漂移可观测的用户有限
+[drift] 阶梯 0(默认): 边界两侧 ≥3 条 / 前后各 ≥20 条 / 取最高 25% 分位 (绝对下限 0.15) → drift=146 stable=102
+[drift] 参与识别的边界（onset 窗口）：[2, 3, 4, 5]
+[drift] 边界 t=2: 边界两侧可用用户 104, 持续性可验证 70 / 通过 31, TVD 中位数 0.370, 零点中位数 0.188, excess 中位数 0.157
+[drift] 边界 t=3: 边界两侧可用用户 177, 持续性可验证 42 / 通过 22, TVD 中位数 0.328, 零点中位数 0.189, excess 中位数 0.133
+[drift] 边界 t=4: 边界两侧可用用户 134, 持续性可验证 104 / 通过 39, TVD 中位数 0.343, 零点中位数 0.195, excess 中位数 0.156
+[drift] 边界 t=5: 边界两侧可用用户 339, 持续性可验证 0 / 通过 0, TVD 中位数 0.330, 零点中位数 0.192, excess 中位数 0.138
+[drift] 可用用户（至少一个边界两侧都够活跃）: 582 / 6040
+[drift] drift 阈值 = max(0.15, 25% 分位) = 0.225；stable 阈值 = 25% 分位 = 0.090
+[drift] 对照组候选: 146
+[drift] 最终 cohort: drift=146  stable=102
+
+================ 漂移识别结论 ================
+  采用的阈值：边界两侧 ≥3 条 / 前后各 ≥20 条 / 取最高 25% 分位（绝对下限 0.15）
+  兴趣变化组 146 人（漂移分数最高的 25%，阈值 0.225），其中主类别确实改变 133 人
+  稳定对照组 102 人（漂移分数最低的 25%，阈值 0.090，已按 onset + 活动量分层匹配）
+  onset 分布：{2: 21, 3: 42, 4: 30, 5: 53}
+  drift_excess 分位：p10=0.231, p50=0.287, p90=0.410
+  对照组 drift_excess 分位：p50=0.052, p90=0.084
+==============================================
+
+输出：F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\drift\movielens-1m
+  val02_drift_users.csv   ← cohort 清单（训练脚本默认读它）
+  val02_counts.npz        ← 类别计数张量（训练脚本算 old/new peer 占比用）
+
+下一步：
+  python exp_val_1026/exp02_ema_interest_drift/val02_run_ema.py --rho 0.8 --seed 42

@@ -1,0 +1,162 @@
+Output directory: F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\raw\movielens-1m\rho0.95\seed_777
+Device: cuda | GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+Config: {
+  "dataset": "movielens-1m",
+  "methods": [
+    "FedDIEG"
+  ],
+  "seed": 777,
+  "rounds": 600,
+  "participation_rate": 1.0,
+  "clients_per_round": null,
+  "microbatch_size": 512,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "feddieg_lr": null,
+  "latent_dim": 64,
+  "max_len": 50,
+  "top_k": 10,
+  "eval_every": 10,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "gpfedrec_neighbors": 5,
+  "gpfedrec_mix": 0.1,
+  "gpfedrec_warmup_rounds": 20,
+  "fcucR_kb_len": 5,
+  "fcucR_noise_std": 0.01,
+  "fcucR_distill_weight": 0.1,
+  "tardgr_retrieval_topk": 10,
+  "tardgr_retrieval_temp": 0.1,
+  "tardgr_retrieval_mix": 0.2,
+  "tardgr_warmup_rounds": 20,
+  "f3crec_replay_topk": 8,
+  "f3crec_replay_mix": 0.15,
+  "f3crec_temporal_beta": 0.15,
+  "f3crec_memory_momentum": 0.6,
+  "f3crec_warmup_rounds": 20,
+  "dgfedrs_aug_ratio": 0.15,
+  "dgfedrs_aug_mix": 0.3,
+  "dgfedrs_noise_std": 0.02,
+  "dgfedrs_schedule_power": 1.0,
+  "feddieg_neighbors": 10,
+  "feddieg_graph_mix": 0.2,
+  "feddieg_warmup_rounds": 20,
+  "feddieg_neighbor_temp": 0.07,
+  "feddieg_min_sim": 0.2,
+  "feddieg_tail_power": 4.0,
+  "feddieg_final_loss_weight": 0.0,
+  "feddieg_memory_momentum": 0.8,
+  "feddieg_short_score_mix": 0.05,
+  "feddieg_confidence_power": 0.5,
+  "feddieg_agreement_power": 0.5,
+  "feddieg_score_residual_mix": 0.0,
+  "feddieg_score_local_mix": 0.2,
+  "feddieg_boundary_refresh_rate": 0.0,
+  "feddieg_boundary_refresh_momentum": 0.2,
+  "num_threads": 4,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "rho": 0.95,
+  "lambda_temp": 0.01,
+  "lambda_struct": 0.2,
+  "graph_gate": "raw",
+  "new_edge_init": "ema",
+  "graph_block_size": 2048,
+  "graph_strength": "paper",
+  "cohort_file": null,
+  "counts_file": null,
+  "primary_drift_only": false
+}
+Cohort file : F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\drift\movielens-1m\val02_drift_users.csv
+Counts file : F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\drift\movielens-1m\val02_counts.npz
+[cohort] drift=146 stable=102 (共 248 人, 类别数 18, 边界 [2, 3, 4, 5])
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+
+[rho=0.95] Window 1/5 | eval_users=1429
+[rho=0.95] W1 R010/120 | loss 0.9596 | ECR 0.0000 | NDCG all 0.2563 drift 0.2255 (n=34) stable 0.0848 | oldpeer 0.000 turn 0.000 | 0.32s
+[rho=0.95] W1 R020/120 | loss 0.8243 | ECR 0.0006 | NDCG all 0.3205 drift 0.3110 (n=34) stable 0.1536 | oldpeer 0.000 turn 0.000 | 0.30s
+[rho=0.95] W1 R030/120 | loss 0.7196 | ECR 0.0007 | NDCG all 0.3672 drift 0.3083 (n=34) stable 0.1885 | oldpeer 0.000 turn 0.000 | 0.32s
+[rho=0.95] W1 R040/120 | loss 0.6442 | ECR 0.0004 | NDCG all 0.3918 drift 0.3565 (n=34) stable 0.1973 | oldpeer 0.000 turn 0.000 | 0.32s
+[rho=0.95] W1 R050/120 | loss 0.5901 | ECR 0.0004 | NDCG all 0.4221 drift 0.3809 (n=34) stable 0.2822 | oldpeer 0.000 turn 0.000 | 0.31s
+[rho=0.95] W1 R060/120 | loss 0.5414 | ECR 0.0002 | NDCG all 0.4276 drift 0.3980 (n=34) stable 0.2935 | oldpeer 0.000 turn 0.000 | 0.32s
+[rho=0.95] W1 R070/120 | loss 0.5067 | ECR 0.0002 | NDCG all 0.4424 drift 0.3951 (n=34) stable 0.2331 | oldpeer 0.000 turn 0.000 | 0.31s
+[rho=0.95] W1 R080/120 | loss 0.4761 | ECR 0.0001 | NDCG all 0.4488 drift 0.4259 (n=34) stable 0.2906 | oldpeer 0.000 turn 0.000 | 0.30s
+[rho=0.95] W1 R090/120 | loss 0.4504 | ECR 0.0000 | NDCG all 0.4479 drift 0.4353 (n=34) stable 0.2292 | oldpeer 0.000 turn 0.000 | 0.31s
+[rho=0.95] W1 R100/120 | loss 0.4232 | ECR 0.0000 | NDCG all 0.4577 drift 0.4630 (n=34) stable 0.2558 | oldpeer 0.000 turn 0.000 | 0.32s
+[rho=0.95] W1 R110/120 | loss 0.4045 | ECR 0.0000 | NDCG all 0.4620 drift 0.4849 (n=34) stable 0.3272 | oldpeer 0.000 turn 0.000 | 0.31s
+[rho=0.95] W1 R120/120 | loss 0.3818 | ECR 0.0000 | NDCG all 0.4707 drift 0.4928 (n=34) stable 0.2781 | oldpeer 0.000 turn 0.000 | 0.31s
+[rho=0.95] W1 end | NDCG@10 0.4707 | rows=576
+
+[rho=0.95] Window 2/5 | eval_users=1421
+[rho=0.95] W2 R010/120 | loss 0.5439 | ECR 0.0002 | NDCG all 0.4797 drift 0.4910 (n=69) stable 0.3401 | oldpeer 0.381 turn 0.017 | 0.31s
+[rho=0.95] W2 R020/120 | loss 0.4844 | ECR 0.0001 | NDCG all 0.4956 drift 0.4794 (n=69) stable 0.3599 | oldpeer 0.372 turn 0.025 | 0.31s
+[rho=0.95] W2 R030/120 | loss 0.4510 | ECR 0.0004 | NDCG all 0.5046 drift 0.5100 (n=69) stable 0.3365 | oldpeer 0.359 turn 0.074 | 0.31s
+[rho=0.95] W2 R040/120 | loss 0.4267 | ECR 0.0002 | NDCG all 0.5071 drift 0.5108 (n=69) stable 0.3534 | oldpeer 0.349 turn 0.102 | 0.32s
+[rho=0.95] W2 R050/120 | loss 0.4069 | ECR 0.0002 | NDCG all 0.5124 drift 0.5063 (n=69) stable 0.3403 | oldpeer 0.346 turn 0.119 | 0.33s
+[rho=0.95] W2 R060/120 | loss 0.3919 | ECR 0.0000 | NDCG all 0.5209 drift 0.5040 (n=69) stable 0.3634 | oldpeer 0.342 turn 0.128 | 0.32s
+[rho=0.95] W2 R070/120 | loss 0.3767 | ECR 0.0001 | NDCG all 0.5243 drift 0.4950 (n=69) stable 0.3663 | oldpeer 0.338 turn 0.128 | 0.31s
+[rho=0.95] W2 R080/120 | loss 0.3723 | ECR 0.0001 | NDCG all 0.5263 drift 0.5180 (n=69) stable 0.3720 | oldpeer 0.337 turn 0.142 | 0.32s
+[rho=0.95] W2 R090/120 | loss 0.3598 | ECR 0.0000 | NDCG all 0.5256 drift 0.5138 (n=69) stable 0.3475 | oldpeer 0.336 turn 0.142 | 0.32s
+[rho=0.95] W2 R100/120 | loss 0.3514 | ECR 0.0000 | NDCG all 0.5274 drift 0.5089 (n=69) stable 0.3535 | oldpeer 0.336 turn 0.151 | 0.32s
+[rho=0.95] W2 R110/120 | loss 0.3407 | ECR 0.0000 | NDCG all 0.5311 drift 0.5118 (n=69) stable 0.3688 | oldpeer 0.335 turn 0.160 | 0.31s
+[rho=0.95] W2 R120/120 | loss 0.3365 | ECR 0.0001 | NDCG all 0.5325 drift 0.5075 (n=69) stable 0.3718 | oldpeer 0.332 turn 0.160 | 0.31s
+[rho=0.95] W2 end | NDCG@10 0.5325 | rows=1944
+
+[rho=0.95] Window 3/5 | eval_users=1763
+[rho=0.95] W3 R010/120 | loss 0.4759 | ECR 0.0002 | NDCG all 0.5159 drift 0.4472 (n=89) stable 0.3875 | oldpeer 0.132 turn 0.027 | 0.33s
+[rho=0.95] W3 R020/120 | loss 0.4335 | ECR 0.0007 | NDCG all 0.5334 drift 0.4494 (n=89) stable 0.4017 | oldpeer 0.136 turn 0.067 | 0.33s
+[rho=0.95] W3 R030/120 | loss 0.4126 | ECR 0.0000 | NDCG all 0.5394 drift 0.4745 (n=89) stable 0.3991 | oldpeer 0.136 turn 0.067 | 0.32s
+[rho=0.95] W3 R040/120 | loss 0.3994 | ECR 0.0000 | NDCG all 0.5396 drift 0.4638 (n=89) stable 0.4227 | oldpeer 0.135 turn 0.067 | 0.33s
+[rho=0.95] W3 R050/120 | loss 0.3883 | ECR 0.0001 | NDCG all 0.5389 drift 0.4536 (n=89) stable 0.3873 | oldpeer 0.134 turn 0.069 | 0.33s
+[rho=0.95] W3 R060/120 | loss 0.3796 | ECR 0.0001 | NDCG all 0.5384 drift 0.4641 (n=89) stable 0.4107 | oldpeer 0.134 turn 0.069 | 0.34s
+[rho=0.95] W3 R070/120 | loss 0.3715 | ECR 0.0001 | NDCG all 0.5366 drift 0.4643 (n=89) stable 0.3947 | oldpeer 0.130 turn 0.075 | 0.33s
+[rho=0.95] W3 R080/120 | loss 0.3670 | ECR 0.0000 | NDCG all 0.5382 drift 0.4534 (n=89) stable 0.4176 | oldpeer 0.129 turn 0.079 | 0.33s
+[rho=0.95] W3 R090/120 | loss 0.3600 | ECR 0.0000 | NDCG all 0.5409 drift 0.4470 (n=89) stable 0.4041 | oldpeer 0.129 turn 0.084 | 0.33s
+[rho=0.95] W3 R100/120 | loss 0.3555 | ECR 0.0000 | NDCG all 0.5389 drift 0.4562 (n=89) stable 0.4134 | oldpeer 0.129 turn 0.088 | 0.33s
+[rho=0.95] W3 R110/120 | loss 0.3551 | ECR 0.0000 | NDCG all 0.5403 drift 0.4547 (n=89) stable 0.3957 | oldpeer 0.130 turn 0.088 | 0.33s
+[rho=0.95] W3 R120/120 | loss 0.3498 | ECR 0.0000 | NDCG all 0.5389 drift 0.4629 (n=89) stable 0.4167 | oldpeer 0.130 turn 0.088 | 0.32s
+[rho=0.95] W3 end | NDCG@10 0.5389 | rows=3756
+
+[rho=0.95] Window 4/5 | eval_users=1547
+[rho=0.95] W4 R010/120 | loss 0.4254 | ECR 0.0002 | NDCG all 0.5577 drift 0.5278 (n=90) stable 0.4335 | oldpeer 0.093 turn 0.005 | 0.31s
+[rho=0.95] W4 R020/120 | loss 0.4048 | ECR 0.0003 | NDCG all 0.5638 drift 0.5467 (n=90) stable 0.4489 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R030/120 | loss 0.3923 | ECR 0.0002 | NDCG all 0.5685 drift 0.5602 (n=90) stable 0.4597 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R040/120 | loss 0.3847 | ECR 0.0000 | NDCG all 0.5688 drift 0.5301 (n=90) stable 0.4271 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R050/120 | loss 0.3794 | ECR 0.0000 | NDCG all 0.5724 drift 0.5303 (n=90) stable 0.4661 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R060/120 | loss 0.3746 | ECR 0.0000 | NDCG all 0.5703 drift 0.5179 (n=90) stable 0.4538 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R070/120 | loss 0.3715 | ECR 0.0000 | NDCG all 0.5675 drift 0.5255 (n=90) stable 0.4381 | oldpeer 0.096 turn 0.032 | 0.33s
+[rho=0.95] W4 R080/120 | loss 0.3640 | ECR 0.0001 | NDCG all 0.5687 drift 0.5419 (n=90) stable 0.4451 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R090/120 | loss 0.3648 | ECR 0.0000 | NDCG all 0.5684 drift 0.5346 (n=90) stable 0.4566 | oldpeer 0.096 turn 0.032 | 0.31s
+[rho=0.95] W4 R100/120 | loss 0.3618 | ECR 0.0001 | NDCG all 0.5690 drift 0.5401 (n=90) stable 0.4563 | oldpeer 0.096 turn 0.032 | 0.32s
+[rho=0.95] W4 R110/120 | loss 0.3605 | ECR 0.0000 | NDCG all 0.5745 drift 0.5357 (n=90) stable 0.4575 | oldpeer 0.095 turn 0.032 | 0.33s
+[rho=0.95] W4 R120/120 | loss 0.3580 | ECR 0.0000 | NDCG all 0.5709 drift 0.5369 (n=90) stable 0.4568 | oldpeer 0.095 turn 0.032 | 0.31s
+[rho=0.95] W4 end | NDCG@10 0.5709 | rows=5628
+
+[rho=0.95] Window 5/5 | eval_users=1738
+[rho=0.95] W5 R010/120 | loss 0.4640 | ECR 0.0000 | NDCG all 0.4680 drift 0.4217 (n=105) stable 0.2339 | oldpeer 0.085 turn 0.089 | 0.33s
+[rho=0.95] W5 R020/120 | loss 0.4399 | ECR 0.0000 | NDCG all 0.4745 drift 0.4424 (n=105) stable 0.2437 | oldpeer 0.086 turn 0.089 | 0.33s
+[rho=0.95] W5 R030/120 | loss 0.4321 | ECR 0.0000 | NDCG all 0.4793 drift 0.4560 (n=105) stable 0.2476 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R040/120 | loss 0.4224 | ECR 0.0000 | NDCG all 0.4725 drift 0.4575 (n=105) stable 0.2513 | oldpeer 0.086 turn 0.089 | 0.33s
+[rho=0.95] W5 R050/120 | loss 0.4153 | ECR 0.0000 | NDCG all 0.4779 drift 0.4581 (n=105) stable 0.2580 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R060/120 | loss 0.4102 | ECR 0.0000 | NDCG all 0.4782 drift 0.4552 (n=105) stable 0.2708 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R070/120 | loss 0.4058 | ECR 0.0000 | NDCG all 0.4781 drift 0.4361 (n=105) stable 0.2772 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R080/120 | loss 0.4002 | ECR 0.0000 | NDCG all 0.4709 drift 0.4450 (n=105) stable 0.2639 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R090/120 | loss 0.4001 | ECR 0.0000 | NDCG all 0.4780 drift 0.4340 (n=105) stable 0.2745 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R100/120 | loss 0.3958 | ECR 0.0000 | NDCG all 0.4771 drift 0.4562 (n=105) stable 0.2797 | oldpeer 0.086 turn 0.089 | 0.31s
+[rho=0.95] W5 R110/120 | loss 0.3939 | ECR 0.0000 | NDCG all 0.4724 drift 0.4480 (n=105) stable 0.2718 | oldpeer 0.086 turn 0.089 | 0.32s
+[rho=0.95] W5 R120/120 | loss 0.3924 | ECR 0.0000 | NDCG all 0.4817 drift 0.4440 (n=105) stable 0.2714 | oldpeer 0.086 turn 0.089 | 0.33s
+[rho=0.95] W5 end | NDCG@10 0.4817 | rows=7860
+
+[rho=0.95] seed777 done in 170.8s | avg_ndcg=0.5189 | avg_ecr=0.0001
+
+Done: F:\exp_FedDIEG\exp_val_1026\exp02_ema_interest_drift\results\raw\movielens-1m\rho0.95\seed_777

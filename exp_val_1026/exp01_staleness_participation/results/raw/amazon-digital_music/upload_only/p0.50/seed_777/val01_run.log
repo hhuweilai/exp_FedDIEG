@@ -1,0 +1,154 @@
+Output directory: F:\exp_FedDIEG\exp_val_1026\exp01_staleness_participation\results\raw\amazon-digital_music\upload_only\p0.50\seed_777
+Device: cuda | GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+Config: {
+  "dataset": "amazon-digital music",
+  "methods": [
+    "FedDIEG"
+  ],
+  "seed": 777,
+  "rounds": 600,
+  "participation_rate": 0.5,
+  "clients_per_round": null,
+  "microbatch_size": 512,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "feddieg_lr": null,
+  "latent_dim": 64,
+  "max_len": 50,
+  "top_k": 10,
+  "eval_every": 10,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "gpfedrec_neighbors": 5,
+  "gpfedrec_mix": 0.1,
+  "gpfedrec_warmup_rounds": 20,
+  "fcucR_kb_len": 5,
+  "fcucR_noise_std": 0.01,
+  "fcucR_distill_weight": 0.1,
+  "tardgr_retrieval_topk": 10,
+  "tardgr_retrieval_temp": 0.1,
+  "tardgr_retrieval_mix": 0.2,
+  "tardgr_warmup_rounds": 20,
+  "f3crec_replay_topk": 8,
+  "f3crec_replay_mix": 0.15,
+  "f3crec_temporal_beta": 0.15,
+  "f3crec_memory_momentum": 0.6,
+  "f3crec_warmup_rounds": 20,
+  "dgfedrs_aug_ratio": 0.15,
+  "dgfedrs_aug_mix": 0.3,
+  "dgfedrs_noise_std": 0.02,
+  "dgfedrs_schedule_power": 1.0,
+  "feddieg_neighbors": 10,
+  "feddieg_graph_mix": 0.05,
+  "feddieg_warmup_rounds": 20,
+  "feddieg_neighbor_temp": 0.07,
+  "feddieg_min_sim": 0.2,
+  "feddieg_tail_power": 4.0,
+  "feddieg_final_loss_weight": 0.0,
+  "feddieg_memory_momentum": 0.8,
+  "feddieg_short_score_mix": 0.05,
+  "feddieg_confidence_power": 0.5,
+  "feddieg_agreement_power": 0.5,
+  "feddieg_score_residual_mix": 0.0,
+  "feddieg_score_local_mix": 0.2,
+  "feddieg_boundary_refresh_rate": 0.0,
+  "feddieg_boundary_refresh_momentum": 0.2,
+  "num_threads": 4,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "server_mode": "upload_only",
+  "lambda_temp": 0.01,
+  "lambda_struct": 0.2,
+  "edge_ema": 0.8,
+  "graph_block_size": 2048
+}
+Building 5 chronological slice windows for amazon-digital music: users=12381, items=9906, interactions=123518
+  W1: interactions=0..24703, eval_users=3178, train_shape=(12381, 50)
+  W2: interactions=24703..49407, eval_users=3535, train_shape=(12381, 50)
+  W3: interactions=49407..74110, eval_users=3571, train_shape=(12381, 50)
+  W4: interactions=74110..98814, eval_users=3657, train_shape=(12381, 50)
+  W5: interactions=98814..123518, eval_users=3449, train_shape=(12381, 50)
+
+[upload_only] Window 1/5 | eval_users=3178
+[upload_only] p0.50 W1 R010/120 | loss 1.0276 | ECR 0.0000 | staleness 1.0 | NDCG@10 0.2211 | 0.70s
+[upload_only] p0.50 W1 R020/120 | loss 0.8761 | ECR 0.0006 | staleness 1.0 | NDCG@10 0.2233 | 0.68s
+[upload_only] p0.50 W1 R030/120 | loss 0.7507 | ECR 0.0030 | staleness 1.0 | NDCG@10 0.2310 | 0.67s
+[upload_only] p0.50 W1 R040/120 | loss 0.6479 | ECR 0.0051 | staleness 1.0 | NDCG@10 0.2294 | 0.67s
+[upload_only] p0.50 W1 R050/120 | loss 0.5593 | ECR 0.0041 | staleness 1.0 | NDCG@10 0.2316 | 0.69s
+[upload_only] p0.50 W1 R060/120 | loss 0.4986 | ECR 0.0031 | staleness 1.0 | NDCG@10 0.2395 | 0.65s
+[upload_only] p0.50 W1 R070/120 | loss 0.4553 | ECR 0.0021 | staleness 1.0 | NDCG@10 0.2377 | 0.63s
+[upload_only] p0.50 W1 R080/120 | loss 0.4041 | ECR 0.0020 | staleness 1.0 | NDCG@10 0.2459 | 0.70s
+[upload_only] p0.50 W1 R090/120 | loss 0.3580 | ECR 0.0011 | staleness 1.0 | NDCG@10 0.2470 | 0.69s
+[upload_only] p0.50 W1 R100/120 | loss 0.3157 | ECR 0.0008 | staleness 1.0 | NDCG@10 0.2509 | 0.64s
+[upload_only] p0.50 W1 R110/120 | loss 0.2790 | ECR 0.0008 | staleness 1.0 | NDCG@10 0.2568 | 0.66s
+[upload_only] p0.50 W1 R120/120 | loss 0.2540 | ECR 0.0004 | staleness 1.0 | NDCG@10 0.2573 | 0.67s
+[upload_only] W1 end | NDCG@10 0.2573 | staleness 1.00 | p90 3
+
+[upload_only] Window 2/5 | eval_users=3535
+[upload_only] p0.50 W2 R010/120 | loss 0.7630 | ECR 0.1087 | staleness 1.0 | NDCG@10 0.2328 | 0.71s
+[upload_only] p0.50 W2 R020/120 | loss 0.6135 | ECR 0.0188 | staleness 1.0 | NDCG@10 0.2542 | 0.66s
+[upload_only] p0.50 W2 R030/120 | loss 0.5071 | ECR 0.0095 | staleness 1.0 | NDCG@10 0.2700 | 0.66s
+[upload_only] p0.50 W2 R040/120 | loss 0.4075 | ECR 0.0050 | staleness 1.0 | NDCG@10 0.2861 | 0.69s
+[upload_only] p0.50 W2 R050/120 | loss 0.3604 | ECR 0.0025 | staleness 1.0 | NDCG@10 0.2976 | 0.69s
+[upload_only] p0.50 W2 R060/120 | loss 0.3210 | ECR 0.0011 | staleness 1.0 | NDCG@10 0.3010 | 0.66s
+[upload_only] p0.50 W2 R070/120 | loss 0.2878 | ECR 0.0012 | staleness 1.0 | NDCG@10 0.3063 | 0.67s
+[upload_only] p0.50 W2 R080/120 | loss 0.2527 | ECR 0.0003 | staleness 1.0 | NDCG@10 0.3087 | 0.73s
+[upload_only] p0.50 W2 R090/120 | loss 0.2324 | ECR 0.0004 | staleness 1.0 | NDCG@10 0.3114 | 0.71s
+[upload_only] p0.50 W2 R100/120 | loss 0.2075 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3185 | 0.71s
+[upload_only] p0.50 W2 R110/120 | loss 0.1859 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3191 | 0.65s
+[upload_only] p0.50 W2 R120/120 | loss 0.1790 | ECR 0.0000 | staleness 1.0 | NDCG@10 0.3193 | 0.71s
+[upload_only] W2 end | NDCG@10 0.3193 | staleness 1.02 | p90 3
+
+[upload_only] Window 3/5 | eval_users=3571
+[upload_only] p0.50 W3 R010/120 | loss 0.5962 | ECR 0.0576 | staleness 1.0 | NDCG@10 0.2842 | 0.65s
+[upload_only] p0.50 W3 R020/120 | loss 0.4622 | ECR 0.0044 | staleness 1.0 | NDCG@10 0.3142 | 0.68s
+[upload_only] p0.50 W3 R030/120 | loss 0.3721 | ECR 0.0016 | staleness 1.0 | NDCG@10 0.3295 | 0.64s
+[upload_only] p0.50 W3 R040/120 | loss 0.3202 | ECR 0.0015 | staleness 1.0 | NDCG@10 0.3440 | 0.71s
+[upload_only] p0.50 W3 R050/120 | loss 0.2876 | ECR 0.0008 | staleness 1.0 | NDCG@10 0.3530 | 0.67s
+[upload_only] p0.50 W3 R060/120 | loss 0.2584 | ECR 0.0008 | staleness 1.0 | NDCG@10 0.3595 | 0.71s
+[upload_only] p0.50 W3 R070/120 | loss 0.2312 | ECR 0.0007 | staleness 1.0 | NDCG@10 0.3602 | 0.68s
+[upload_only] p0.50 W3 R080/120 | loss 0.2130 | ECR 0.0003 | staleness 1.0 | NDCG@10 0.3680 | 0.70s
+[upload_only] p0.50 W3 R090/120 | loss 0.1986 | ECR 0.0001 | staleness 1.0 | NDCG@10 0.3677 | 0.68s
+[upload_only] p0.50 W3 R100/120 | loss 0.1904 | ECR 0.0001 | staleness 1.0 | NDCG@10 0.3712 | 0.69s
+[upload_only] p0.50 W3 R110/120 | loss 0.1745 | ECR 0.0000 | staleness 1.0 | NDCG@10 0.3735 | 0.67s
+[upload_only] p0.50 W3 R120/120 | loss 0.1643 | ECR 0.0000 | staleness 1.0 | NDCG@10 0.3730 | 0.66s
+[upload_only] W3 end | NDCG@10 0.3730 | staleness 1.00 | p90 3
+
+[upload_only] Window 4/5 | eval_users=3657
+[upload_only] p0.50 W4 R010/120 | loss 0.5227 | ECR 0.0338 | staleness 1.0 | NDCG@10 0.2632 | 0.68s
+[upload_only] p0.50 W4 R020/120 | loss 0.3706 | ECR 0.0054 | staleness 1.0 | NDCG@10 0.3177 | 0.69s
+[upload_only] p0.50 W4 R030/120 | loss 0.3291 | ECR 0.0011 | staleness 1.0 | NDCG@10 0.3361 | 0.65s
+[upload_only] p0.50 W4 R040/120 | loss 0.2819 | ECR 0.0005 | staleness 1.0 | NDCG@10 0.3472 | 0.65s
+[upload_only] p0.50 W4 R050/120 | loss 0.2541 | ECR 0.0007 | staleness 1.0 | NDCG@10 0.3604 | 0.70s
+[upload_only] p0.50 W4 R060/120 | loss 0.2409 | ECR 0.0005 | staleness 1.0 | NDCG@10 0.3681 | 0.71s
+[upload_only] p0.50 W4 R070/120 | loss 0.2157 | ECR 0.0004 | staleness 1.0 | NDCG@10 0.3734 | 0.65s
+[upload_only] p0.50 W4 R080/120 | loss 0.2067 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3766 | 0.68s
+[upload_only] p0.50 W4 R090/120 | loss 0.1988 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3814 | 0.68s
+[upload_only] p0.50 W4 R100/120 | loss 0.1837 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3802 | 0.69s
+[upload_only] p0.50 W4 R110/120 | loss 0.1773 | ECR 0.0001 | staleness 1.0 | NDCG@10 0.3807 | 0.68s
+[upload_only] p0.50 W4 R120/120 | loss 0.1770 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3866 | 0.65s
+[upload_only] W4 end | NDCG@10 0.3866 | staleness 0.99 | p90 3
+
+[upload_only] Window 5/5 | eval_users=3449
+[upload_only] p0.50 W5 R010/120 | loss 0.4932 | ECR 0.0053 | staleness 1.0 | NDCG@10 0.2793 | 0.67s
+[upload_only] p0.50 W5 R020/120 | loss 0.3627 | ECR 0.0008 | staleness 1.0 | NDCG@10 0.3365 | 0.68s
+[upload_only] p0.50 W5 R030/120 | loss 0.2986 | ECR 0.0006 | staleness 1.0 | NDCG@10 0.3540 | 0.67s
+[upload_only] p0.50 W5 R040/120 | loss 0.2758 | ECR 0.0006 | staleness 1.0 | NDCG@10 0.3622 | 0.64s
+[upload_only] p0.50 W5 R050/120 | loss 0.2539 | ECR 0.0009 | staleness 1.0 | NDCG@10 0.3623 | 0.69s
+[upload_only] p0.50 W5 R060/120 | loss 0.2384 | ECR 0.0008 | staleness 1.0 | NDCG@10 0.3710 | 0.68s
+[upload_only] p0.50 W5 R070/120 | loss 0.2222 | ECR 0.0005 | staleness 1.0 | NDCG@10 0.3728 | 0.67s
+[upload_only] p0.50 W5 R080/120 | loss 0.2194 | ECR 0.0005 | staleness 1.0 | NDCG@10 0.3742 | 0.64s
+[upload_only] p0.50 W5 R090/120 | loss 0.2039 | ECR 0.0003 | staleness 1.0 | NDCG@10 0.3797 | 0.68s
+[upload_only] p0.50 W5 R100/120 | loss 0.2015 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3778 | 0.70s
+[upload_only] p0.50 W5 R110/120 | loss 0.1930 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3774 | 0.70s
+[upload_only] p0.50 W5 R120/120 | loss 0.1809 | ECR 0.0002 | staleness 1.0 | NDCG@10 0.3751 | 0.66s
+[upload_only] W5 end | NDCG@10 0.3751 | staleness 1.01 | p90 3
+
+[upload_only] p0.50 seed777 done in 359.8s | avg_window_ndcg=0.3423 | mean_staleness=1.00 | buckets=35
+
+Done: F:\exp_FedDIEG\exp_val_1026\exp01_staleness_participation\results\raw\amazon-digital_music\upload_only\p0.50\seed_777

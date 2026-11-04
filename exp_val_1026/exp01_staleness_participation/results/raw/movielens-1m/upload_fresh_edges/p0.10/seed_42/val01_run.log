@@ -1,0 +1,154 @@
+Output directory: F:\exp_FedDIEG\exp_val_1026\exp01_staleness_participation\results\raw\movielens-1m\upload_fresh_edges\p0.10\seed_42
+Device: cuda | GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+Config: {
+  "dataset": "movielens-1m",
+  "methods": [
+    "FedDIEG"
+  ],
+  "seed": 42,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "microbatch_size": 512,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "feddieg_lr": null,
+  "latent_dim": 64,
+  "max_len": 50,
+  "top_k": 10,
+  "eval_every": 10,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "gpfedrec_neighbors": 5,
+  "gpfedrec_mix": 0.1,
+  "gpfedrec_warmup_rounds": 20,
+  "fcucR_kb_len": 5,
+  "fcucR_noise_std": 0.01,
+  "fcucR_distill_weight": 0.1,
+  "tardgr_retrieval_topk": 10,
+  "tardgr_retrieval_temp": 0.1,
+  "tardgr_retrieval_mix": 0.2,
+  "tardgr_warmup_rounds": 20,
+  "f3crec_replay_topk": 8,
+  "f3crec_replay_mix": 0.15,
+  "f3crec_temporal_beta": 0.15,
+  "f3crec_memory_momentum": 0.6,
+  "f3crec_warmup_rounds": 20,
+  "dgfedrs_aug_ratio": 0.15,
+  "dgfedrs_aug_mix": 0.3,
+  "dgfedrs_noise_std": 0.02,
+  "dgfedrs_schedule_power": 1.0,
+  "feddieg_neighbors": 10,
+  "feddieg_graph_mix": 0.05,
+  "feddieg_warmup_rounds": 20,
+  "feddieg_neighbor_temp": 0.07,
+  "feddieg_min_sim": 0.2,
+  "feddieg_tail_power": 4.0,
+  "feddieg_final_loss_weight": 0.0,
+  "feddieg_memory_momentum": 0.8,
+  "feddieg_short_score_mix": 0.05,
+  "feddieg_confidence_power": 0.5,
+  "feddieg_agreement_power": 0.5,
+  "feddieg_score_residual_mix": 0.0,
+  "feddieg_score_local_mix": 0.2,
+  "feddieg_boundary_refresh_rate": 0.0,
+  "feddieg_boundary_refresh_momentum": 0.2,
+  "num_threads": 4,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "server_mode": "upload_fresh_edges",
+  "lambda_temp": 0.01,
+  "lambda_struct": 0.2,
+  "edge_ema": 0.8,
+  "graph_block_size": 2048
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+
+[upload_fresh_edges] Window 1/5 | eval_users=1429
+[upload_fresh_edges] p0.10 W1 R010/120 | loss 1.2311 | ECR 0.0000 | staleness 3.6 | NDCG@10 0.2203 | 0.18s
+[upload_fresh_edges] p0.10 W1 R020/120 | loss 1.0963 | ECR 0.0000 | staleness 6.2 | NDCG@10 0.2343 | 0.20s
+[upload_fresh_edges] p0.10 W1 R030/120 | loss 1.0694 | ECR 0.0000 | staleness 7.5 | NDCG@10 0.2345 | 0.21s
+[upload_fresh_edges] p0.10 W1 R040/120 | loss 1.0464 | ECR 0.0000 | staleness 8.4 | NDCG@10 0.2354 | 0.24s
+[upload_fresh_edges] p0.10 W1 R050/120 | loss 1.0122 | ECR 0.0000 | staleness 8.7 | NDCG@10 0.2332 | 0.24s
+[upload_fresh_edges] p0.10 W1 R060/120 | loss 0.9880 | ECR 0.0005 | staleness 8.9 | NDCG@10 0.2351 | 0.20s
+[upload_fresh_edges] p0.10 W1 R070/120 | loss 0.9788 | ECR 0.0012 | staleness 9.0 | NDCG@10 0.2414 | 0.20s
+[upload_fresh_edges] p0.10 W1 R080/120 | loss 0.9822 | ECR 0.0025 | staleness 9.1 | NDCG@10 0.2476 | 0.21s
+[upload_fresh_edges] p0.10 W1 R090/120 | loss 0.9681 | ECR 0.0021 | staleness 9.2 | NDCG@10 0.2460 | 0.22s
+[upload_fresh_edges] p0.10 W1 R100/120 | loss 0.9529 | ECR 0.0017 | staleness 9.0 | NDCG@10 0.2509 | 0.21s
+[upload_fresh_edges] p0.10 W1 R110/120 | loss 0.9453 | ECR 0.0005 | staleness 9.0 | NDCG@10 0.2594 | 0.20s
+[upload_fresh_edges] p0.10 W1 R120/120 | loss 0.9144 | ECR 0.0023 | staleness 9.1 | NDCG@10 0.2657 | 0.20s
+[upload_fresh_edges] W1 end | NDCG@10 0.2657 | staleness 9.15 | p90 21
+
+[upload_fresh_edges] Window 2/5 | eval_users=1421
+[upload_fresh_edges] p0.10 W2 R010/120 | loss 0.9397 | ECR 0.0178 | staleness 9.0 | NDCG@10 0.2582 | 0.20s
+[upload_fresh_edges] p0.10 W2 R020/120 | loss 0.9242 | ECR 0.0130 | staleness 9.0 | NDCG@10 0.2707 | 0.26s
+[upload_fresh_edges] p0.10 W2 R030/120 | loss 0.9002 | ECR 0.0085 | staleness 9.0 | NDCG@10 0.2855 | 0.24s
+[upload_fresh_edges] p0.10 W2 R040/120 | loss 0.8843 | ECR 0.0055 | staleness 9.0 | NDCG@10 0.3008 | 0.24s
+[upload_fresh_edges] p0.10 W2 R050/120 | loss 0.8664 | ECR 0.0052 | staleness 8.9 | NDCG@10 0.3064 | 0.21s
+[upload_fresh_edges] p0.10 W2 R060/120 | loss 0.8541 | ECR 0.0063 | staleness 9.0 | NDCG@10 0.3209 | 0.20s
+[upload_fresh_edges] p0.10 W2 R070/120 | loss 0.8521 | ECR 0.0094 | staleness 9.1 | NDCG@10 0.3326 | 0.20s
+[upload_fresh_edges] p0.10 W2 R080/120 | loss 0.8405 | ECR 0.0039 | staleness 9.1 | NDCG@10 0.3418 | 0.22s
+[upload_fresh_edges] p0.10 W2 R090/120 | loss 0.8040 | ECR 0.0065 | staleness 9.2 | NDCG@10 0.3502 | 0.20s
+[upload_fresh_edges] p0.10 W2 R100/120 | loss 0.8148 | ECR 0.0038 | staleness 9.1 | NDCG@10 0.3565 | 0.19s
+[upload_fresh_edges] p0.10 W2 R110/120 | loss 0.7841 | ECR 0.0027 | staleness 9.1 | NDCG@10 0.3590 | 0.25s
+[upload_fresh_edges] p0.10 W2 R120/120 | loss 0.7923 | ECR 0.0062 | staleness 9.1 | NDCG@10 0.3655 | 0.26s
+[upload_fresh_edges] W2 end | NDCG@10 0.3655 | staleness 9.11 | p90 22
+
+[upload_fresh_edges] Window 3/5 | eval_users=1763
+[upload_fresh_edges] p0.10 W3 R010/120 | loss 0.8404 | ECR 0.0445 | staleness 9.0 | NDCG@10 0.3456 | 0.23s
+[upload_fresh_edges] p0.10 W3 R020/120 | loss 0.8157 | ECR 0.0164 | staleness 9.1 | NDCG@10 0.3604 | 0.23s
+[upload_fresh_edges] p0.10 W3 R030/120 | loss 0.7799 | ECR 0.0105 | staleness 9.2 | NDCG@10 0.3721 | 0.23s
+[upload_fresh_edges] p0.10 W3 R040/120 | loss 0.7700 | ECR 0.0098 | staleness 9.0 | NDCG@10 0.3884 | 0.22s
+[upload_fresh_edges] p0.10 W3 R050/120 | loss 0.7654 | ECR 0.0035 | staleness 8.9 | NDCG@10 0.4002 | 0.23s
+[upload_fresh_edges] p0.10 W3 R060/120 | loss 0.7459 | ECR 0.0095 | staleness 8.9 | NDCG@10 0.4128 | 0.23s
+[upload_fresh_edges] p0.10 W3 R070/120 | loss 0.7352 | ECR 0.0064 | staleness 9.1 | NDCG@10 0.4164 | 0.23s
+[upload_fresh_edges] p0.10 W3 R080/120 | loss 0.7405 | ECR 0.0088 | staleness 9.1 | NDCG@10 0.4275 | 0.23s
+[upload_fresh_edges] p0.10 W3 R090/120 | loss 0.7153 | ECR 0.0099 | staleness 9.1 | NDCG@10 0.4352 | 0.26s
+[upload_fresh_edges] p0.10 W3 R100/120 | loss 0.6883 | ECR 0.0132 | staleness 9.0 | NDCG@10 0.4409 | 0.27s
+[upload_fresh_edges] p0.10 W3 R110/120 | loss 0.6913 | ECR 0.0159 | staleness 9.0 | NDCG@10 0.4499 | 0.22s
+[upload_fresh_edges] p0.10 W3 R120/120 | loss 0.6824 | ECR 0.0051 | staleness 8.9 | NDCG@10 0.4518 | 0.24s
+[upload_fresh_edges] W3 end | NDCG@10 0.4518 | staleness 8.95 | p90 21
+
+[upload_fresh_edges] Window 4/5 | eval_users=1547
+[upload_fresh_edges] p0.10 W4 R010/120 | loss 0.6935 | ECR 0.0714 | staleness 9.1 | NDCG@10 0.4585 | 0.24s
+[upload_fresh_edges] p0.10 W4 R020/120 | loss 0.6689 | ECR 0.0527 | staleness 8.9 | NDCG@10 0.4707 | 0.23s
+[upload_fresh_edges] p0.10 W4 R030/120 | loss 0.6836 | ECR 0.0219 | staleness 9.0 | NDCG@10 0.4747 | 0.23s
+[upload_fresh_edges] p0.10 W4 R040/120 | loss 0.6904 | ECR 0.0130 | staleness 8.9 | NDCG@10 0.4799 | 0.24s
+[upload_fresh_edges] p0.10 W4 R050/120 | loss 0.6560 | ECR 0.0052 | staleness 9.0 | NDCG@10 0.4875 | 0.22s
+[upload_fresh_edges] p0.10 W4 R060/120 | loss 0.6266 | ECR 0.0085 | staleness 9.0 | NDCG@10 0.4881 | 0.28s
+[upload_fresh_edges] p0.10 W4 R070/120 | loss 0.6255 | ECR 0.0073 | staleness 9.1 | NDCG@10 0.4925 | 0.28s
+[upload_fresh_edges] p0.10 W4 R080/120 | loss 0.6312 | ECR 0.0063 | staleness 9.0 | NDCG@10 0.4983 | 0.25s
+[upload_fresh_edges] p0.10 W4 R090/120 | loss 0.6288 | ECR 0.0120 | staleness 8.9 | NDCG@10 0.5029 | 0.23s
+[upload_fresh_edges] p0.10 W4 R100/120 | loss 0.6449 | ECR 0.0085 | staleness 9.1 | NDCG@10 0.5084 | 0.25s
+[upload_fresh_edges] p0.10 W4 R110/120 | loss 0.6311 | ECR 0.0063 | staleness 9.0 | NDCG@10 0.5139 | 0.25s
+[upload_fresh_edges] p0.10 W4 R120/120 | loss 0.6140 | ECR 0.0060 | staleness 9.0 | NDCG@10 0.5107 | 0.25s
+[upload_fresh_edges] W4 end | NDCG@10 0.5107 | staleness 9.01 | p90 21
+
+[upload_fresh_edges] Window 5/5 | eval_users=1738
+[upload_fresh_edges] p0.10 W5 R010/120 | loss 0.6521 | ECR 0.1003 | staleness 8.9 | NDCG@10 0.4101 | 0.24s
+[upload_fresh_edges] p0.10 W5 R020/120 | loss 0.6460 | ECR 0.0403 | staleness 9.0 | NDCG@10 0.4158 | 0.26s
+[upload_fresh_edges] p0.10 W5 R030/120 | loss 0.6633 | ECR 0.0157 | staleness 8.9 | NDCG@10 0.4198 | 0.25s
+[upload_fresh_edges] p0.10 W5 R040/120 | loss 0.6449 | ECR 0.0126 | staleness 9.0 | NDCG@10 0.4271 | 0.29s
+[upload_fresh_edges] p0.10 W5 R050/120 | loss 0.6040 | ECR 0.0070 | staleness 9.0 | NDCG@10 0.4354 | 0.29s
+[upload_fresh_edges] p0.10 W5 R060/120 | loss 0.6208 | ECR 0.0051 | staleness 9.0 | NDCG@10 0.4322 | 0.26s
+[upload_fresh_edges] p0.10 W5 R070/120 | loss 0.6325 | ECR 0.0048 | staleness 8.9 | NDCG@10 0.4393 | 0.24s
+[upload_fresh_edges] p0.10 W5 R080/120 | loss 0.5940 | ECR 0.0064 | staleness 8.9 | NDCG@10 0.4368 | 0.26s
+[upload_fresh_edges] p0.10 W5 R090/120 | loss 0.5985 | ECR 0.0040 | staleness 9.0 | NDCG@10 0.4429 | 0.24s
+[upload_fresh_edges] p0.10 W5 R100/120 | loss 0.6094 | ECR 0.0034 | staleness 9.1 | NDCG@10 0.4473 | 0.25s
+[upload_fresh_edges] p0.10 W5 R110/120 | loss 0.5975 | ECR 0.0018 | staleness 9.1 | NDCG@10 0.4510 | 0.25s
+[upload_fresh_edges] p0.10 W5 R120/120 | loss 0.5868 | ECR 0.0003 | staleness 9.1 | NDCG@10 0.4511 | 0.25s
+[upload_fresh_edges] W5 end | NDCG@10 0.4511 | staleness 9.11 | p90 22
+
+[upload_fresh_edges] p0.10 seed42 done in 120.5s | avg_window_ndcg=0.4089 | mean_staleness=9.06 | buckets=52
+
+Done: F:\exp_FedDIEG\exp_val_1026\exp01_staleness_participation\results\raw\movielens-1m\upload_fresh_edges\p0.10\seed_42

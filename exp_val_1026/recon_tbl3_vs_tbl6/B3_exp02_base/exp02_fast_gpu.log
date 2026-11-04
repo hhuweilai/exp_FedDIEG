@@ -1,0 +1,155 @@
+Output directory: F:\exp_FedDIEG\tmp\recon_base02
+Device: cuda
+GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+Config: {
+  "dataset": "movielens-1m",
+  "methods": [
+    "FedDIEG"
+  ],
+  "seed": 42,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": 604,
+  "microbatch_size": 512,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "feddieg_lr": null,
+  "latent_dim": 64,
+  "max_len": 50,
+  "top_k": 10,
+  "eval_every": 10,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "gpfedrec_neighbors": 5,
+  "gpfedrec_mix": 0.1,
+  "gpfedrec_warmup_rounds": 20,
+  "fcucR_kb_len": 5,
+  "fcucR_noise_std": 0.01,
+  "fcucR_distill_weight": 0.1,
+  "tardgr_retrieval_topk": 10,
+  "tardgr_retrieval_temp": 0.1,
+  "tardgr_retrieval_mix": 0.2,
+  "tardgr_warmup_rounds": 20,
+  "f3crec_replay_topk": 8,
+  "f3crec_replay_mix": 0.15,
+  "f3crec_temporal_beta": 0.15,
+  "f3crec_memory_momentum": 0.6,
+  "f3crec_warmup_rounds": 20,
+  "dgfedrs_aug_ratio": 0.15,
+  "dgfedrs_aug_mix": 0.3,
+  "dgfedrs_noise_std": 0.02,
+  "dgfedrs_schedule_power": 1.0,
+  "feddieg_neighbors": 10,
+  "feddieg_graph_mix": 0.05,
+  "feddieg_warmup_rounds": 20,
+  "feddieg_neighbor_temp": 0.07,
+  "feddieg_min_sim": 0.2,
+  "feddieg_tail_power": 4.0,
+  "feddieg_final_loss_weight": 0.2,
+  "feddieg_memory_momentum": 0.8,
+  "feddieg_short_score_mix": 0.05,
+  "feddieg_confidence_power": 0.5,
+  "feddieg_agreement_power": 0.5,
+  "feddieg_score_residual_mix": 0.0,
+  "feddieg_score_local_mix": 0.2,
+  "feddieg_boundary_refresh_rate": 0.3,
+  "feddieg_boundary_refresh_momentum": 0.2,
+  "num_threads": 4,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "candidate_count": 99,
+  "window_mode": "slice"
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+
+[FedDIEG] Exp2 fast GPU start
+
+[FedDIEG] Window 1/5 | eval_users=1429
+[FedDIEG] W1 initial | Val NDCG 0.0514 | Test NDCG 0.0407 | BoundaryDrop 0.0000
+[FedDIEG] W1 R010/120 G010 | Loss 1.4886 | Val NDCG 0.2112 | Test NDCG 0.2152 | 0.12s
+[FedDIEG] W1 R020/120 G020 | Loss 1.3186 | Val NDCG 0.2261 | Test NDCG 0.2225 | 0.09s
+[FedDIEG] W1 R030/120 G030 | Loss 1.2916 | Val NDCG 0.2322 | Test NDCG 0.2228 | 0.10s
+[FedDIEG] W1 R040/120 G040 | Loss 1.2594 | Val NDCG 0.2404 | Test NDCG 0.2235 | 0.10s
+[FedDIEG] W1 R050/120 G050 | Loss 1.1763 | Val NDCG 0.2369 | Test NDCG 0.2274 | 0.10s
+[FedDIEG] W1 R060/120 G060 | Loss 1.1781 | Val NDCG 0.2354 | Test NDCG 0.2301 | 0.11s
+[FedDIEG] W1 R070/120 G070 | Loss 1.2561 | Val NDCG 0.2335 | Test NDCG 0.2349 | 0.10s
+[FedDIEG] W1 R080/120 G080 | Loss 1.2199 | Val NDCG 0.2392 | Test NDCG 0.2388 | 0.10s
+[FedDIEG] W1 R090/120 G090 | Loss 1.1668 | Val NDCG 0.2491 | Test NDCG 0.2423 | 0.09s
+[FedDIEG] W1 R100/120 G100 | Loss 1.1258 | Val NDCG 0.2577 | Test NDCG 0.2490 | 0.10s
+[FedDIEG] W1 R110/120 G110 | Loss 1.1476 | Val NDCG 0.2644 | Test NDCG 0.2540 | 0.10s
+[FedDIEG] W1 R120/120 G120 | Loss 1.0944 | Val NDCG 0.2726 | Test NDCG 0.2611 | 0.10s
+
+[FedDIEG] Window 2/5 | eval_users=1421
+[FedDIEG] W2 boundary memory refresh | clients=799
+[FedDIEG] W2 initial | Val NDCG 0.2548 | Test NDCG 0.2455 | BoundaryDrop 0.0156
+[FedDIEG] W2 R010/120 G130 | Loss 1.1788 | Val NDCG 0.2660 | Test NDCG 0.2511 | 0.11s
+[FedDIEG] W2 R020/120 G140 | Loss 1.1623 | Val NDCG 0.2778 | Test NDCG 0.2627 | 0.10s
+[FedDIEG] W2 R030/120 G150 | Loss 1.1367 | Val NDCG 0.2921 | Test NDCG 0.2814 | 0.11s
+[FedDIEG] W2 R040/120 G160 | Loss 1.0739 | Val NDCG 0.2969 | Test NDCG 0.2874 | 0.11s
+[FedDIEG] W2 R050/120 G170 | Loss 1.0845 | Val NDCG 0.3118 | Test NDCG 0.3043 | 0.10s
+[FedDIEG] W2 R060/120 G180 | Loss 1.0669 | Val NDCG 0.3228 | Test NDCG 0.3112 | 0.10s
+[FedDIEG] W2 R070/120 G190 | Loss 1.0268 | Val NDCG 0.3346 | Test NDCG 0.3231 | 0.10s
+[FedDIEG] W2 R080/120 G200 | Loss 1.0622 | Val NDCG 0.3405 | Test NDCG 0.3295 | 0.10s
+[FedDIEG] W2 R090/120 G210 | Loss 1.0201 | Val NDCG 0.3422 | Test NDCG 0.3409 | 0.09s
+[FedDIEG] W2 R100/120 G220 | Loss 1.0128 | Val NDCG 0.3556 | Test NDCG 0.3461 | 0.10s
+[FedDIEG] W2 R110/120 G230 | Loss 1.0164 | Val NDCG 0.3611 | Test NDCG 0.3478 | 0.10s
+[FedDIEG] W2 R120/120 G240 | Loss 0.9793 | Val NDCG 0.3671 | Test NDCG 0.3472 | 0.10s
+
+[FedDIEG] Window 3/5 | eval_users=1763
+[FedDIEG] W3 boundary memory refresh | clients=1224
+[FedDIEG] W3 initial | Val NDCG 0.3312 | Test NDCG 0.3216 | BoundaryDrop 0.0256
+[FedDIEG] W3 R010/120 G250 | Loss 1.0354 | Val NDCG 0.3496 | Test NDCG 0.3370 | 0.12s
+[FedDIEG] W3 R020/120 G260 | Loss 1.0412 | Val NDCG 0.3641 | Test NDCG 0.3454 | 0.13s
+[FedDIEG] W3 R030/120 G270 | Loss 0.9877 | Val NDCG 0.3668 | Test NDCG 0.3571 | 0.12s
+[FedDIEG] W3 R040/120 G280 | Loss 0.9890 | Val NDCG 0.3716 | Test NDCG 0.3599 | 0.12s
+[FedDIEG] W3 R050/120 G290 | Loss 0.9655 | Val NDCG 0.3814 | Test NDCG 0.3709 | 0.12s
+[FedDIEG] W3 R060/120 G300 | Loss 0.9214 | Val NDCG 0.3871 | Test NDCG 0.3825 | 0.12s
+[FedDIEG] W3 R070/120 G310 | Loss 0.9581 | Val NDCG 0.3954 | Test NDCG 0.3825 | 0.12s
+[FedDIEG] W3 R080/120 G320 | Loss 0.9320 | Val NDCG 0.4057 | Test NDCG 0.4001 | 0.12s
+[FedDIEG] W3 R090/120 G330 | Loss 0.9399 | Val NDCG 0.4079 | Test NDCG 0.4079 | 0.13s
+[FedDIEG] W3 R100/120 G340 | Loss 0.8699 | Val NDCG 0.4136 | Test NDCG 0.4088 | 0.12s
+[FedDIEG] W3 R110/120 G350 | Loss 0.8906 | Val NDCG 0.4234 | Test NDCG 0.4162 | 0.13s
+[FedDIEG] W3 R120/120 G360 | Loss 0.9042 | Val NDCG 0.4307 | Test NDCG 0.4230 | 0.12s
+
+[FedDIEG] Window 4/5 | eval_users=1547
+[FedDIEG] W4 boundary memory refresh | clients=1620
+[FedDIEG] W4 initial | Val NDCG 0.4360 | Test NDCG 0.4119 | BoundaryDrop 0.0110
+[FedDIEG] W4 R010/120 G370 | Loss 0.9001 | Val NDCG 0.4481 | Test NDCG 0.4242 | 0.12s
+[FedDIEG] W4 R020/120 G380 | Loss 0.8963 | Val NDCG 0.4561 | Test NDCG 0.4418 | 0.11s
+[FedDIEG] W4 R030/120 G390 | Loss 0.8691 | Val NDCG 0.4645 | Test NDCG 0.4571 | 0.12s
+[FedDIEG] W4 R040/120 G400 | Loss 0.8634 | Val NDCG 0.4724 | Test NDCG 0.4608 | 0.11s
+[FedDIEG] W4 R050/120 G410 | Loss 0.8772 | Val NDCG 0.4723 | Test NDCG 0.4648 | 0.12s
+[FedDIEG] W4 R060/120 G420 | Loss 0.8365 | Val NDCG 0.4822 | Test NDCG 0.4723 | 0.12s
+[FedDIEG] W4 R070/120 G430 | Loss 0.8268 | Val NDCG 0.4851 | Test NDCG 0.4721 | 0.11s
+[FedDIEG] W4 R080/120 G440 | Loss 0.8135 | Val NDCG 0.4913 | Test NDCG 0.4760 | 0.11s
+[FedDIEG] W4 R090/120 G450 | Loss 0.8219 | Val NDCG 0.4941 | Test NDCG 0.4818 | 0.11s
+[FedDIEG] W4 R100/120 G460 | Loss 0.8109 | Val NDCG 0.4951 | Test NDCG 0.4860 | 0.11s
+[FedDIEG] W4 R110/120 G470 | Loss 0.7913 | Val NDCG 0.4997 | Test NDCG 0.4864 | 0.12s
+[FedDIEG] W4 R120/120 G480 | Loss 0.7860 | Val NDCG 0.5059 | Test NDCG 0.4839 | 0.12s
+
+[FedDIEG] Window 5/5 | eval_users=1738
+[FedDIEG] W5 boundary memory refresh | clients=1812
+[FedDIEG] W5 initial | Val NDCG 0.4166 | Test NDCG 0.3942 | BoundaryDrop 0.0897
+[FedDIEG] W5 R010/120 G490 | Loss 0.8862 | Val NDCG 0.4287 | Test NDCG 0.4011 | 0.13s
+[FedDIEG] W5 R020/120 G500 | Loss 0.8559 | Val NDCG 0.4359 | Test NDCG 0.4108 | 0.12s
+[FedDIEG] W5 R030/120 G510 | Loss 0.8221 | Val NDCG 0.4383 | Test NDCG 0.4072 | 0.12s
+[FedDIEG] W5 R040/120 G520 | Loss 0.8188 | Val NDCG 0.4450 | Test NDCG 0.4164 | 0.13s
+[FedDIEG] W5 R050/120 G530 | Loss 0.8125 | Val NDCG 0.4482 | Test NDCG 0.4177 | 0.12s
+[FedDIEG] W5 R060/120 G540 | Loss 0.7794 | Val NDCG 0.4516 | Test NDCG 0.4205 | 0.12s
+[FedDIEG] W5 R070/120 G550 | Loss 0.7778 | Val NDCG 0.4486 | Test NDCG 0.4222 | 0.13s
+[FedDIEG] W5 R080/120 G560 | Loss 0.8101 | Val NDCG 0.4490 | Test NDCG 0.4217 | 0.12s
+[FedDIEG] W5 R090/120 G570 | Loss 0.7682 | Val NDCG 0.4551 | Test NDCG 0.4275 | 0.12s
+[FedDIEG] W5 R100/120 G580 | Loss 0.7722 | Val NDCG 0.4566 | Test NDCG 0.4273 | 0.12s
+[FedDIEG] W5 R110/120 G590 | Loss 0.7672 | Val NDCG 0.4599 | Test NDCG 0.4282 | 0.12s
+[FedDIEG] W5 R120/120 G600 | Loss 0.7665 | Val NDCG 0.4651 | Test NDCG 0.4376 | 0.13s
+[FedDIEG] outputs updated.
+
+Done. Final outputs are in: F:\exp_FedDIEG\tmp\recon_base02

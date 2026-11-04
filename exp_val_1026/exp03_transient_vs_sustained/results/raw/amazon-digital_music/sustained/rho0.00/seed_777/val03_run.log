@@ -1,0 +1,166 @@
+Output directory: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\raw\amazon-digital_music\sustained\rho0.00\seed_777
+Device: cuda | GPU: NVIDIA GeForce RTX 4060 Laptop GPU
+Config: {
+  "dataset": "amazon-digital music",
+  "methods": [
+    "FedDIEG"
+  ],
+  "seed": 777,
+  "rounds": 600,
+  "participation_rate": 1.0,
+  "clients_per_round": null,
+  "microbatch_size": 512,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "feddieg_lr": null,
+  "latent_dim": 64,
+  "max_len": 50,
+  "top_k": 10,
+  "eval_every": 10,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "gpfedrec_neighbors": 5,
+  "gpfedrec_mix": 0.1,
+  "gpfedrec_warmup_rounds": 20,
+  "fcucR_kb_len": 5,
+  "fcucR_noise_std": 0.01,
+  "fcucR_distill_weight": 0.1,
+  "tardgr_retrieval_topk": 10,
+  "tardgr_retrieval_temp": 0.1,
+  "tardgr_retrieval_mix": 0.2,
+  "tardgr_warmup_rounds": 20,
+  "f3crec_replay_topk": 8,
+  "f3crec_replay_mix": 0.15,
+  "f3crec_temporal_beta": 0.15,
+  "f3crec_memory_momentum": 0.6,
+  "f3crec_warmup_rounds": 20,
+  "dgfedrs_aug_ratio": 0.15,
+  "dgfedrs_aug_mix": 0.3,
+  "dgfedrs_noise_std": 0.02,
+  "dgfedrs_schedule_power": 1.0,
+  "feddieg_neighbors": 10,
+  "feddieg_graph_mix": 0.2,
+  "feddieg_warmup_rounds": 20,
+  "feddieg_neighbor_temp": 0.07,
+  "feddieg_min_sim": 0.2,
+  "feddieg_tail_power": 4.0,
+  "feddieg_final_loss_weight": 0.0,
+  "feddieg_memory_momentum": 0.8,
+  "feddieg_short_score_mix": 0.05,
+  "feddieg_confidence_power": 0.5,
+  "feddieg_agreement_power": 0.5,
+  "feddieg_score_residual_mix": 0.0,
+  "feddieg_score_local_mix": 0.2,
+  "feddieg_boundary_refresh_rate": 0.0,
+  "feddieg_boundary_refresh_momentum": 0.2,
+  "num_threads": 4,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "rho": 0.0,
+  "scenario": "sustained",
+  "lambda_temp": 0.01,
+  "lambda_struct": 0.2,
+  "graph_gate": "raw",
+  "new_edge_init": "ema",
+  "graph_block_size": 2048,
+  "graph_strength": "paper",
+  "plan_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "plan_dir": null,
+  "inject_fraction": 1.0,
+  "self_check": false
+}
+[plan] F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\amazon-digital_music
+[plan] 组规模: inj=100, pair=100, real_sustained=40, real_transient=24, real_stable=22
+[plan] 场景=sustained → 注入窗口 [3, 4, 5]
+[plan] 采用 plan 里的 inject_fraction=1.0
+[inject] 替换了 1650 条交互，涉及 200 位用户（{'pair': 100, 'inj': 100}）；注入窗口 [3, 4, 5]，比例 1.0
+Building 5 chronological slice windows for amazon-digital music: users=12381, items=9906, interactions=123518
+  W1: interactions=0..24703, eval_users=3178, train_shape=(12381, 50)
+  W2: interactions=24703..49407, eval_users=3535, train_shape=(12381, 50)
+  W3: interactions=49407..74110, eval_users=3571, train_shape=(12381, 50)
+  W4: interactions=74110..98814, eval_users=3657, train_shape=(12381, 50)
+  W5: interactions=98814..123518, eval_users=3449, train_shape=(12381, 50)
+
+[sustained|rho=0.00] Window 1/5 | eval_users=3178
+[sustained|rho=0.00] W1 R010/120 | loss 0.8689 | NDCG all 0.2263 | inj 0.1739 turn nan | 0.77s
+[sustained|rho=0.00] W1 R020/120 | loss 0.6543 | NDCG all 0.2363 | inj 0.1739 turn nan | 0.75s
+[sustained|rho=0.00] W1 R030/120 | loss 0.5047 | NDCG all 0.2426 | inj 0.1988 turn nan | 0.75s
+[sustained|rho=0.00] W1 R040/120 | loss 0.3864 | NDCG all 0.2519 | inj 0.2111 turn nan | 0.75s
+[sustained|rho=0.00] W1 R050/120 | loss 0.2951 | NDCG all 0.2573 | inj 0.2486 turn nan | 0.76s
+[sustained|rho=0.00] W1 R060/120 | loss 0.2409 | NDCG all 0.2656 | inj 0.2679 turn nan | 0.76s
+[sustained|rho=0.00] W1 R070/120 | loss 0.1917 | NDCG all 0.2660 | inj 0.2531 turn nan | 0.78s
+[sustained|rho=0.00] W1 R080/120 | loss 0.1642 | NDCG all 0.2678 | inj 0.2341 turn nan | 0.76s
+[sustained|rho=0.00] W1 R090/120 | loss 0.1361 | NDCG all 0.2729 | inj 0.2486 turn nan | 0.76s
+[sustained|rho=0.00] W1 R100/120 | loss 0.1195 | NDCG all 0.2767 | inj 0.2537 turn nan | 0.76s
+[sustained|rho=0.00] W1 R110/120 | loss 0.1050 | NDCG all 0.2778 | inj 0.2769 turn nan | 0.76s
+[sustained|rho=0.00] W1 R120/120 | loss 0.0971 | NDCG all 0.2815 | inj 0.2948 turn nan | 0.78s
+[sustained|rho=0.00] W1 end | NDCG@10 0.2815 | rows=1164
+
+[sustained|rho=0.00] Window 2/5 | eval_users=3535
+[sustained|rho=0.00] W2 R010/120 | loss 0.5983 | NDCG all 0.2591 | inj 0.1783 turn nan | 0.77s
+[sustained|rho=0.00] W2 R020/120 | loss 0.3821 | NDCG all 0.2918 | inj 0.2162 turn nan | 0.77s
+[sustained|rho=0.00] W2 R030/120 | loss 0.2612 | NDCG all 0.3141 | inj 0.2341 turn nan | 0.78s
+[sustained|rho=0.00] W2 R040/120 | loss 0.2012 | NDCG all 0.3231 | inj 0.2063 turn nan | 0.77s
+[sustained|rho=0.00] W2 R050/120 | loss 0.1657 | NDCG all 0.3292 | inj 0.2106 turn nan | 0.78s
+[sustained|rho=0.00] W2 R060/120 | loss 0.1429 | NDCG all 0.3330 | inj 0.2171 turn nan | 0.79s
+[sustained|rho=0.00] W2 R070/120 | loss 0.1253 | NDCG all 0.3307 | inj 0.2126 turn nan | 0.79s
+[sustained|rho=0.00] W2 R080/120 | loss 0.1153 | NDCG all 0.3345 | inj 0.2088 turn nan | 0.83s
+[sustained|rho=0.00] W2 R090/120 | loss 0.0998 | NDCG all 0.3345 | inj 0.2128 turn nan | 0.77s
+[sustained|rho=0.00] W2 R100/120 | loss 0.0933 | NDCG all 0.3343 | inj 0.2166 turn nan | 0.77s
+[sustained|rho=0.00] W2 R110/120 | loss 0.0886 | NDCG all 0.3326 | inj 0.2074 turn nan | 0.82s
+[sustained|rho=0.00] W2 R120/120 | loss 0.0839 | NDCG all 0.3325 | inj 0.2092 turn nan | 0.77s
+[sustained|rho=0.00] W2 end | NDCG@10 0.3325 | rows=3912
+
+[sustained|rho=0.00] Window 3/5 | eval_users=3571
+[sustained|rho=0.00] W3 R010/120 | loss 0.4905 | NDCG all 0.2878 | inj 0.0497 turn 0.810 | 0.83s
+[sustained|rho=0.00] W3 R020/120 | loss 0.3151 | NDCG all 0.3141 | inj 0.0573 turn 0.814 | 0.80s
+[sustained|rho=0.00] W3 R030/120 | loss 0.2257 | NDCG all 0.3356 | inj 0.0554 turn 0.844 | 0.76s
+[sustained|rho=0.00] W3 R040/120 | loss 0.1842 | NDCG all 0.3392 | inj 0.0521 turn 0.858 | 0.77s
+[sustained|rho=0.00] W3 R050/120 | loss 0.1596 | NDCG all 0.3468 | inj 0.0621 turn 0.865 | 0.78s
+[sustained|rho=0.00] W3 R060/120 | loss 0.1418 | NDCG all 0.3501 | inj 0.0580 turn 0.856 | 0.77s
+[sustained|rho=0.00] W3 R070/120 | loss 0.1272 | NDCG all 0.3512 | inj 0.0575 turn 0.855 | 0.78s
+[sustained|rho=0.00] W3 R080/120 | loss 0.1195 | NDCG all 0.3560 | inj 0.0753 turn 0.863 | 0.79s
+[sustained|rho=0.00] W3 R090/120 | loss 0.1222 | NDCG all 0.3567 | inj 0.0672 turn 0.865 | 0.63s
+[sustained|rho=0.00] W3 R100/120 | loss 0.1050 | NDCG all 0.3559 | inj 0.0723 turn 0.860 | 0.67s
+[sustained|rho=0.00] W3 R110/120 | loss 0.1047 | NDCG all 0.3545 | inj 0.0788 turn 0.866 | 0.62s
+[sustained|rho=0.00] W3 R120/120 | loss 0.1000 | NDCG all 0.3566 | inj 0.0800 turn 0.869 | 0.61s
+[sustained|rho=0.00] W3 end | NDCG@10 0.3566 | rows=7152
+
+[sustained|rho=0.00] Window 4/5 | eval_users=3657
+[sustained|rho=0.00] W4 R010/120 | loss 0.4171 | NDCG all 0.2944 | inj 0.0436 turn 0.885 | 0.63s
+[sustained|rho=0.00] W4 R020/120 | loss 0.2823 | NDCG all 0.3264 | inj 0.0562 turn 0.916 | 0.62s
+[sustained|rho=0.00] W4 R030/120 | loss 0.2220 | NDCG all 0.3392 | inj 0.0425 turn 0.935 | 0.60s
+[sustained|rho=0.00] W4 R040/120 | loss 0.1824 | NDCG all 0.3532 | inj 0.0595 turn 0.934 | 0.64s
+[sustained|rho=0.00] W4 R050/120 | loss 0.1634 | NDCG all 0.3546 | inj 0.0465 turn 0.940 | 0.65s
+[sustained|rho=0.00] W4 R060/120 | loss 0.1504 | NDCG all 0.3573 | inj 0.0394 turn 0.940 | 0.65s
+[sustained|rho=0.00] W4 R070/120 | loss 0.1417 | NDCG all 0.3584 | inj 0.0488 turn 0.940 | 0.65s
+[sustained|rho=0.00] W4 R080/120 | loss 0.1396 | NDCG all 0.3584 | inj 0.0509 turn 0.940 | 0.66s
+[sustained|rho=0.00] W4 R090/120 | loss 0.1296 | NDCG all 0.3612 | inj 0.0490 turn 0.938 | 0.61s
+[sustained|rho=0.00] W4 R100/120 | loss 0.1219 | NDCG all 0.3585 | inj 0.0478 turn 0.938 | 0.66s
+[sustained|rho=0.00] W4 R110/120 | loss 0.1208 | NDCG all 0.3648 | inj 0.0493 turn 0.938 | 0.67s
+[sustained|rho=0.00] W4 R120/120 | loss 0.1131 | NDCG all 0.3634 | inj 0.0423 turn 0.937 | 0.66s
+[sustained|rho=0.00] W4 end | NDCG@10 0.3634 | rows=10224
+
+[sustained|rho=0.00] Window 5/5 | eval_users=3449
+[sustained|rho=0.00] W5 R010/120 | loss 0.3916 | NDCG all 0.3205 | inj 0.0755 turn 0.941 | 0.66s
+[sustained|rho=0.00] W5 R020/120 | loss 0.2824 | NDCG all 0.3391 | inj 0.0809 turn 0.953 | 0.65s
+[sustained|rho=0.00] W5 R030/120 | loss 0.2339 | NDCG all 0.3551 | inj 0.0755 turn 0.961 | 0.63s
+[sustained|rho=0.00] W5 R040/120 | loss 0.2003 | NDCG all 0.3600 | inj 0.1008 turn 0.975 | 0.61s
+[sustained|rho=0.00] W5 R050/120 | loss 0.1809 | NDCG all 0.3626 | inj 0.0875 turn 0.976 | 0.63s
+[sustained|rho=0.00] W5 R060/120 | loss 0.1674 | NDCG all 0.3665 | inj 0.0998 turn 0.980 | 0.64s
+[sustained|rho=0.00] W5 R070/120 | loss 0.1590 | NDCG all 0.3681 | inj 0.0930 turn 0.973 | 0.64s
+[sustained|rho=0.00] W5 R080/120 | loss 0.1520 | NDCG all 0.3692 | inj 0.1053 turn 0.970 | 0.66s
+[sustained|rho=0.00] W5 R090/120 | loss 0.1493 | NDCG all 0.3703 | inj 0.0853 turn 0.973 | 0.67s
+[sustained|rho=0.00] W5 R100/120 | loss 0.1434 | NDCG all 0.3691 | inj 0.0875 turn 0.971 | 0.64s
+[sustained|rho=0.00] W5 R110/120 | loss 0.1398 | NDCG all 0.3661 | inj 0.0921 turn 0.980 | 0.65s
+[sustained|rho=0.00] W5 R120/120 | loss 0.1375 | NDCG all 0.3648 | inj 0.0826 turn 0.979 | 0.65s
+[sustained|rho=0.00] W5 end | NDCG@10 0.3648 | rows=11508
+
+[sustained|rho=0.00] seed777 done in 381.3s | avg_ndcg=0.3398 | avg_ecr=0.4816
+
+Done: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\raw\amazon-digital_music\sustained\rho0.00\seed_777

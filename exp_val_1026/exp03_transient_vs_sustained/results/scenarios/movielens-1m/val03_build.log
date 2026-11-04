@@ -1,0 +1,487 @@
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 40,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": false
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] real_stable（匹配后）=60
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实队列合计 161 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 1 条 → 候选 74 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+Traceback (most recent call last):
+  File "F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\val03_build_scenarios.py", line 872, in <module>
+    main()
+  File "F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\val03_build_scenarios.py", line 780, in main
+    inject_rows, inject_meta = build_injection_plan(inputs, cfg, real_users)
+  File "F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\val03_build_scenarios.py", line 596, in build_injection_plan
+    share = np.divide(pre_counts, np.maximum(pre_total, 1e-12))
+ValueError: operands could not be broadcast together with shapes (6040,18) (6040,) 
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 40,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] real_stable（匹配后）=60
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实队列合计 161 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 1 条 → 候选 74 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=21  pair=21（共 42 人，配对 21 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 21 人 / pair 21 人 （21 对，min_inter=1）
+  真实 arm: sustained 36 / transient 65 / stable 60
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 40,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实漂移用户 101 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 1 条 → 候选 74 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=24  pair=24（共 48 人，配对 24 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=54
+[real] 真实队列合计 155 人
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 24 人 / pair 24 人 （24 对，min_inter=1）
+  真实 arm: sustained 36 / transient 65 / stable 54
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 40,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实漂移用户 101 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 38 人
+[inject]   候选 < 40，自动放宽到 min_inter=1
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 1 条 → 候选 74 人
+[inject]   阶梯 1: min_inter=1 → 排除真实漂移用户后候选 49 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=24  pair=24（共 48 人，配对 24 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=54
+[real] 真实队列合计 155 人
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 24 人 / pair 24 人 （24 对，min_inter=1）
+  真实 arm: sustained 36 / transient 65 / stable 54
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实漂移用户 101 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 38 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=19  pair=19（共 38 人，配对 19 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=56
+[real] 真实队列合计 157 人
+[warn] 注入组只有 19 人：组均值噪声会比较大，建议 --inject-onset 换个窗口 或降低 --min-inter。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 19 人 / pair 19 人 （19 对，min_inter=2）
+  真实 arm: sustained 36 / transient 65 / stable 56
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实漂移用户 101 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 38 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=19  pair=19（共 38 人，配对 19 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=56
+[real] 真实队列合计 157 人
+[warn] 注入组只有 19 人：组均值噪声会比较大，建议 --inject-onset 换个窗口 或降低 --min-inter。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 19 人 / pair 19 人 （19 对，min_inter=2）
+  真实 arm: sustained 36 / transient 65 / stable 56
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实漂移用户 101 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 38 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=19  pair=19（共 38 人，配对 19 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=50
+[real] 真实队列合计 151 人
+[warn] 注入组只有 19 人：组均值噪声会比较大，建议 --inject-onset 换个窗口 或降低 --min-inter。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 19 人 / pair 19 人 （19 对，min_inter=2）
+  真实 arm: sustained 36 / transient 65 / stable 50
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · movielens-1m
+{
+  "dataset": "movielens-1m",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 199922 条，投影维度 64，簇数 18
+[input] movielens-1m: users=6040 items=3416 interactions=999611 | windows=5 | categories=18 | 物品覆盖率=93.41%
+[input]   W1: 有交互用户 1429, >=2 条 1429
+[input]   W2: 有交互用户 1441, >=2 条 1422
+[input]   W3: 有交互用户 1796, >=2 条 1765
+[input]   W4: 有交互用户 1582, >=2 条 1547
+[input]   W5: 有交互用户 1783, >=2 条 1738
+[real] 边界 b=2: 可判定 113 人, TVD 中位 0.588, 零点中位 0.415
+[real] 边界 b=3: 可判定 175 人, TVD 中位 0.528, 零点中位 0.371
+[real] 边界 b=4: 可判定 141 人, TVD 中位 0.559, 零点中位 0.471
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 214
+[real] real_transient=65  real_sustained=36
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=36 / transient=65（已达标）
+[real] 真实漂移用户 101 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 59 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 38 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=19  pair=19（共 38 人，配对 19 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=50
+[real] 真实队列合计 151 人
+[warn] 注入组只有 19 人：组均值噪声会比较大，建议 --inject-onset 换个窗口 或降低 --min-inter。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 19 人 / pair 19 人 （19 对，min_inter=2）
+  真实 arm: sustained 36 / transient 65 / stable 50
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\movielens-1m
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------

@@ -1,0 +1,189 @@
+==============================================================================
+验证实验 3 · 场景构造 · amazon-digital music
+{
+  "dataset": "amazon-digital music",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": false
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 24703 条，投影维度 64，簇数 18
+[input] amazon-digital music: users=12381 items=9906 interactions=123518 | windows=5 | categories=18 | 物品覆盖率=64.51%
+[input]   W1: 有交互用户 4830, >=2 条 3834
+[input]   W2: 有交互用户 5362, >=2 条 3940
+[input]   W3: 有交互用户 5273, >=2 条 3800
+[input]   W4: 有交互用户 5225, >=2 条 3756
+[input]   W5: 有交互用户 4697, >=2 条 3449
+[real] 边界 b=2: 可判定 110 人, TVD 中位 0.815, 零点中位 0.708
+[real] 边界 b=3: 可判定 112 人, TVD 中位 0.783, 零点中位 0.753
+[real] 边界 b=4: 可判定 67 人, TVD 中位 0.761, 零点中位 0.729
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 130
+[real] real_transient=6  real_sustained=13
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=13 / transient=6（不足，继续放宽）
+[real] 阶梯 1: min_inter_pooled=2, min_drift_excess=0.02 → sustained=24 / transient=15（不足，继续放宽）
+[real] 阶梯 2: min_inter_pooled=2, min_drift_excess=0.0 → sustained=40 / transient=24（不足，继续放宽）
+[real] 真实漂移用户 64 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 352 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 324 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=94  pair=88（共 182 人，配对 100 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=23
+[real] 真实队列合计 87 人
+[warn] real_transient 只有 24 人（< 25）：该数据集上的真实 arm 只能作方向性参考，主证据请用注入 arm。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 94 人 / pair 88 人 （100 对，min_inter=2）
+  真实 arm: sustained 40 / transient 24 / stable 23
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\amazon-digital_music
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · amazon-digital music
+{
+  "dataset": "amazon-digital music",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 24703 条，投影维度 64，簇数 18
+[input] amazon-digital music: users=12381 items=9906 interactions=123518 | windows=5 | categories=18 | 物品覆盖率=64.51%
+[input]   W1: 有交互用户 4830, >=2 条 3834
+[input]   W2: 有交互用户 5362, >=2 条 3940
+[input]   W3: 有交互用户 5273, >=2 条 3800
+[input]   W4: 有交互用户 5225, >=2 条 3756
+[input]   W5: 有交互用户 4697, >=2 条 3449
+[real] 边界 b=2: 可判定 110 人, TVD 中位 0.815, 零点中位 0.708
+[real] 边界 b=3: 可判定 112 人, TVD 中位 0.783, 零点中位 0.753
+[real] 边界 b=4: 可判定 67 人, TVD 中位 0.761, 零点中位 0.729
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 130
+[real] real_transient=6  real_sustained=13
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=13 / transient=6（不足，继续放宽）
+[real] 阶梯 1: min_inter_pooled=2, min_drift_excess=0.02 → sustained=24 / transient=15（不足，继续放宽）
+[real] 阶梯 2: min_inter_pooled=2, min_drift_excess=0.0 → sustained=40 / transient=24（不足，继续放宽）
+[real] 真实漂移用户 64 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 329 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 301 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=100  pair=100（共 200 人，配对 100 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=22
+[real] 真实队列合计 86 人
+[warn] real_transient 只有 24 人（< 25）：该数据集上的真实 arm 只能作方向性参考，主证据请用注入 arm。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 100 人 / pair 100 人 （100 对，min_inter=2）
+  真实 arm: sustained 40 / transient 24 / stable 22
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\amazon-digital_music
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
+==============================================================================
+验证实验 3 · 场景构造 · amazon-digital music
+{
+  "dataset": "amazon-digital music",
+  "num_windows": 5,
+  "inject_onset": 3,
+  "min_inter": 2,
+  "require_all_post": false,
+  "inject_fraction": 1.0,
+  "max_inject_users": 200,
+  "min_pool": 30,
+  "target_category_mode": "rare",
+  "min_items_per_category": 30,
+  "min_inter_pooled": 3,
+  "min_spike_inter": 2,
+  "min_drift_excess": 0.05,
+  "max_real_users": 250,
+  "min_real_cohort": 25,
+  "num_categories": 18,
+  "category_mode": "auto",
+  "genres_file": null,
+  "partition_scope": "window1",
+  "proj_dim": 64,
+  "random_seed": 2026,
+  "cohort_seed": 2026,
+  "out_root": "F:\\exp_FedDIEG\\exp_val_1026\\exp03_transient_vs_sustained\\results\\scenarios",
+  "out_dir": null,
+  "force": true
+}
+==============================================================================
+[partition] category_mode = cooccur
+[partition] 伪类别来源：第 1 个窗口，交互 24703 条，投影维度 64，簇数 18
+[input] amazon-digital music: users=12381 items=9906 interactions=123518 | windows=5 | categories=18 | 物品覆盖率=64.51%
+[input]   W1: 有交互用户 4830, >=2 条 3834
+[input]   W2: 有交互用户 5362, >=2 条 3940
+[input]   W3: 有交互用户 5273, >=2 条 3800
+[input]   W4: 有交互用户 5225, >=2 条 3756
+[input]   W5: 有交互用户 4697, >=2 条 3449
+[real] 边界 b=2: 可判定 110 人, TVD 中位 0.815, 零点中位 0.708
+[real] 边界 b=3: 可判定 112 人, TVD 中位 0.783, 零点中位 0.753
+[real] 边界 b=4: 可判定 67 人, TVD 中位 0.761, 零点中位 0.729
+[real] 边界 b=5: 可判定 0 人, TVD 中位 nan, 零点中位 nan
+[real] 跳变且可判定持续性的用户: 130
+[real] real_transient=6  real_sustained=13
+[real] 阶梯 0: min_inter_pooled=3, min_drift_excess=0.05 → sustained=13 / transient=6（不足，继续放宽）
+[real] 阶梯 1: min_inter_pooled=2, min_drift_excess=0.02 → sustained=24 / transient=15（不足，继续放宽）
+[real] 阶梯 2: min_inter_pooled=2, min_drift_excess=0.0 → sustained=40 / transient=24（不足，继续放宽）
+[real] 真实漂移用户 64 人（注入池将排除他们）
+[inject] onset=3, 要求窗口 [2, 3, 4] 各 >= 2 条 → 候选 329 人
+[inject]   阶梯 0: min_inter=2 → 排除真实漂移用户后候选 301 人
+[inject] 可用目标类别 18 个（每类物品数 >= 30）
+[inject] 最终 inj=100  pair=100（共 200 人，配对 100 对）
+[inject] 目标类别在用户历史中的占比：中位数 0.000 （0 = 该用户从未看过这一类）
+[real] real_stable（匹配后）=22
+[real] 真实队列合计 86 人
+[warn] real_transient 只有 24 人（< 25）：该数据集上的真实 arm 只能作方向性参考，主证据请用注入 arm。
+
+---------------- 构造结果 ----------------
+  注入 arm: inj 100 人 / pair 100 人 （100 对，min_inter=2）
+  真实 arm: sustained 40 / transient 24 / stable 22
+  输出目录: F:\exp_FedDIEG\exp_val_1026\exp03_transient_vs_sustained\results\scenarios\amazon-digital_music
+  下一步: val03_run_scenario.py --scenario sustained|transient --rho ... --seed ...
+-----------------------------------------
