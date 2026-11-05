@@ -63,9 +63,10 @@ VAL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$VAL_DIR/.." && pwd)"
 RUNNER="$VAL_DIR/dg_run.py"
 AGGREGATE="$VAL_DIR/dg_aggregate.py"
-RAW="$VAL_DIR/results/raw"
-AGG="$VAL_DIR/results/aggregated"
-LOGS="$VAL_DIR/results/parallel_logs"
+# 可用环境变量覆盖输出位置（小规模试跑时避免写进正式结果目录）
+RAW="${RAW_ROOT:-$VAL_DIR/results/raw}"
+AGG="${AGG_ROOT:-$VAL_DIR/results/aggregated}"
+LOGS="${LOG_ROOT:-$VAL_DIR/results/parallel_logs}"
 
 slug() { echo "$1" | tr -c 'A-Za-z0-9_\-' '_' | sed 's/^_*//; s/_*$//'; }
 

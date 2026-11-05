@@ -146,3 +146,5 @@ Building 5 chronological slice windows for movielens-1m: users=6040, items=3416,
 [nograph] W5 R060/120 | loss 1.0073 | NDCG@10 0.2300 HR 0.4166 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.35s
 [nograph] W5 R070/120 | loss 1.0068 | NDCG@10 0.2314 HR 0.4206 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.20s
 [nograph] W5 R080/120 | loss 1.0022 | NDCG@10 0.2307 HR 0.4189 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.27s
+[nograph] W5 R090/120 | loss 1.0072 | NDCG@10 0.2319 HR 0.4229 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.17s
+[nograph] W5 R100/120 | loss 1.0118 | NDCG@10 0.2337 HR 0.4212 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.58s
