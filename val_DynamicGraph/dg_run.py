@@ -203,9 +203,6 @@ def run_single(
             print(f"{tag} [warn] 本窗口没有可评测用户，跳过")
             continue
         probe_users, probe_seqs, _ = probe
-        random_base = pick_random_base(
-            trainer.summary_active, int(args.probe_size), cfg.seed + window_idx
-        )
 
         last_ndcg = 0.0
         last_hr = 0.0
@@ -245,6 +242,11 @@ def run_single(
             last_ndcg, last_hr = all_ndcg, all_hr
 
             # ---------------- ④ 图协同分支诊断（三条臂同一批探针用户）
+            # 邻居质量的随机基线每次评测重抽：窗口 1 开头摘要库还是空的，
+            # 若整窗只抽一次，那一整窗的 neighbor_lift 都会是 nan。
+            random_base = pick_random_base(
+                trainer.summary_active, int(args.probe_size), cfg.seed + global_round
+            )
             diag, per_user, _ = probe_diagnostics(
                 trainer, eval_model, graph,
                 probe_users, probe_seqs, None, cfg, random_base=random_base,

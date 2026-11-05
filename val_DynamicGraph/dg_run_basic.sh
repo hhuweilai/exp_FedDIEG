@@ -92,9 +92,9 @@ n_arms=$(echo $ARMS | wc -w)
 n_seeds=$(echo $SEEDS | wc -w)
 n_datasets=$(echo "$DATASETS" | tr ',' '\n' | grep -c . )
 n_runs=$((n_arms * n_seeds * n_datasets))
-per_run_min=$(awk -v r="$ROUNDS" -v w="$NUM_WINDOWS" 'BEGIN{printf "%.0f", (r*w*2.45)/60}')
+per_run_min=$(awk -v r="$ROUNDS" -v w="$NUM_WINDOWS" 'BEGIN{printf "%.0f", (r*w*3.0)/60}')
 echo ""
-echo "计划 $n_runs 次运行；按 3090 实测 2.45 s/轮估算，每次约 ${per_run_min} 分钟，共约 $((n_runs * per_run_min / 60)) 小时。"
+echo "计划 $n_runs 次运行；按 3090 实测 2.45 s/轮 + 评测/数据加载开销估算，每次约 ${per_run_min} 分钟，共约 $((n_runs * per_run_min / 60)) 小时。"
 echo ""
 
 IFS=',' read -r -a DATASET_ARR <<< "$DATASETS"
