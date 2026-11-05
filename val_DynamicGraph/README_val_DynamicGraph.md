@@ -84,7 +84,7 @@ val_DynamicGraph/
    │                                  dg_user_metrics.csv / dg_probe_metrics.csv /
    │                                  config.json / dg_run.log
    ├─ raw_pilot/ …                    冒烟结果
-   └─ aggregated/                     dg_report.md + tables/ + figures/
+   └─ aggregated/                     dg_report.md + tables/*.csv + figures/*.png
 ```
 
 聚合产出（`results/aggregated/`）：
@@ -175,8 +175,10 @@ RHO=0.8 ARMS="dynamic" bash val_DynamicGraph/dg_run_basic.sh
 
 ## 9. 环境提示
 
-- 服务器**没有安装 matplotlib**：`dg_aggregate.py` 会跳过出图并给出提示，表格与报告不受影响。
-  要出 PNG：`/home/wl/.venv-feddieg/bin/pip install matplotlib` 后重跑聚合脚本即可。
+- 绘图：服务器已装 **matplotlib 3.11.2**（Agg 后端实测可出图），聚合时直接输出
+  `figures/dg_fig_arms_<dataset>.png` —— 三联图：NDCG@10 曲线 / `delta_rel`（symlog，能显示 0）/
+  `neighbor_lift`（含 1.0 随机基准线，无数据时标注 "no data in this run"）。
+  若换到没有 matplotlib 的环境，聚合会跳过出图并提示，表格与报告不受影响。
 - scipy 可选：装了就用 t 分布 / Wilcoxon，没装则用正态近似 + 精确符号检验（不依赖 scipy）。
 - 磁盘：`/` 只剩约 27 GB。本实验每次运行的全部输出约 2~5 MB（主要是逐用户 CSV），
   9 次运行不到 50 MB，够用。

@@ -660,10 +660,11 @@ def make_figure(arm_win: pd.DataFrame, dataset: str, out_png: Path) -> Optional[
     }
     panels = (
         ("ndcg_win_mean", "linear", "NDCG@10 (mean over seeds), by window", None),
-        ("delta_rel", "log", "delta_rel = ||graph branch|| / ||seq_emb||", None),
+        ("delta_rel", "symlog", "delta_rel = ||graph branch|| / ||seq_emb||", None),
         ("neighbor_lift", "linear", "neighbor_lift (neighbour cos / random cos)", 1.0),
     )
     fig, axes = plt.subplots(1, 3, figsize=(16, 4.6))
+    plotted = {panel[0]: False for panel in panels}
     for variant in sorted(sub["arm_dir"].unique(), key=lambda v: (ARM_ORDER.get(_arm_of(v), 9), v)):
         g = sub[sub["arm_dir"] == variant]
         color = colors.get(_arm_of(variant), None)
@@ -673,22 +674,38 @@ def make_figure(arm_win: pd.DataFrame, dataset: str, out_png: Path) -> Optional[
             mean = grp[col].mean().reindex(x).to_numpy(dtype=float)
             ax.plot(x, mean, marker="o", ms=4, lw=1.6, color=color,
                     label=variant if ax is axes[0] else None)
+            if np.isfinite(mean).any():
+                plotted[col] = True
+            ax.set_xticks(x)
+            if x.size > 1:
+                ax.set_xlim(x.min() - 0.35, x.max() + 0.35)
             if g["seed"].nunique() > 1:
                 sd = grp[col].std(ddof=1).reindex(x).to_numpy(dtype=float)
                 ok = np.isfinite(mean) & np.isfinite(sd)
                 if ok.any():
                     ax.fill_between(x[ok], (mean - sd)[ok], (mean + sd)[ok],
                                     color=color, alpha=0.12, lw=0)
-            ax.set_yscale(scale)
+            if scale == "symlog":
+                ax.set_yscale("symlog", linthresh=1e-4)
+                ax.set_ylim(bottom=0.0)
+            else:
+                ax.set_yscale(scale)
             if hline is not None:
                 ax.axhline(hline, color="k", lw=0.8, ls="--")
     axes[0].set_ylabel("NDCG@10")
     axes[1].set_ylabel("relative shift of user vector")
     axes[2].set_ylabel("lift over random")
-    for ax, (_, _, title, _) in zip(axes, panels):
+    for ax, (col, _, title, _) in zip(axes, panels):
         ax.set_xlabel("window")
         ax.set_title(title, fontsize=10)
         ax.grid(alpha=0.3)
+        if not plotted.get(col, False):
+            ax.text(
+                0.5, 0.10, "no data in this run",
+                transform=ax.transAxes, ha="center", va="center",
+                fontsize=11, color="#888888",
+                bbox=dict(facecolor="white", edgecolor="none", alpha=0.85, pad=2.0),
+            )
     axes[0].legend(fontsize=8)
     fig.suptitle(
         f"val_DynamicGraph / {dataset}: NoGraph vs StaticGraph vs DynamicGraph", fontsize=12
