@@ -371,6 +371,17 @@ def hygiene_checks(sums: pd.DataFrame, rounds: pd.DataFrame) -> pd.DataFrame:
             "一致" if not bad else "不一致：" + "; ".join(bad),
         )
 
+        if "personal_on_cpu" in part.columns and part["personal_on_cpu"].notna().any():
+            vals = sorted({str(int(v)) for v in part["personal_on_cpu"].dropna()})
+            add(
+                dataset,
+                "个性化层位置（仅性能开关，不改数值）",
+                True,
+                "personal_on_cpu=" + ",".join(vals)
+                + "（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，"
+                "所以混用不影响可比性）",
+            )
+
         per_arm = part.groupby("arm_dir")["seed"].nunique()
         add(
             dataset,
