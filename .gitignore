@@ -67,6 +67,12 @@ htmlcov/
 *.orig
 nohup.out
 
+# ---------- 自检（--smoke）产物 ----------
+# 极小配置的端到端自检输出，随时可用
+#   python exp_val_1026/run_smoke_test.py
+# 重新生成，不属于正式实验结果，不入库。
+exp_val_1026/**/raw_smoke/
+
 # ---------- 编辑器 / IDE ----------
 .idea/
 .vscode/

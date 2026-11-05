@@ -4,55 +4,49 @@
 对应任务书：`2026-10-26 动态联邦推荐研究问题验证任务书.md` 第三节「实验三」
 （"短期兴趣波动会不会导致不必要的图更新？"）。
 
+⚠️ 2026-11-05 重写说明（必读）
+------------------------------
+1. **训练协议换成真正的 FedAvg**（客户端本地训练 + 服务器参数聚合），对齐
+   `FedDIEG.py` / `exp_01/run_exp01_movielens_aligned.py`。旧的"单模型 + 单 Adam
+   逐 microbatch 更新"已废弃（审计报告 §4）。
+2. **动态图换成论文公式的正确落地**（`feddieg_core.graph`）：EMA 量纲 = max(0,cos)，
+   无效槽位写 -1，无 scatter 别名，EMA 状态存在候选池上（修掉"图冻结"）。
+   旧的 `--graph-gate` / `--new-edge-init` / `--graph-strength` 由
+   `--graph-state` / `--graph-new-edge` / `--graph-mix` 取代。
+3. **ρ 默认 0.2**（论文 `RHO=0.2`）；**参与率默认 0.1**（论文 C=0.1）。
+4. 场景构造（`val03_build_scenarios.py`）、注入流程、`GroupProbe` 的指标定义**完全没变**，
+   因此新旧结果在"测什么"上是对齐的，只是"怎么训"变了。
+
 一次运行同时测量 5 个用户组
 ---------------------------
   注入 arm（人工构造，见 val03_build_scenarios.py）
     inj               该运行对应场景下的注入组（sustained: 注入持续到最后的窗口；transient: 只注入 onset 窗口）
-    pair              配对对照：同样的窗口、同样的替换流程，但**实际替换成自己旧主类别**的物品
-                      （同类别重采样）；它的 `cat_new` 用配对对象的注入目标类别，好让两组的
-                      old/new 同伴占比在同一参照下相减。
+    pair              配对对照：同样的窗口、同样的替换流程，但实际替换成自己旧主类别的物品
   真实 arm（只打标签，不修改任何交互）
     real_sustained    真实数据里"跳变后保持新类别"的用户
     real_transient    真实数据里"跳变后回到旧类别"的用户（任务书场景 B）
     real_stable       同一 onset、活动量匹配、真实数据里从未跳变的对照
 
-由于 5 个组在**同一次运行**内共存，组间比较是同一份训练轨迹、同一份参与序列下的配对比较。
-
-两个场景各跑一次
----------------
-  同一个 plan 文件，只是 `--scenario` 不同：
-    sustained → 注入窗口 = onset..W（持续证据）
-    transient → 注入窗口 = onset 仅此一个（之后数据恢复原样）
-  两组的 onset、目标类别、配对关系完全相同，因此场景之间唯一的差别是"证据持续多久"。
-
-记录什么（任务书观察 1~4 全部对应）
------------------------------------
+记录什么
+--------
   (a) 逐用户逐评测轮 NDCG@10 / HR@10                → 推荐性能损失
   (b) 逐用户逐评测轮 ECR（本轮边变化率）             → 边关系变化程度
-  (c) 逐用户 neighbors 里"旧兴趣同伴 / 新兴趣同伴"的边权占比
-  (d) 逐用户当前邻居集合与 onset 前快照的 Jaccard 距离（turnover_from_pre）
-        onset 后升高 = 图被这次证据改动了；
-        transient 组在撤销后回落 = 图能撤销；不回落 = 过度更新（把一次性噪声当持久变化）；
-        sustained 组一直不升高 = 更新滞后。
-  (e) 逐用户 summary_drift = 1 − cos(当前上传摘要, onset 前快照)
-        用来把"摘要本身没恢复"与"图没恢复"分开：摘要已恢复而图没恢复 → 责任在 EMA 边权规则。
+  (c) 邻居里"旧兴趣同伴 / 新兴趣同伴"的边权占比
+  (d) 当前邻居集合与 onset 前快照的 Jaccard 距离（turnover_from_pre）
+  (e) summary_drift = 1 − cos(当前上传摘要, onset 前快照)
 
 输出（`results/raw/<dataset>/<scenario>/rho<ρ>/seed_<seed>/`）
---------------------------------------------------------------
-  config.json                    本次运行的全部参数
-  val03_user_round_metrics.csv   ★ 逐用户逐评测轮（曲线的全部原始数据）
-  val03_round_metrics.csv        逐评测轮 × 分组的聚合（含 train_loss、ECR）
-  val03_summary.csv              本次运行汇总（一行）
-  val03_run.log                  日志
+-------------------------------------------------------------
+  config.json / val03_user_round_metrics.csv / val03_round_metrics.csv
+  val03_summary.csv / val03_run.log
 
 用法
 ----
-  python exp_val_1026/exp03_transient_vs_sustained/val03_run_scenario.py \
-      --dataset "movielens-1m" --scenario sustained --rho 0.8 --seed 42
-  python .../val03_run_scenario.py --dataset "movielens-1m" --scenario transient --rho 0.8 --seed 42
+  # 自检（几十秒）
+  python -X utf8 exp_val_1026/exp03_transient_vs_sustained/val03_run_scenario.py --smoke --scenario transient
 
-  图影响强度（paper=已发表配置；strong=放大图影响，敏感性对照）：
-  python .../val03_run_scenario.py ... --graph-strength strong
+  # 正式跑
+  python .../val03_run_scenario.py --dataset movielens-1m --scenario sustained --rho 0.2 --seed 42
 """
 
 from __future__ import annotations
@@ -84,24 +78,37 @@ for _path in (str(ROOT), str(VAL03_DIR)):
     if _path not in sys.path:
         sys.path.insert(0, _path)
 
-from exp_01_fast_gpu.run_exp01_fast_gpu import (  # noqa: E402
-    FastData,
-    FedDIEGModel,
-    Tee,
-    batched_indices,
-    bce_seq_loss,
-    sample_negative_like,
+from feddieg_core import __version__ as CORE_VERSION
+from feddieg_core.cli import add_feddieg_args, config_from_args, prepare_runtime
+from feddieg_core.config import FedDIEGConfig
+from feddieg_core.data import (
+    ClientWindow,
+    from_fast_data,
+    history_sets_from_frame,
+    verify_consistency,
+)
+from feddieg_core.evaluate import build_eval_model, evaluate_split
+from feddieg_core.federated import FedTrainer, build_participation_schedule
+from feddieg_core.graph import DynamicInterestGraph
+from feddieg_core.utils import (
+    warn_if_legacy_results,
+    dump_json,
+    make_device,
+    mean,
+    open_log,
+    safe_slug,
     set_seed,
 )
+
+# 数据窗口协议仍然复用 exp_01/exp_02 的官方实现（数据层面不变，才和旧结果可比）
+from exp_01_fast_gpu.run_exp01_fast_gpu import FastData  # noqa: E402
 from exp_02_fast_gpu.run_exp02_fast_gpu import (  # noqa: E402
     Exp2Config,
     build_eval_arrays_from_records,
     build_train_arrays_from_sequences,
     load_rolling_windows,
-    mean,
     sample_candidates,
 )
-from val03_build_scenarios import safe_slug  # noqa: E402
 
 DEFAULT_PLAN_ROOT = VAL03_DIR / "results" / "scenarios"
 DEFAULT_OUT_ROOT = VAL03_DIR / "results" / "raw"
@@ -111,48 +118,10 @@ GROUPS = ("inj", "pair", "real_sustained", "real_transient", "real_stable")
 INJECTED_GROUPS = ("inj", "pair")
 
 
-# ======================================================================================
-# 配置
-# ======================================================================================
-@dataclass
-class Val03Config(Exp2Config):
-    """在 Exp2 的时间窗口协议之上，只加"场景 / EMA 系数"两个自变量。"""
-
-    rho: float = 0.80
-    scenario: str = "sustained"
-    num_windows: int = 5
-    rounds_per_window: int = 120
-    candidate_count: int = 99
-    window_mode: str = "slice"
-    lambda_temp: float = 0.01
-    lambda_struct: float = 0.20
-    graph_gate: str = "raw"            # raw=阈值看原始余弦（推荐）；blended=阈值看混合后的值（原实现）
-    new_edge_init: str = "ema"         # ema=忠实复刻原实现 | warm=新边不被惩罚 | zero=从 0 涨
-    graph_block_size: int = 2048
-    graph_strength: str = "paper"      # paper=已发表配置；strong=放大图影响（敏感性对照）
-    plan_root: Path = DEFAULT_PLAN_ROOT
-    plan_dir: Optional[str] = None
-    inject_fraction: float = 1.0       # 与 plan 一致：注入窗口内被替换的交互比例
-    self_check: bool = False           # 与 exp02.load_rolling_windows 对比，确认未改窗口口径
-
-
-# 两组"图影响强度"预设（与验证实验二完全一致，方便把两个实验的数字放在一起读）
-GRAPH_PRESETS: Dict[str, Dict[str, float]] = {
-    "paper": {
-        "feddieg_graph_mix": 0.20,
-        "feddieg_tail_power": 4.0,
-        "feddieg_confidence_power": 0.5,
-        "feddieg_agreement_power": 0.5,
-        "feddieg_score_local_mix": 0.2,
-    },
-    "strong": {
-        "feddieg_graph_mix": 0.50,
-        "feddieg_tail_power": 1.0,
-        "feddieg_confidence_power": 0.0,
-        "feddieg_agreement_power": 0.0,
-        "feddieg_score_local_mix": 0.0,
-    },
-}
+# 场景与分组
+SCENARIOS = ("sustained", "transient")
+GROUPS = ("inj", "pair", "real_sustained", "real_transient", "real_stable")
+INJECTED_GROUPS = ("inj", "pair")
 
 
 USER_FIELDS = [
@@ -228,6 +197,15 @@ SUMMARY_FIELDS = [
     "all_final_ndcg",
     "avg_ecr",
     "elapsed_seconds",
+    # ---- 2026-11-05 新增：把联邦协议与图配置写进汇总 ----
+    "core_version",
+    "local_epochs",
+    "fedavg_weighting",
+    "personalization",
+    "graph_state",
+    "graph_update_scope",
+    "neighbors",
+    "summary_momentum",
 ]
 
 
@@ -597,181 +575,16 @@ def frame_windows(num_rows: int, num_windows: int) -> np.ndarray:
 # ======================================================================================
 # 图：训练时取邻居 / 服务器端更新边权（与验证实验二同一实现）
 # ======================================================================================
-def graph_batch(
-    users: torch.Tensor,
-    summary_bank: torch.Tensor,
-    graph_neighbors: torch.Tensor,
-    graph_weights: torch.Tensor,
-    graph_mask: torch.Tensor,
-) -> Tuple[Optional[torch.Tensor], Optional[torch.Tensor], Optional[torch.Tensor]]:
-    if graph_neighbors.numel() == 0:
-        return None, None, None
-    neighbors = graph_neighbors[users]
-    weights = graph_weights[users]
-    mask = graph_mask[users]
-    if not mask.any():
-        return None, None, None
-    return summary_bank[neighbors.clamp_min(0)], weights * mask.float().unsqueeze(1), mask
-
-
-@torch.no_grad()
-def update_graph(
-    update_users: torch.Tensor,
-    summary_bank: torch.Tensor,
-    active_clients: torch.Tensor,
-    graph_neighbors: torch.Tensor,
-    graph_weights: torch.Tensor,
-    graph_mask: torch.Tensor,
-    smooth_state: torch.Tensor,
-    topk: int,
-    min_sim: float,
-    rho: float,
-    block_size: int,
-    gate_on: str = "raw",
-    new_edge_init: str = "ema",
-) -> Tuple[torch.Tensor, torch.Tensor]:
-    """对 update_users 的邻居做 Top-K + EMA 平滑：e ← ρ·e + (1-ρ)·ê。
-
-    与验证实验二完全同一实现（写报告时可直接引用实验二的说明）：
-      * `min_sim` 默认作用在原始余弦上（gate_on="raw"），否则 ρ 大时图会整体坍塌；
-      * `new_edge_init="ema"`（默认）等价于新边从 (1-ρ)·sim 起步 —— 忠实复刻原实现；
-      * EMA 作用在平滑后的相似度上，权重最后在保留的 Top-K 内归一化给 GNN 用。
-    返回 (本轮被更新的用户, 对应边变化率 ECR)。
-    """
-    empty = torch.zeros(0, dtype=torch.long, device="cpu")
-    active = torch.nonzero(active_clients, as_tuple=False).flatten()
-    users = update_users[active_clients[update_users]]
-    k = min(int(topk), int(active.numel()) - 1)
-    if users.numel() == 0 or k <= 0:
-        return empty, torch.zeros(0, dtype=torch.float32)
-
-    device = summary_bank.device
-    rho = float(min(max(rho, 0.0), 0.999))
-    norm_bank = F.normalize(summary_bank, p=2, dim=1, eps=1e-8)
-    norm_active = norm_bank[active]
-    num_active = int(active.numel())
-
-    active_slot = torch.full((summary_bank.size(0),), -1, dtype=torch.long, device=device)
-    active_slot[active] = torch.arange(num_active, device=device)
-
-    ecr_chunks: List[torch.Tensor] = []
-    user_chunks: List[torch.Tensor] = []
-
-    for block in batched_indices(torch.arange(users.numel(), device=device), block_size):
-        block_users = users[block]
-        rows = block_users.numel()
-        sim = torch.matmul(norm_bank[block_users], norm_active.T).clamp_min(0.0)
-        sim = sim.masked_fill(block_users.unsqueeze(1) == active.unsqueeze(0), 0.0)
-
-        old_ids = graph_neighbors[block_users]
-        old_weights = smooth_state[block_users]
-        old_col = active_slot[old_ids.clamp_min(0)]
-        has_prev = (old_ids >= 0) & (old_col >= 0) & graph_mask[block_users].unsqueeze(1)
-
-        if rho > 0.0:
-            prev = torch.zeros((rows, num_active), dtype=sim.dtype, device=device)
-            prev = prev.scatter_(
-                1, old_col.clamp_min(0), old_weights.to(sim.dtype) * has_prev.to(sim.dtype)
-            )
-            prev_mask = torch.zeros((rows, num_active), dtype=sim.dtype, device=device)
-            prev_mask = prev_mask.scatter_(1, old_col.clamp_min(0), has_prev.to(sim.dtype))
-            blended = (1.0 - rho) * sim + rho * prev
-            if new_edge_init == "warm":
-                init_value = sim
-            elif new_edge_init == "zero":
-                init_value = torch.zeros_like(sim)
-            else:  # "ema"
-                init_value = (1.0 - rho) * sim
-            cand = torch.where(prev_mask > 0, blended, init_value)
-            row_has_prev = (prev_mask > 0).any(dim=1, keepdim=True)
-            cand = torch.where(row_has_prev, cand, sim)
-        else:
-            cand = sim
-
-        exists = sim >= min_sim if gate_on == "raw" else cand >= min_sim
-        cand_gated = torch.where(exists, cand, torch.full_like(cand, -1e9))
-
-        top_values, top_positions = torch.topk(cand_gated, k, dim=1)
-        new_ids = active[top_positions]
-        keep = top_values > -1e8
-        kept_values = torch.where(keep, top_values, torch.zeros_like(top_values))
-        denom = kept_values.sum(dim=1, keepdim=True).clamp_min(1e-8)
-        new_weights = kept_values / denom
-        new_mask = keep.any(dim=1)
-
-        old_sets = (old_ids >= 0) & graph_mask[block_users].unsqueeze(1)
-        eq = (old_ids.unsqueeze(2) == new_ids.unsqueeze(1)) & old_sets.unsqueeze(2) & keep.unsqueeze(1)
-        inter = eq.any(dim=2).sum(dim=1).to(torch.float32)
-        n_old = old_sets.sum(dim=1).to(torch.float32)
-        n_new = keep.sum(dim=1).to(torch.float32)
-        union = torch.clamp(n_old + n_new - inter, min=1e-8)
-        ecr = torch.where(n_old > 0, 1.0 - inter / union, torch.zeros_like(inter))
-
-        graph_neighbors[block_users] = new_ids
-        graph_weights[block_users] = new_weights.to(graph_weights.dtype)
-        graph_mask[block_users] = new_mask
-        smooth_state[block_users] = kept_values.to(smooth_state.dtype)
-
-        user_chunks.append(block_users.to("cpu"))
-        ecr_chunks.append(ecr.to("cpu"))
-
-    return torch.cat(user_chunks), torch.cat(ecr_chunks)
-
+# 动态图与评测都来自 `feddieg_core`（论文公式的正确落地 + FedAvg 评测），
+# 这里不再保留旧的 `graph_batch` / `update_graph` / `evaluate_per_user`：
+#   * 旧版 `update_graph` 混用量纲（归一化边权 × 原始余弦）、无效槽位写伪 id、
+#     `scatter_` 把 -1 钳到列 0、只存 Top-K 导致图冻结 —— 见审计报告 §3；
+#   * 旧版评测用快速仿真模型的打分头（tail_power / short_score_mix 等），
+#     A/B 主程序里没有这些模块，已统一到 aligned 版的打分方式。
 
 # ======================================================================================
 # 评测
 # ======================================================================================
-@torch.no_grad()
-def evaluate_per_user(
-    model: FedDIEGModel,
-    data: FastData,
-    cfg: Val03Config,
-    summary_bank: torch.Tensor,
-    graph_neighbors: torch.Tensor,
-    graph_weights: torch.Tensor,
-    graph_mask: torch.Tensor,
-    split: str = "test",
-) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    model.eval()
-    if split == "test":
-        users_all, seqs_all, items_all = data.test_users, data.test_seq, data.test_items
-    else:
-        users_all, seqs_all, items_all = data.val_users, data.val_seq, data.val_items
-
-    total = users_all.numel()
-    if cfg.max_eval_users:
-        total = min(total, cfg.max_eval_users)
-    hr = np.zeros(total, dtype=np.float64)
-    ndcg = np.zeros(total, dtype=np.float64)
-    if total == 0:
-        return np.zeros(0, dtype=np.int64), hr, ndcg
-
-    for batch in batched_indices(torch.arange(total, device=users_all.device), cfg.eval_batch_size):
-        b_users = users_all[batch]
-        b_items = items_all[batch]
-        neighbors, weights, gmask = graph_batch(
-            b_users, summary_bank, graph_neighbors, graph_weights, graph_mask
-        )
-        if neighbors is not None:
-            base_feats, _ = model(seqs_all[batch])
-            feats, short_summary = model(seqs_all[batch], neighbors, weights, gmask)
-            score_feats = model.score_representation(feats[:, -1, :], short_summary, base_feats[:, -1, :])
-        else:
-            feats, short_summary = model(seqs_all[batch])
-            score_feats = model.score_representation(feats[:, -1, :], short_summary)
-        scores = torch.matmul(score_feats.unsqueeze(1), model.item_emb(b_items).transpose(-1, -2)).squeeze(1)
-        _, top_indices = torch.topk(scores, cfg.top_k, dim=1)
-        hits = top_indices == 0
-        found = hits.any(dim=1)
-        ranks = hits.float().argmax(dim=1)
-        idx = batch.cpu().numpy()
-        hr[idx] = found.float().cpu().numpy()
-        ndcg[idx] = torch.where(
-            found, math.log(2.0) / torch.log(ranks.float() + 2.0), torch.zeros_like(ranks.float())
-        ).cpu().numpy()
-    return users_all[:total].cpu().numpy(), hr, ndcg
-
-
 # ======================================================================================
 # 边级探针：旧/新兴趣同伴占比 + 相对 onset 前的 turnover
 # ======================================================================================
@@ -823,9 +636,7 @@ class GroupProbe:
         self.num_users = num_users
 
     @torch.no_grad()
-    def snapshot(
-        self, graph_neighbors: torch.Tensor, summary_bank: Optional[torch.Tensor], window: int
-    ) -> None:
+    def snapshot(self, graph, summary_bank: Optional[torch.Tensor], window: int) -> None:
         """窗口开始时，给 onset == 本窗口的计划内用户存一份"变化前"的邻居与摘要快照。"""
         if self.ref_neighbors is None:
             return
@@ -833,7 +644,7 @@ class GroupProbe:
         if sel.size == 0:
             return
         users = torch.as_tensor(self.plan.users[sel], dtype=torch.long, device=self.device)
-        self.ref_neighbors[users] = graph_neighbors[users]
+        self.ref_neighbors[users] = graph.ids[users]
         if summary_bank is not None:
             if self.ref_summary is None:
                 self.ref_summary = torch.zeros_like(summary_bank)
@@ -843,9 +654,7 @@ class GroupProbe:
     def probe(
         self,
         users: np.ndarray,
-        graph_neighbors: torch.Tensor,
-        graph_weights: torch.Tensor,
-        graph_mask: torch.Tensor,
+        graph,
         summary_bank: Optional[torch.Tensor] = None,
     ) -> Dict[str, np.ndarray]:
         """返回这些用户（必须是计划内成员）的边级指标，数组顺序与 users 一致。"""
@@ -863,10 +672,12 @@ class GroupProbe:
             return result
 
         user_ids = torch.as_tensor(users[member], dtype=torch.long, device=self.device)
-        nbr = graph_neighbors[user_ids]
-        w = graph_weights[user_ids] * graph_mask[user_ids].float().unsqueeze(1)
+        nbr = graph.ids[user_ids]                                        # (G, K)，无效位是 -1
+        slot_valid = nbr >= 0
+        user_valid = graph.mask[user_ids]
+        w = graph.weights[user_ids] * slot_valid.float() * user_valid.float().unsqueeze(1)
         denom = w.sum(dim=1).clamp_min(1e-8)
-        n_valid = (nbr >= 0).float().sum(dim=1)
+        n_valid = slot_valid.float().sum(dim=1)
 
         # 上传摘要相对 onset 前快照的位移：把"兴趣摘要本身有没有恢复"与"图有没有恢复"分开看
         if summary_bank is not None and self.ref_summary is not None:
@@ -910,61 +721,55 @@ class GroupProbe:
             eq = (ref.unsqueeze(2) == nbr.unsqueeze(1)) & (ref.unsqueeze(2) >= 0) & (nbr.unsqueeze(1) >= 0)
             inter = eq.any(dim=2).sum(dim=1).float()
             n_ref = (ref >= 0).sum(dim=1).float()
-            n_cur = (nbr >= 0).sum(dim=1).float()
+            n_cur = n_valid
             union = (n_ref + n_cur - inter).clamp_min(1e-8)
-            turnover = torch.where(n_ref > 0, 1.0 - inter / union, torch.full_like(inter, float("nan")))
+            jaccard = inter / union
+            turnover = torch.where(n_ref > 0, 1.0 - jaccard, torch.full_like(jaccard, float("nan")))
             result["turnover_from_pre"][member] = turnover.cpu().numpy()
         return result
 
 
-# ======================================================================================
-# 参与序列（与实验一/实验二同一实现）
-# ======================================================================================
-def build_participation_schedule(
-    num_users: int, total_rounds: int, clients_per_round: int, seed: int, device: torch.device
-) -> List[torch.Tensor]:
-    generator = torch.Generator(device=device)
-    generator.manual_seed(seed + 7919)
-    clients_per_round = max(1, min(clients_per_round, num_users))
-    schedule: List[torch.Tensor] = []
-    for _ in range(total_rounds):
-        order = torch.randperm(num_users, generator=generator, device=device)
-        schedule.append(order if clients_per_round >= num_users else order[:clients_per_round])
-    return schedule
+# 参与序列统一由 feddieg_core.federated.build_participation_schedule 提供（对齐 A/B 版）。
 
 
 # ======================================================================================
 # 单次运行
 # ======================================================================================
+# ======================================================================================
+# 单次运行（真正的 FedAvg + 论文公式的动态图）
+# ======================================================================================
 def run_single(
-    cfg: Val03Config, windows: List[FastData], plan: Plan, device: torch.device, out_dir: Path,
+    cfg: FedDIEGConfig,
+    scenario: str,
+    windows: List[ClientWindow],
+    plan: Plan,
+    device: torch.device,
+    out_dir: Path,
     inject_stats: Dict[str, object],
 ) -> None:
     set_seed(cfg.seed)
     num_users = windows[0].num_users
-    model = FedDIEGModel(windows[0].num_items, cfg).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=cfg.lr, betas=(0.9, 0.98))
-    clients_per_round = min(
-        cfg.clients_per_round or max(int(cfg.participation_rate * num_users), 1), num_users
+    num_items = windows[0].num_items
+    clients_per_round = cfg.resolved_clients_per_round(num_users)
+    schedule = build_participation_schedule(
+        num_users, cfg.total_rounds, clients_per_round, cfg.seed
     )
-    total_rounds = cfg.num_windows * cfg.rounds_per_window
-    schedule = build_participation_schedule(num_users, total_rounds, clients_per_round, cfg.seed, device)
 
-    topk = max(int(cfg.feddieg_neighbors), 1)
-    summary_bank = torch.zeros((num_users, cfg.latent_dim), device=device)
-    active_clients = torch.zeros(num_users, dtype=torch.bool, device=device)
-    graph_neighbors = torch.full((num_users, topk), -1, dtype=torch.long, device=device)
-    graph_weights = torch.zeros((num_users, topk), dtype=torch.float32, device=device)
-    graph_mask = torch.zeros(num_users, dtype=torch.bool, device=device)
-    smooth_state = torch.zeros((num_users, topk), dtype=torch.float32, device=device)
+    trainer = FedTrainer(cfg, num_users, num_items, device)
+    graph = DynamicInterestGraph(cfg, num_users, device)
+    eval_model = build_eval_model(trainer, cfg)
+    rng = np.random.default_rng(cfg.seed)
 
-    generator = torch.Generator(device=device)
-    generator.manual_seed(cfg.seed)
+    print(
+        f"[{scenario}|rho={cfg.rho:.2f}] 联邦设置：N={num_users}, m={clients_per_round} "
+        f"(C={cfg.participation_rate}), E={cfg.local_epochs}, "
+        f"personalization={cfg.personalization}, FedAvg={cfg.fedavg_weighting}"
+    )
+    print(f"[{scenario}|rho={cfg.rho:.2f}] 图设置：{graph.describe()}")
 
     probe = GroupProbe(plan, device)
-    probe.init_ref(num_users, topk)
+    probe.init_ref(num_users, graph.k)
 
-    # 查表：每个用户属于哪个组（-1 = 不在计划内）
     group_of = np.full(num_users, -1, dtype=np.int64)
     group_of[plan.users] = plan.group
     plan_users = plan.users
@@ -976,12 +781,12 @@ def run_single(
     start_time = time.time()
     global_round = 0
 
-    for window_idx, data in enumerate(windows, start=1):
+    for window_idx, window in enumerate(windows, start=1):
         print(
-            f"\n[{cfg.scenario}|rho={cfg.rho:.2f}] Window {window_idx}/{cfg.num_windows} | "
-            f"eval_users={data.test_users.numel()}"
+            f"\n[{scenario}|rho={cfg.rho:.2f}] Window {window_idx}/{cfg.num_windows} | "
+            f"eval_users={window.test_users.numel()} | train_clients={window.active_users.numel()}"
         )
-        probe.snapshot(graph_neighbors, summary_bank, window_idx)
+        probe.snapshot(graph, trainer.summary_bank, window_idx)
         last_ndcg = 0.0
 
         for window_round in range(1, cfg.rounds_per_window + 1):
@@ -989,101 +794,41 @@ def run_single(
             round_start = time.time()
             sampled = schedule[global_round - 1]
 
-            losses: List[float] = []
-            model.train()
-            for _ in range(cfg.local_epochs):
-                shuffled = sampled[torch.randperm(sampled.numel(), generator=generator, device=device)]
-                for users in batched_indices(shuffled, cfg.microbatch_size):
-                    seq, pos, mask = data.train_seq[users], data.train_pos[users], data.train_mask[users]
-                    neg = sample_negative_like(pos, data.num_items)
-                    optimizer.zero_grad(set_to_none=True)
+            stats = trainer.train_round(sampled, window, graph, global_round, rng)
 
-                    neighbors, weights, gmask = graph_batch(
-                        users, summary_bank, graph_neighbors, graph_weights, graph_mask
-                    )
-                    feats, short_summary = model(seq, neighbors, weights, gmask)
-                    rec_loss = bce_seq_loss(
-                        (feats * model.item_emb(pos)).sum(dim=-1),
-                        (feats * model.item_emb(neg)).sum(dim=-1),
-                        mask,
-                    )
-
-                    has_prev = active_clients[users]
-                    if cfg.lambda_temp > 0 and has_prev.any():
-                        temp_loss = (
-                            1.0
-                            - F.cosine_similarity(
-                                short_summary[has_prev],
-                                summary_bank[users][has_prev].detach(),
-                                dim=-1,
-                                eps=1e-8,
-                            )
-                        ).mean()
-                    else:
-                        temp_loss = torch.zeros((), device=device)
-
-                    if cfg.lambda_struct > 0 and neighbors is not None and gmask is not None and gmask.any():
-                        target = weights[gmask].detach()
-                        logits = F.cosine_similarity(
-                            short_summary[gmask].unsqueeze(1), neighbors[gmask], dim=-1, eps=1e-8
-                        ).clamp_min(0.0)
-                        logits = logits.masked_fill(target <= 0, -1e9)
-                        pred = F.softmax(logits / max(cfg.feddieg_neighbor_temp, 1e-6), dim=1)
-                        pred = torch.where(target > 0, pred, torch.zeros_like(pred))
-                        pred = pred / pred.sum(dim=1, keepdim=True).clamp_min(1e-8)
-                        struct_loss = F.mse_loss(pred, target)
-                    else:
-                        struct_loss = torch.zeros((), device=device)
-
-                    loss = rec_loss + cfg.lambda_temp * temp_loss + cfg.lambda_struct * struct_loss
-                    loss.backward()
-                    optimizer.step()
-                    losses.append(float(loss.item()))
-
-                    # 客户端上传兴趣摘要（只有参与的客户端刷新缓存）
-                    new_memory = short_summary.detach()
-                    momentum = min(max(cfg.feddieg_memory_momentum, 0.0), 0.99)
-                    with torch.no_grad():
-                        seen = active_clients[users].float().unsqueeze(-1)
-                        summary_bank[users] = seen * (
-                            momentum * summary_bank[users] + (1.0 - momentum) * new_memory
-                        ) + (1.0 - seen) * new_memory
-                        active_clients[users] = True
-
-            updated_users, ecr_values = update_graph(
-                sampled,
-                summary_bank,
-                active_clients,
-                graph_neighbors,
-                graph_weights,
-                graph_mask,
-                smooth_state,
-                cfg.feddieg_neighbors,
-                cfg.feddieg_min_sim,
-                cfg.rho,
-                cfg.graph_block_size,
-                gate_on=cfg.graph_gate,
-                new_edge_init=cfg.new_edge_init,
+            if cfg.graph_update_scope == "all":
+                update_users = torch.arange(num_users, device=device)
+            else:
+                update_users = torch.tensor(sampled, dtype=torch.long, device=device)
+            gstats = graph.update(
+                trainer.summary_bank, trainer.summary_active, update_users, global_round
             )
+            if gstats is not None and len(gstats) > 0:
+                upd = gstats.updated.numpy()
+                ecr_arr = gstats.ecr.numpy()
+                ecr_map = dict(zip(upd.tolist(), ecr_arr.tolist()))
+                ecr_overall = float(ecr_arr.mean())
+                added_overall = float(gstats.n_added.mean())
+            else:
+                ecr_map = {}
+                ecr_overall = 0.0
+                added_overall = 0.0
 
             should_eval = (window_round % cfg.eval_every == 0) or (window_round == cfg.rounds_per_window)
             if not should_eval:
                 continue
 
-            test_users, test_hr, test_ndcg = evaluate_per_user(
-                model, data, cfg, summary_bank, graph_neighbors, graph_weights, graph_mask, "test"
-            )
+            result = evaluate_split(trainer, eval_model, window, graph, "test", cfg)
+            test_users, test_hr, test_ndcg = result["users"], result["hr"], result["ndcg"]
             all_ndcg = float(test_ndcg.mean()) if test_ndcg.size else 0.0
             last_ndcg = all_ndcg
 
-            upd = updated_users.numpy()
-            ecr = ecr_values.numpy()
-            ecr_map = dict(zip(upd.tolist(), ecr.tolist()))
-
             present = (
-                test_users[np.isin(test_users, plan_users)] if test_users.size else np.zeros(0, dtype=np.int64)
+                test_users[np.isin(test_users, plan_users)]
+                if test_users.size
+                else np.zeros(0, dtype=np.int64)
             )
-            edge_stats = probe.probe(present, graph_neighbors, graph_weights, graph_mask, summary_bank)
+            edge_stats = probe.probe(present, graph, trainer.summary_bank)
             ndcg_map = dict(zip(test_users.tolist(), test_ndcg.tolist()))
             hr_map = dict(zip(test_users.tolist(), test_hr.tolist()))
 
@@ -1106,7 +851,7 @@ def run_single(
                 user_rows.append(
                     {
                         "dataset": cfg.dataset,
-                        "scenario": cfg.scenario,
+                        "scenario": scenario,
                         "rho": cfg.rho,
                         "seed": cfg.seed,
                         "group": GROUPS[gid],
@@ -1154,12 +899,14 @@ def run_single(
                 onset_values = plan.onset[plan.group == gid]
                 shared_onset = int(onset_values[0]) if np.unique(onset_values).size == 1 else 0
                 rel_round = (
-                    global_round - (shared_onset - 1) * cfg.rounds_per_window if shared_onset else float("nan")
+                    global_round - (shared_onset - 1) * cfg.rounds_per_window
+                    if shared_onset
+                    else float("nan")
                 )
                 group_round_rows.append(
                     {
                         "dataset": cfg.dataset,
-                        "scenario": cfg.scenario,
+                        "scenario": scenario,
                         "rho": cfg.rho,
                         "seed": cfg.seed,
                         "window": window_idx,
@@ -1176,14 +923,14 @@ def run_single(
                         "turnover": _nanmean(bucket["turn"]),
                         "ecr_mean": _nanmean(bucket["ecr"]),
                         "summary_drift": _nanmean(bucket["drift"]),
-                        "train_loss": mean(losses),
+                        "train_loss": stats.loss,
                     }
                 )
             # 全体（不限计划内用户）
             group_round_rows.append(
                 {
                     "dataset": cfg.dataset,
-                    "scenario": cfg.scenario,
+                    "scenario": scenario,
                     "rho": cfg.rho,
                     "seed": cfg.seed,
                     "window": window_idx,
@@ -1198,21 +945,20 @@ def run_single(
                     "old_peer_share": float("nan"),
                     "new_peer_share": float("nan"),
                     "turnover": float("nan"),
-                    "ecr_mean": float(ecr.mean()) if ecr.size else float("nan"),
+                    "ecr_mean": ecr_overall,
                     "summary_drift": float("nan"),
-                    "train_loss": mean(losses),
+                    "train_loss": stats.loss,
                 }
             )
             round_rows.extend(group_round_rows)
-            window_ecrs.append(float(ecr.mean()) if ecr.size else 0.0)
+            window_ecrs.append(ecr_overall)
 
-            inj_summary = next(
-                (row for row in group_round_rows if row["group"] == "inj"), None
-            )
+            inj_summary = next((row for row in group_round_rows if row["group"] == "inj"), None)
             print(
-                f"[{cfg.scenario}|rho={cfg.rho:.2f}] W{window_idx} R{window_round:03d}/"
-                f"{cfg.rounds_per_window} | loss {mean(losses):.4f} | "
-                f"NDCG all {all_ndcg:.4f}"
+                f"[{scenario}|rho={cfg.rho:.2f}] W{window_idx} R{window_round:03d}/"
+                f"{cfg.rounds_per_window} | loss {stats.loss:.4f} | "
+                f"trained {stats.n_trained}/{stats.n_clients} | "
+                f"ECR {ecr_overall:.4f} (+{added_overall:.2f}) | NDCG all {all_ndcg:.4f}"
                 + (
                     f" | inj {inj_summary['ndcg']:.4f} turn {inj_summary['turnover']:.3f}"
                     if inj_summary is not None
@@ -1224,20 +970,23 @@ def run_single(
         window_ndcgs.append(last_ndcg)
         write_csv(out_dir / "val03_round_metrics.csv", round_rows, ROUND_FIELDS)
         write_csv(out_dir / "val03_user_round_metrics.csv", user_rows, USER_FIELDS)
-        print(f"[{cfg.scenario}|rho={cfg.rho:.2f}] W{window_idx} end | NDCG@10 {last_ndcg:.4f} | rows={len(user_rows)}")
+        print(
+            f"[{scenario}|rho={cfg.rho:.2f}] W{window_idx} end | NDCG@{cfg.top_k} {last_ndcg:.4f} "
+            f"| rows={len(user_rows)}"
+        )
 
     summary = {
         "dataset": cfg.dataset,
-        "scenario": cfg.scenario,
+        "scenario": scenario,
         "rho": cfg.rho,
         "seed": cfg.seed,
-        "graph_gate": cfg.graph_gate,
-        "new_edge_init": cfg.new_edge_init,
-        "graph_strength": cfg.graph_strength,
-        "graph_mix": cfg.feddieg_graph_mix,
+        "graph_gate": "raw (余弦量纲)",
+        "new_edge_init": cfg.graph_new_edge,
+        "graph_strength": f"graph_mix={cfg.graph_mix}",
+        "graph_mix": cfg.graph_mix,
         "num_windows": cfg.num_windows,
         "rounds_per_window": cfg.rounds_per_window,
-        "total_rounds": total_rounds,
+        "total_rounds": cfg.total_rounds,
         "clients_per_round": clients_per_round,
         "inject_onset": plan.inject_onset,
         "inject_windows": " ".join(str(w) for w in plan.inject_windows),
@@ -1252,10 +1001,18 @@ def run_single(
         "all_final_ndcg": window_ndcgs[-1] if window_ndcgs else 0.0,
         "avg_ecr": mean(window_ecrs),
         "elapsed_seconds": time.time() - start_time,
+        "core_version": CORE_VERSION,
+        "local_epochs": cfg.local_epochs,
+        "fedavg_weighting": cfg.fedavg_weighting,
+        "personalization": cfg.personalization,
+        "graph_state": cfg.graph_state,
+        "graph_update_scope": cfg.graph_update_scope,
+        "neighbors": cfg.neighbors,
+        "summary_momentum": cfg.summary_momentum,
     }
     write_csv(out_dir / "val03_summary.csv", [summary], SUMMARY_FIELDS)
     print(
-        f"\n[{cfg.scenario}|rho={cfg.rho:.2f}] seed{cfg.seed} done in "
+        f"\n[{scenario}|rho={cfg.rho:.2f}] seed{cfg.seed} done in "
         f"{summary['elapsed_seconds']:.1f}s | avg_ndcg={summary['all_avg_ndcg']:.4f} | "
         f"avg_ecr={summary['avg_ecr']:.4f}"
     )
@@ -1266,184 +1023,75 @@ def run_single(
 # ======================================================================================
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="val03: 短期兴趣扰动 vs 持续兴趣变化，固定 EMA 是否区分得开"
+        description="val03: 短期兴趣扰动 vs 持续兴趣变化，固定 EMA 是否区分得开（FedAvg 版）"
     )
-    parser.add_argument("--dataset", default="movielens-1m")
     parser.add_argument("--scenario", choices=list(SCENARIOS), default="sustained")
-    parser.add_argument("--rho", type=float, default=0.80, help="边权 EMA 系数（论文默认 0.8）")
-    parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--participation-rate", type=float, default=1.0)
-    parser.add_argument("--clients-per-round", type=int, default=None)
-    parser.add_argument("--num-windows", type=int, default=5)
-    parser.add_argument("--rounds-per-window", type=int, default=120)
-    parser.add_argument("--window-mode", choices=["slice", "cumulative"], default="slice")
-    parser.add_argument("--eval-every", type=int, default=10)
-    parser.add_argument("--microbatch-size", type=int, default=512)
-    parser.add_argument("--eval-batch-size", type=int, default=2048)
-    parser.add_argument("--max-eval-users", type=int, default=None)
-    parser.add_argument("--local-epochs", type=int, default=1)
-    parser.add_argument("--lr", type=float, default=0.001)
-    parser.add_argument("--num-threads", type=int, default=4)
-    parser.add_argument("--candidate-count", type=int, default=99)
-    parser.add_argument("--latent-dim", type=int, default=64)
-    parser.add_argument("--max-len", type=int, default=50)
-    parser.add_argument("--top-k", type=int, default=10)
-    parser.add_argument("--num-heads", type=int, default=4)
-    parser.add_argument("--num-blocks", type=int, default=2)
-    parser.add_argument("--dropout-rate", type=float, default=0.2)
-    parser.add_argument("--feddieg-neighbors", type=int, default=10)
-    parser.add_argument(
-        "--graph-strength",
-        choices=["paper", "strong"],
-        default="paper",
-        help="图影响强度预设：paper=已发表配置；strong=放大图影响（敏感性对照，见 GRAPH_PRESETS）",
-    )
-    parser.add_argument("--feddieg-graph-mix", type=float, default=None, help="默认跟随 --graph-strength")
-    parser.add_argument("--feddieg-neighbor-temp", type=float, default=0.07)
-    parser.add_argument("--feddieg-min-sim", type=float, default=0.20)
-    parser.add_argument("--feddieg-tail-power", type=float, default=None, help="默认跟随 --graph-strength")
-    parser.add_argument("--feddieg-memory-momentum", type=float, default=0.8)
-    parser.add_argument("--feddieg-short-score-mix", type=float, default=0.05)
-    parser.add_argument("--feddieg-confidence-power", type=float, default=None, help="默认跟随 --graph-strength")
-    parser.add_argument("--feddieg-agreement-power", type=float, default=None, help="默认跟随 --graph-strength")
-    parser.add_argument("--feddieg-score-local-mix", type=float, default=None, help="默认跟随 --graph-strength")
-    parser.add_argument("--lambda-temp", type=float, default=0.01)
-    parser.add_argument("--lambda-struct", type=float, default=0.20)
-    parser.add_argument(
-        "--graph-gate",
-        choices=["raw", "blended"],
-        default="raw",
-        help="min_sim 阈值作用在原始余弦（raw，推荐）还是混合后的值（blended，原实现）",
-    )
-    parser.add_argument(
-        "--new-edge-init",
-        choices=["ema", "warm", "zero"],
-        default="ema",
-        help="新边初值：ema=忠实复刻原实现（默认）；warm=新边不被惩罚（消掉滞后机制的对照）；zero=从 0 涨",
-    )
-    parser.add_argument("--graph-block-size", type=int, default=2048)
     parser.add_argument("--inject-fraction", type=float, default=None,
-                        help="注入窗口内被替换的交互比例；默认读 plan 里的值（1.0）")
+                        help="注入窗口内被替换的交互比例；默认读 plan 里的值")
     parser.add_argument("--plan-root", type=Path, default=DEFAULT_PLAN_ROOT)
     parser.add_argument("--plan-dir", type=Path, default=None)
-    parser.add_argument("--out-root", type=Path, default=DEFAULT_OUT_ROOT)
-    parser.add_argument("--out-dir", type=Path, default=None)
     parser.add_argument("--self-check", action="store_true",
                         help="校验未被修改的数据帧与原 load_rolling_windows 逐元素一致（开发用）")
+    add_feddieg_args(parser)
+    parser.set_defaults(out_root=DEFAULT_OUT_ROOT, rho=0.2)
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
-    preset = GRAPH_PRESETS[args.graph_strength]
-    for key, preset_value in preset.items():
-        if getattr(args, key, None) is None:
-            setattr(args, key, preset_value)
+    cfg = config_from_args(args)
+    if args.smoke and args.out_dir is None:
+        # smoke 至少要有 3 个窗口，否则 plan 的注入窗口（onset=3）根本不存在
+        cfg = cfg.clone(num_windows=max(3, cfg.num_windows))
+        cfg.rounds = cfg.total_rounds
+    cfg.validate()
+    prepare_runtime(cfg)
 
-    cfg = Val03Config(
-        dataset=args.dataset,
-        methods=("FedDIEG",),
-        seed=args.seed,
-        rounds=args.num_windows * args.rounds_per_window,
-        participation_rate=args.participation_rate,
-        clients_per_round=args.clients_per_round,
-        microbatch_size=args.microbatch_size,
-        eval_batch_size=args.eval_batch_size,
-        max_eval_users=args.max_eval_users,
-        local_epochs=args.local_epochs,
-        lr=args.lr,
-        latent_dim=args.latent_dim,
-        max_len=args.max_len,
-        top_k=args.top_k,
-        eval_every=args.eval_every,
-        num_heads=args.num_heads,
-        num_blocks=args.num_blocks,
-        dropout_rate=args.dropout_rate,
-        feddieg_neighbors=args.feddieg_neighbors,
-        feddieg_graph_mix=args.feddieg_graph_mix,
-        feddieg_neighbor_temp=args.feddieg_neighbor_temp,
-        feddieg_min_sim=args.feddieg_min_sim,
-        feddieg_tail_power=args.feddieg_tail_power,
-        feddieg_memory_momentum=args.feddieg_memory_momentum,
-        feddieg_short_score_mix=args.feddieg_short_score_mix,
-        feddieg_confidence_power=args.feddieg_confidence_power,
-        feddieg_agreement_power=args.feddieg_agreement_power,
-        feddieg_score_local_mix=args.feddieg_score_local_mix,
-        feddieg_final_loss_weight=0.0,
-        feddieg_boundary_refresh_rate=0.0,
-        feddieg_boundary_refresh_momentum=0.2,
-        num_threads=args.num_threads,
-        num_windows=args.num_windows,
-        rounds_per_window=args.rounds_per_window,
-        candidate_count=args.candidate_count,
-        window_mode=args.window_mode,
-        lambda_temp=args.lambda_temp,
-        lambda_struct=args.lambda_struct,
-        rho=args.rho,
-        scenario=args.scenario,
-        graph_gate=args.graph_gate,
-        new_edge_init=args.new_edge_init,
-        graph_block_size=args.graph_block_size,
-        graph_strength=args.graph_strength,
-        plan_root=args.plan_root,
-        plan_dir=str(args.plan_dir) if args.plan_dir else None,
-        inject_fraction=args.inject_fraction if args.inject_fraction is not None else 1.0,
-        self_check=args.self_check,
-    )
-
-    if not (0.0 <= cfg.rho < 1.0):
-        raise SystemExit("--rho 必须在 [0, 1) 区间内")
-    if cfg.feddieg_min_sim <= 0:
-        raise SystemExit("--feddieg-min-sim 必须 > 0")
-    if not (0.0 < cfg.inject_fraction <= 1.0):
+    inject_fraction = args.inject_fraction if args.inject_fraction is not None else 1.0
+    if not (0.0 < inject_fraction <= 1.0):
         raise SystemExit("--inject-fraction 必须在 (0, 1] 区间内")
 
-    torch.set_num_threads(cfg.num_threads)
     set_seed(cfg.seed)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = make_device(cfg.device)
 
     out_dir = (
         args.out_dir.resolve()
         if args.out_dir is not None
-        else make_out_dir(args.out_root, cfg.dataset, cfg.scenario, cfg.rho, cfg.seed)
+        else make_out_dir(args.out_root, cfg.dataset, args.scenario, cfg.rho, cfg.seed)
     )
-    out_dir.mkdir(parents=True, exist_ok=True)
-    log_handle = (out_dir / "val03_run.log").open("a", encoding="utf-8")
-    sys.stdout = Tee(sys.__stdout__, log_handle)  # type: ignore[assignment]
-    sys.stderr = Tee(sys.__stderr__, log_handle)  # type: ignore[assignment]
+    if args.smoke:
+        # smoke 输出单独放到 <out_root>_smoke，避免污染正式结果的聚合脚本
+        out_dir = Path(str(args.out_root) + "_smoke") / out_dir.relative_to(args.out_root)
+    warn_if_legacy_results(out_dir)
+    open_log(out_dir, "val03_run.log")
 
     print(f"Output directory: {out_dir}")
     print(f"Device: {device}" + (f" | GPU: {torch.cuda.get_device_name(0)}" if torch.cuda.is_available() else ""))
-    print("Config:", json.dumps(asdict(cfg), indent=2, ensure_ascii=False, default=str))
-    (out_dir / "config.json").write_text(
-        json.dumps(asdict(cfg), indent=2, ensure_ascii=False, default=str), encoding="utf-8"
-    )
+    print("Config:", json.dumps({**asdict(cfg), "scenario": args.scenario}, indent=2,
+                                ensure_ascii=False, default=str))
+    dump_json(out_dir / "config.json", {**asdict(cfg), "scenario": args.scenario,
+                                        "core_version": CORE_VERSION})
 
     plan_dir = (
-        Path(cfg.plan_dir).resolve()
-        if cfg.plan_dir
-        else (Path(cfg.plan_root) / safe_slug(cfg.dataset)).resolve()
+        Path(args.plan_dir).resolve()
+        if args.plan_dir
+        else (Path(args.plan_root) / safe_slug(cfg.dataset)).resolve()
     )
-    plan = load_plan(plan_dir, cfg.scenario)
+    plan = load_plan(plan_dir, args.scenario)
     plan_meta = json.loads((plan_dir / "val03_scenario_meta.json").read_text(encoding="utf-8"))
-    if cfg.inject_fraction == 1.0 and "config" in plan_meta:
-        cfg.inject_fraction = float(plan_meta["config"].get("inject_fraction", 1.0))
-        print(f"[plan] 采用 plan 里的 inject_fraction={cfg.inject_fraction}")
+    if inject_fraction == 1.0 and "config" in plan_meta:
+        inject_fraction = float(plan_meta["config"].get("inject_fraction", 1.0))
+        print(f"[plan] 采用 plan 里的 inject_fraction={inject_fraction}")
 
-    full_df, timestamps = build_full_frame(cfg.dataset)
+    full_df, _timestamps = build_full_frame(cfg.dataset)
     windows_idx = frame_windows(len(full_df), cfg.num_windows)
+    exp2_cfg = _exp2_cfg(cfg)
 
-    exp2_cfg = Exp2Config(**{field: getattr(cfg, field) for field in Exp2Config.__dataclass_fields__})
-    exp2_cfg.num_windows = cfg.num_windows
-    exp2_cfg.rounds_per_window = cfg.rounds_per_window
-    exp2_cfg.candidate_count = cfg.candidate_count
-    exp2_cfg.window_mode = cfg.window_mode
-
-    if cfg.self_check:
+    if args.self_check:
         reference = load_rolling_windows(exp2_cfg)
         mine = load_rolling_windows_from_frame(exp2_cfg, full_df)
         worst = 0.0
-        for w_idx, (ref, cur) in enumerate(zip(reference, mine), start=1):
+        for ref, cur in zip(reference, mine):
             for name in ("train_seq", "train_pos", "val_seq", "test_seq", "test_items"):
                 a = getattr(ref, name)
                 b = getattr(cur, name)
@@ -1454,11 +1102,42 @@ def main() -> None:
             raise SystemExit("[self-check] 窗口构造与 exp02 不一致，停止（避免两个实验口径不同）")
 
     injected_df, inject_stats = apply_injections(
-        full_df, windows_idx, plan, cfg.scenario, cfg.inject_fraction, cfg.seed
+        full_df, windows_idx, plan, args.scenario, inject_fraction, cfg.seed
     )
-    windows = [w.to(device) for w in load_rolling_windows_from_frame(exp2_cfg, injected_df)]
-    run_single(cfg, windows, plan, device, out_dir, inject_stats)
+    fast_windows = load_rolling_windows_from_frame(exp2_cfg, injected_df)
+    num_users = int(fast_windows[0].num_users)
+    history_sets = history_sets_from_frame(injected_df, cfg.num_windows, num_users)
+    problems = verify_consistency(fast_windows, history_sets)
+    if problems:
+        raise SystemExit("历史集合与训练序列不一致：" + "; ".join(problems[:3]))
+    windows = [
+        from_fast_data(fast, hist, idx)
+        for idx, (fast, hist) in enumerate(zip(fast_windows, history_sets), start=1)
+    ]
+    run_single(cfg, args.scenario, windows, plan, device, out_dir, inject_stats)
     print(f"\nDone: {out_dir}")
+
+
+def _exp2_cfg(cfg: FedDIEGConfig) -> Exp2Config:
+    """构造 exp_02 的 Exp2Config（数据窗口协议仍走官方实现）。"""
+    return Exp2Config(
+        dataset=cfg.dataset,
+        seed=cfg.seed,
+        latent_dim=cfg.latent_dim,
+        max_len=cfg.max_len,
+        top_k=cfg.top_k,
+        num_heads=cfg.num_heads,
+        num_blocks=cfg.num_blocks,
+        dropout_rate=cfg.dropout_rate,
+        num_windows=cfg.num_windows,
+        rounds_per_window=cfg.rounds_per_window,
+        candidate_count=cfg.candidate_count,
+        window_mode=cfg.window_mode,
+        eval_every=cfg.eval_every,
+        eval_batch_size=cfg.eval_batch_size,
+        max_eval_users=cfg.max_eval_users,
+        num_threads=cfg.num_threads,
+    )
 
 
 if __name__ == "__main__":

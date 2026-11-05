@@ -6,26 +6,27 @@
 # 默认行为（一条命令跑完所有结果）：
 #   ① 对两个数据集（MovieLens-1M + amazon-digital music）做离线漂移识别
 #      （稀疏数据集的 cohort 会自动放宽阈值；实在不可用的数据集自动跳过）
-#   ② 4 个 rho（0 / 0.5 / 0.8 / 0.95）× 3 个随机种子（42/777/2024）× 参与率 100%
+#   ② 5 个 rho（0.2 / 0 / 0.5 / 0.8 / 0.95；0.2 = 论文默认）× 3 个种子 × 参与率 10%（论文 C=0.1）
 #   ③ 自动聚合并出图 → results/aggregated/
 #
 #   已完成的任务自动跳过，中断后重跑同一条命令即可续跑；单个任务失败不会中断整轮。
 #
 # 常用变体：
 #   DATASETS="movielens-1m" SEEDS="42" ROUNDS=40 bash .../val02_run_basic.sh   # 先探路
-#   GRAPH_STRENGTH=strong bash .../val02_run_basic.sh        # 只跑放大图影响的敏感性组
-#   GRAPH_STRENGTH=all bash .../val02_run_basic.sh           # 两组都跑（约 4 小时）
+#   GRAPH_STATE=topk bash .../val02_run_basic.sh             # 复现旧的"图冻结"行为做对照
+#   DEVICE=cuda bash .../val02_run_basic.sh                  # 用 GPU 跑
 #   NO_AGGREGATE=1 bash .../val02_run_basic.sh               # 只跑训练不聚合
 set -uo pipefail
 
 DATASETS="${DATASETS:-movielens-1m,amazon-digital music}"
 SEEDS="${SEEDS:-42 777 2024}"
-RHOS="${RHOS:-0 0.5 0.8 0.95}"
+RHOS="${RHOS:-0.2 0 0.5 0.8 0.95}"   # 0.2 = 论文默认，务必包含
 NUM_WINDOWS="${NUM_WINDOWS:-5}"
 ROUNDS="${ROUNDS:-120}"
-GRAPH_STRENGTH="${GRAPH_STRENGTH:-paper}"
-GATE="${GATE:-raw}"
-NEW_EDGE_INIT="${NEW_EDGE_INIT:-ema}"
+GRAPH_STATE="${GRAPH_STATE:-pool}"      # pool=修复版；topk=复现旧"冻结"行为
+NEW_EDGE_INIT="${NEW_EDGE_INIT:-zero}"  # zero=论文 0 初值；warm=首次观测直接取 Δe
+PARTICIPATION="${PARTICIPATION:-0.1}"   # 论文 C=0.1
+DEVICE="${DEVICE:-auto}"                # auto / cuda / cpu
 MIN_DRIFT_COHORT="${MIN_DRIFT_COHORT:-10}"
 NO_AGGREGATE="${NO_AGGREGATE:-0}"
 PYTHON="${PYTHON:-python}"
@@ -40,11 +41,11 @@ DRIFT_ROOT="$VAL_DIR/results/drift"
 
 slug() { echo "$1" | tr -c 'A-Za-z0-9_\-' '_' | sed 's/^_*//; s/_*$//'; }
 
-# 目录后缀：paper+ema 用默认目录（与已跑结果兼容），其余组各自独立，避免互相覆盖/被误判为已完成
+# 目录后缀：pool+zero 用默认目录（与已跑结果兼容），其余组各自独立，避免互相覆盖/被误判为已完成
 case_tag() {
-    local strength="$1" init="$2" tag=""
-    [ "$strength" != "paper" ] && tag="_${strength}"
-    [ "$init" != "ema" ] && tag="${tag}_${init}"
+    local state="$1" init="$2" tag=""
+    [ "$state" != "pool" ] && tag="_${state}"
+    [ "$init" != "zero" ] && tag="${tag}_${init}"
     echo "$tag"
 }
 
@@ -55,10 +56,10 @@ agg_out_for() {
     echo "$VAL_DIR/results/aggregated$(case_tag "$1" "$2")"
 }
 
-case "$GRAPH_STRENGTH" in
-    all) STRENGTH_LIST="paper strong mix" ;;
-    paper|strong|mix) STRENGTH_LIST="$GRAPH_STRENGTH" ;;
-    *) echo "GRAPH_STRENGTH 只能是 paper / strong / mix / all"; exit 1 ;;
+case "$GRAPH_STATE" in
+    all) STATE_LIST="pool topk" ;;
+    pool|topk) STATE_LIST="$GRAPH_STATE" ;;
+    *) echo "GRAPH_STATE 只能是 pool / topk / all"; exit 1 ;;
 esac
 
 echo "=============================================================="
@@ -67,7 +68,8 @@ echo "  数据集   : $DATASETS"
 echo "  rho      : $RHOS"
 echo "  种子     : $SEEDS"
 echo "  窗口/轮数: $NUM_WINDOWS 窗口 x $ROUNDS 轮"
-echo "  图强度   : $STRENGTH_LIST"
+echo "  图状态   : $STATE_LIST（pool=修复版 / topk=旧冻结行为）"
+echo "  新边初值 : $NEW_EDGE_INIT | 参与率: $PARTICIPATION | 设备: $DEVICE"
 echo "=============================================================="
 
 # ---------------------------------------------------------------------------
@@ -124,7 +126,7 @@ fi
 # ---------------------------------------------------------------------------
 START=$(date +%s)
 FAILED=()
-for STRENGTH in $STRENGTH_LIST; do
+for STRENGTH in $STATE_LIST; do
     OUT_ROOT="$(out_root_for "$STRENGTH" "$NEW_EDGE_INIT")"
     for DATASET in "${RUN_DATASETS[@]}"; do
         S="$(slug "$DATASET")"
@@ -144,10 +146,10 @@ for STRENGTH in $STRENGTH_LIST; do
                     --seed "$SEED" \
                     --num-windows "$NUM_WINDOWS" \
                     --rounds-per-window "$ROUNDS" \
-                    --participation-rate 1.0 \
-                    --graph-strength "$STRENGTH" \
-                    --graph-gate "$GATE" \
-                    --new-edge-init "$NEW_EDGE_INIT" \
+                    --participation-rate "$PARTICIPATION" \
+                    --graph-state "$STRENGTH" \
+                    --graph-new-edge "$NEW_EDGE_INIT" \
+                    --device "$DEVICE" \
                     --out-root "$OUT_ROOT"; then
                     echo "[warn] 运行失败：$DATASET | $STRENGTH | rho=$RHOSTR | seed=$SEED（继续）"
                     FAILED+=("$DATASET|$STRENGTH|rho$RHOSTR|seed$SEED")
@@ -168,7 +170,7 @@ echo "训练阶段结束，用时 $((ELAPSED / 60)) 分 $((ELAPSED % 60)) 秒"
 [ ${#FAILED[@]} -gt 0 ] && echo "失败的运行: ${FAILED[*]}"
 
 if [ "$NO_AGGREGATE" != "1" ]; then
-    for STRENGTH in $STRENGTH_LIST; do
+    for STRENGTH in $STATE_LIST; do
         OUT_ROOT="$(out_root_for "$STRENGTH" "$NEW_EDGE_INIT")"
         AGG_OUT="$(agg_out_for "$STRENGTH" "$NEW_EDGE_INIT")"
         if ! ls "$OUT_ROOT"/*/*/*/val02_summary.csv >/dev/null 2>&1; then
@@ -185,16 +187,16 @@ fi
 
 echo ""
 echo "=============================================================="
-echo "结果位置（本组：$GRAPH_STRENGTH / new-edge-init=$NEW_EDGE_INIT）："
-echo "  $(agg_out_for "$GRAPH_STRENGTH" "$NEW_EDGE_INIT")/figures/val02_fig_ema_recovery.png   <- 任务书要的那张恢复曲线"
-echo "  $(agg_out_for "$GRAPH_STRENGTH" "$NEW_EDGE_INIT")/figures/val02_fig_edge_adjust.png"
-echo "  $(agg_out_for "$GRAPH_STRENGTH" "$NEW_EDGE_INIT")/tables/val02_lag_table.csv"
-echo "  $(agg_out_for "$GRAPH_STRENGTH" "$NEW_EDGE_INIT")/tables/val02_verdict.csv"
-echo "  $(agg_out_for "$GRAPH_STRENGTH" "$NEW_EDGE_INIT")/val02_report.md"
+echo "结果位置（本组：$GRAPH_STATE / new-edge-init=$NEW_EDGE_INIT）："
+echo "  $(agg_out_for "$GRAPH_STATE" "$NEW_EDGE_INIT")/figures/val02_fig_ema_recovery.png   <- 任务书要的那张恢复曲线"
+echo "  $(agg_out_for "$GRAPH_STATE" "$NEW_EDGE_INIT")/figures/val02_fig_edge_adjust.png"
+echo "  $(agg_out_for "$GRAPH_STATE" "$NEW_EDGE_INIT")/tables/val02_lag_table.csv"
+echo "  $(agg_out_for "$GRAPH_STATE" "$NEW_EDGE_INIT")/tables/val02_verdict.csv"
+echo "  $(agg_out_for "$GRAPH_STATE" "$NEW_EDGE_INIT")/val02_report.md"
 echo ""
 echo "可选的后续对照（各自独立目录，不会覆盖已有结果，已完成的会跳过）："
-echo "  GRAPH_STRENGTH=strong ...       放大图影响 + 去掉两个可靠性门控"
-echo "  GRAPH_STRENGTH=mix ...          只提高图权重、保留门控（区分图权重与门控）"
-echo "  NEW_EDGE_INIT=warm ...          新边不被惩罚（检验'冻结'是否来自初始化）"
+echo "  GRAPH_STATE=topk ...            复现旧行为（只存 Top-K → 图冻结），用于对照"
+echo "  NEW_EDGE_INIT=warm ...          新边首次观测直接取 Δe（会让图更灵敏）"
+echo "  DEVICE=cuda ...                 用 GPU 跑"
 echo "  DATASETS=\"movielens-1m\" ...     只跑一个数据集"
 echo "=============================================================="

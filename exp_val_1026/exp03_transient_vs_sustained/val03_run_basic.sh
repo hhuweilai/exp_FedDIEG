@@ -4,23 +4,30 @@
 #   bash exp_val_1026/exp03_transient_vs_sustained/val03_run_basic.sh
 #
 # 等价于 val03_run_basic.ps1，默认：
-#   两个数据集 × 两个场景（sustained / transient）× ρ∈{0, 0.5, 0.8} × 3 个种子
+#   两个数据集 × 两个场景（sustained / transient）× ρ∈{0.2, 0, 0.5, 0.8} × 3 个种子
+#   （0.2 = 论文默认；参与率默认 10% = 论文 C=0.1）
 #   末尾自动聚合到 results/aggregated/
 #
 # 可用环境变量覆盖（与脚本参数同义）：
-#   PYTHON / DATASETS / SEEDS / RHOS / NUM_WINDOWS / ROUNDS / GRAPH_STRENGTH / NEW_EDGE_INIT
+#   PYTHON / DATASETS / SEEDS / RHOS / NUM_WINDOWS / ROUNDS /
+#   GRAPH_STATE(pool|topk) / NEW_EDGE_INIT(zero|warm) / PARTICIPATION / DEVICE
+#
+#   RHOS="0.2,0,0.5,0.8,0.95" bash .../val03_run_basic.sh    # 含论文默认 ρ=0.2
+#   GRAPH_STATE=topk bash .../val03_run_basic.sh             # 复现旧"图冻结"行为
+#   DEVICE=cuda bash .../val03_run_basic.sh                  # 用 GPU 跑
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PYTHON="${PYTHON:-python}"
 DATASETS="${DATASETS:-movielens-1m|amazon-digital music}"
 SEEDS="${SEEDS:-42,777,2024}"
-RHOS="${RHOS:-0,0.5,0.8}"
+RHOS="${RHOS:-0.2,0,0.5,0.8}"
 NUM_WINDOWS="${NUM_WINDOWS:-5}"
 ROUNDS="${ROUNDS:-120}"
-GRAPH_STRENGTH="${GRAPH_STRENGTH:-paper}"
-NEW_EDGE_INIT="${NEW_EDGE_INIT:-ema}"
-GATE="${GATE:-raw}"
+GRAPH_STATE="${GRAPH_STATE:-pool}"      # pool=修复版；topk=复现旧"冻结"行为
+NEW_EDGE_INIT="${NEW_EDGE_INIT:-zero}"  # zero=论文 0 初值；warm=首次观测直接取 Δe
+PARTICIPATION="${PARTICIPATION:-0.1}"   # 论文 C=0.1
+DEVICE="${DEVICE:-auto}"                # auto / cuda / cpu
 
 BUILDER="$HERE/val03_build_scenarios.py"
 RUNNER="$HERE/val03_run_scenario.py"
@@ -29,12 +36,12 @@ PLAN_ROOT="$HERE/results/scenarios"
 
 slug() { echo "$1" | sed 's/[^A-Za-z0-9_-]/_/g' | sed 's/^_*//; s/_*$//'; }
 
-case "${GRAPH_STRENGTH}" in
-    paper)  TAG="" ;;
-    strong) TAG="_strong" ;;
-    *) echo "GRAPH_STRENGTH 只能是 paper / strong"; exit 1 ;;
+case "${GRAPH_STATE}" in
+    pool) TAG="" ;;
+    topk) TAG="_topk" ;;
+    *) echo "GRAPH_STATE 只能是 pool / topk"; exit 1 ;;
 esac
-if [ "${NEW_EDGE_INIT}" != "ema" ]; then TAG="${TAG}_${NEW_EDGE_INIT}"; fi
+if [ "${NEW_EDGE_INIT}" != "zero" ]; then TAG="${TAG}_${NEW_EDGE_INIT}"; fi
 OUT_ROOT="$HERE/results/raw${TAG}"
 AGG_OUT="$HERE/results/aggregated${TAG}"
 
@@ -44,7 +51,8 @@ echo "  数据集   : $DATASETS"
 echo "  rho      : $RHOS"
 echo "  种子     : $SEEDS"
 echo "  窗口/轮数: $NUM_WINDOWS 窗口 x $ROUNDS 轮"
-echo "  图强度/新边初值: $GRAPH_STRENGTH / $NEW_EDGE_INIT"
+echo "  图状态/新边初值: $GRAPH_STATE / $NEW_EDGE_INIT"
+echo "  参与率/设备    : $PARTICIPATION / $DEVICE"
 echo "=============================================================="
 
 echo "=== 环境自检：$PYTHON ==="
@@ -93,10 +101,10 @@ for DATASET in "${DATASET_LIST[@]}"; do
                         --seed "$SEED" \
                         --num-windows "$NUM_WINDOWS" \
                         --rounds-per-window "$ROUNDS" \
-                        --participation-rate 1.0 \
-                        --graph-strength "$GRAPH_STRENGTH" \
-                        --graph-gate "$GATE" \
-                        --new-edge-init "$NEW_EDGE_INIT" \
+                        --participation-rate "$PARTICIPATION" \
+                        --graph-state "$GRAPH_STATE" \
+                        --graph-new-edge "$NEW_EDGE_INIT" \
+                        --device "$DEVICE" \
                         --out-root "$OUT_ROOT"; then
                     echo "[warn] 运行失败：$DATASET | $SCENARIO | rho=$RHO | seed=$SEED"
                     FAILED+=("$DATASET|$SCENARIO|rho=$RHO|seed=$SEED")

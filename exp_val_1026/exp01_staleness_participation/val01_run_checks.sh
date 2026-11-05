@@ -44,11 +44,12 @@ for rate in "${RATES[@]}"; do
   for seed in "${SEEDS[@]}"; do
     if [ -z "${ONLY}" ] || [ "${ONLY}" = "graphmix" ]; then
       for mode in upload_only upload_fresh_edges; do
-        run_check graphmix0.2 "${mode}" "${rate}" "${seed}" --feddieg-graph-mix 0.2
+        run_check graphmix1.0 "${mode}" "${rate}" "${seed}" --graph-mix 1.0
       done
     fi
+    # 默认已经是"每轮更新全部活跃节点"（论文语义），这里改为对照旧行为 sampled
     if [ -z "${ONLY}" ] || [ "${ONLY}" = "edgescope" ]; then
-      run_check edgescope_all upload_only "${rate}" "${seed}" --update-scope all
+      run_check edgescope_sampled upload_only "${rate}" "${seed}" --graph-update-scope sampled
     fi
     if [ -z "${ONLY}" ] || [ "${ONLY}" = "drift" ]; then
       run_check drift upload_only "${rate}" "${seed}" --drift-sample-users "${DRIFT_USERS}"
