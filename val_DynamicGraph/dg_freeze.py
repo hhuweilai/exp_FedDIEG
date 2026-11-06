@@ -49,6 +49,10 @@ DEFAULT_ROOT = DG_DIR / "results" / "raw"
 DEFAULT_OUT = DG_DIR / "results" / "freeze"
 DATASET = "movielens-1m"
 
+
+def _slug(name: str) -> str:
+    return "".join(ch if ch.isalnum() or ch in "-_" else "_" for ch in name).strip("_")
+
 #: (cell 名, 结果目录名, 图状态, 新边初始化, rho)
 CELLS: List[Tuple[str, str, str, str, float]] = [
     ("paper_default_pool_zero_rho0.2", "dynamic", "pool", "zero", 0.2),
@@ -128,11 +132,11 @@ def fmt(x, nd: int = 4) -> str:
 
 
 # ----------------------------------------------------------------- 读数据
-def load_cells(root: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def load_cells(root: Path, dataset: str = DATASET) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """返回 (逐 windows 的窗口级表, 逐评测点表, 逐 run 的 summary 表)。"""
     win_rows, round_rows, sum_rows = [], [], []
     for cell, dirname, state, init, rho in CELLS:
-        for seed_dir in sorted((root / DATASET / dirname).glob("seed_*")):
+        for seed_dir in sorted((root / dataset / dirname).glob("seed_*")):
             rp = seed_dir / "dg_round_metrics.csv"
             sp = seed_dir / "dg_summary.csv"
             if not (rp.exists() and sp.exists()):
@@ -488,14 +492,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="冻结归因：图冻结是 EMA / 新边初始化 / 状态保留规则造成的？")
     parser.add_argument("--root", type=Path, default=DEFAULT_ROOT)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--dataset", default=DATASET, help="数据集名（决定 results/raw/ 下的子目录）")
     args = parser.parse_args()
 
-    root, out = args.root.resolve(), args.out.resolve()
+    dataset = args.dataset
+    root = args.root.resolve()
+    out = args.out.resolve() / _slug(dataset)
     tables, figures = out / "tables", out / "figures"
     tables.mkdir(parents=True, exist_ok=True)
     figures.mkdir(parents=True, exist_ok=True)
 
-    win, rounds, sums = load_cells(root)
+    win, rounds, sums = load_cells(root, dataset)
     if win.empty:
         raise SystemExit(f"{root} 下没有冻结归因的结果，先跑 dg_run_supplement.sh")
 
@@ -513,7 +520,7 @@ def main() -> None:
     fig_note = make_figure(win, figures / "dg_fig_freeze.png")
 
     # ---- 报告
-    lines = ["# 冻结归因报告：动态图更新机制是否合理？\n"]
+    lines = [f"# 冻结归因报告：动态图更新机制是否合理？（{dataset}）\n"]
     lines.append("同一序列编码器与联邦协议，只改图更新机制：图状态（pool / topk）× 新边初始化"
                  "（zero / warm），ρ 固定 0.8；另加论文默认（pool+zero+ρ0.2）作参照。"
                  "每个格子 3 个种子。\n")
@@ -546,7 +553,7 @@ def main() -> None:
     # ---- 屏幕
     pd.set_option("display.width", 220)
     print("\n" + "=" * 78)
-    print("各格子（ρ=0.8；跨种子平均）")
+    print(f"各格子（{dataset}，ρ=0.8；跨种子平均）")
     print("=" * 78)
     print(cells[["cell", "n_seeds", "turnover_from_ref", "frozen_share", "ecr", "added",
                  "n_edges", "neighbor_lift", "ndcg_win_mean"]].round(4).to_string(index=False))
