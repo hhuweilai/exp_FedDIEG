@@ -1,0 +1,5 @@
+已完成 5/24，正在跑 0 个（每卡 {}），待启动 19 个
+  [17:25:31] 启动 GPU0 | dynamic_rho0.8 | seed 777 (该卡现有 1 个)
+  [17:25:35] 启动 GPU1 | dynamic_rho0.8 | seed 2024 (该卡现有 1 个)
+  [17:25:39] 启动 GPU0 | dynamic_rho0.8_warm | seed 42 (该卡现有 2 个)
+  [17:25:43] 启动 GPU1 | dynamic_rho0.8_warm | seed 777 (该卡现有 2 个)

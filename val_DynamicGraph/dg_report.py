@@ -762,10 +762,13 @@ def section_limits() -> str:
    因此逐用户检验只作方向性证据，主证据仍是窗口级配对。
 5. **periodic 的周期**只取 120 轮（1 个窗口），未扫描更短/更长的刷新间隔，
    "六成收益来自刷新"这个比例依赖于该周期。
-6. **跑批稳定性**：Amazon 的 24 个 run 中有 2 个在启动/早期阶段出现**环境级 torch 崩溃**
-   （`ValueError: too many values to unpack` 于 `nn.Module._named_members`，以及 `core dumped`），
-   与图设计无关（同配置的其它种子正常完成），由流水线自动补跑完成。
-   早期在 MovieLens 上也出现过 1 次同类 `SystemError`。多进程 CUDA 下建议保留补跑机制。
+6. **跑批稳定性**：Amazon 的 24 个 run 中有 2 个出现**解释器级偶发崩溃**，由流水线自动补跑完成。
+   值得注意的是崩溃点**每次都不一样**：`random._randbelow_with_getrandbits`（纯 Python 的数据加载）、
+   `build_eval_arrays_from_records`（序列构建）、`nn.Module._named_members`（模型参数遍历），
+   异常信息都是 `SystemError: error return without exception set` 或 `Segmentation fault (core dumped)`。
+   连不涉及 CUDA 的纯 Python 代码都会崩，说明这是**多进程环境下的偶发解释器故障**，
+   而不是某段代码的逻辑错误（同配置的其它种子都能正常跑完）。MovieLens 上也出现过 1 次同类问题。
+   建议跑长批次时保留自动补跑机制，并把每卡进程数控制在 2 个。
 """
 
 

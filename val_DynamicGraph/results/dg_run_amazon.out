@@ -20,3 +20,5 @@ dg_run_amazon.sh: line 97: 284348 Segmentation fault      (core dumped) CUDA_VIS
 [16:32:56] 启动 GPU1 | dynamic_rho0.8_warm | seed 777
 [16:34:34] 启动 GPU0 | dynamic_rho0.8_warm | seed 2024
 [16:34:47] 启动 GPU1 | dynamic_rho0.8_topk_warm | seed 42
+[17:14:26] 启动 GPU0 | dynamic_rho0.8_topk_warm | seed 777
+[17:14:29] 启动 GPU1 | dynamic_rho0.8_topk_warm | seed 2024
