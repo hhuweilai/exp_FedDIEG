@@ -85,7 +85,11 @@ def _finite(x) -> np.ndarray:
 
 
 def sign_test_p(diff) -> float:
-    """精确符号检验（双侧）。"""
+    """符号检验（双侧）。
+
+    m <= 200 用精确二项尾概率；更大的样本改用带连续性校正的正态近似 ——
+    逐用户配对时 m 能到 1~2 万，`2.0 ** m` 会直接 OverflowError（就是这里踩过坑）。
+    """
     d = _finite(diff)
     if d.size == 0:
         return float("nan")
@@ -94,9 +98,12 @@ def sign_test_p(diff) -> float:
     m = n_pos + n_neg
     if m == 0:
         return 1.0
-    k = min(n_pos, n_neg)
-    tail = sum(math.comb(m, i) for i in range(k + 1)) / (2.0 ** m)
-    return float(min(1.0, 2.0 * tail))
+    if m <= 200:
+        k = min(n_pos, n_neg)
+        tail = sum(math.comb(m, i) for i in range(k + 1)) / (2.0 ** m)
+        return float(min(1.0, 2.0 * tail))
+    z = (abs(n_pos - n_neg) - 1.0) / math.sqrt(m)
+    return float(min(1.0, math.erfc(max(z, 0.0) / math.sqrt(2.0))))
 
 
 def paired_p(diff) -> float:
@@ -404,13 +411,27 @@ def hygiene_checks(sums: pd.DataFrame, rounds: pd.DataFrame) -> pd.DataFrame:
 
         sub = rounds[(rounds["dataset"] == dataset) & (rounds["arm"] == ARM_DYNAMIC)]
         if not sub.empty:
-            gap = (sub["graph_updates"].astype(float) - sub["global_round"].astype(float)).abs().max()
-            add(dataset, "DynamicGraph 每轮都更新", float(gap) == 0.0,
-                f"max|updates-global_round|={float(gap):.0f}")
+            # 预热期（graph_warmup_rounds）内本来就不更新，所以要减掉它再比
+            warmup = 0.0
+            if "graph_warmup_rounds" in part.columns and part["graph_warmup_rounds"].notna().any():
+                warmup = float(part["graph_warmup_rounds"].dropna().iloc[0])
+            expected = (sub["global_round"].astype(float) - warmup).clip(lower=0.0)
+            gap = (sub["graph_updates"].astype(float) - expected).abs().max()
+            add(dataset, "DynamicGraph 预热后每轮都更新", float(gap) == 0.0,
+                f"max|updates-(global_round-{warmup:.0f})|={float(gap):.0f}")
 
-        n_eval_unique = rounds[rounds["dataset"] == dataset]["n_eval"].dropna().unique()
-        add(dataset, "各臂评测用户数一致", len(n_eval_unique) <= 1,
-            f"n_eval={sorted(map(str, n_eval_unique))}")
+        sub = rounds[rounds["dataset"] == dataset]
+        if not sub.empty:
+            per_window = sub.groupby(["window", "arm_dir"])["n_eval"].max().reset_index()
+            spread = per_window.groupby("window")["n_eval"].agg(lambda s: int(s.max() - s.min()))
+            add(
+                dataset,
+                "同一窗口内各臂评测用户数一致",
+                int(spread.max()) == 0,
+                f"逐窗口跨臂最大差={int(spread.max())}"
+                f"（各窗口人数不同是正常的：{int(per_window['n_eval'].min())}~"
+                f"{int(per_window['n_eval'].max())} 人）",
+            )
     return pd.DataFrame(rows)
 
 
@@ -436,6 +457,21 @@ def classify(delta: float, p_paired: float, threshold: float) -> Tuple[str, str]
     else:
         signif = "不显著（p≥0.05）"
     return magnitude, signif
+
+
+def _lift_judge(lift: float, other_lift: float = float("nan")) -> str:
+    """neighbor_lift 的判读文字（数据驱动，不是套话）。"""
+    if not np.isfinite(lift):
+        return "没有邻居质量数据"
+    if lift < 0.95:
+        base = f"lift={lift:.2f} < 1：图里的邻居比随机抽到的用户还要不像自己，图完全没有区分度"
+    elif lift < 1.10:
+        base = f"lift={lift:.2f} ≈ 1：邻居和随机用户差不多，图没提供有效信息"
+    else:
+        base = f"lift={lift:.2f} > 1：Top-K 邻居确实比随机用户更像自己（图有区分度）"
+    if np.isfinite(other_lift) and other_lift < 0.95 <= lift:
+        base += f"；对照的静态臂 lift 只有 {other_lift:.2f}，低于随机基线"
+    return base
 
 
 def build_verdict(
@@ -521,7 +557,10 @@ def build_verdict(
     rel_dyn = diag(ARM_DYNAMIC, "delta_rel")
     lift_static = diag(ARM_STATIC, "neighbor_lift")
     lift_dyn = diag(ARM_DYNAMIC, "neighbor_lift")
+    edges_static = diag(ARM_STATIC, "n_edges")
+    edges_dyn = diag(ARM_DYNAMIC, "n_edges")
     with_graph_dyn = diag(ARM_DYNAMIC, "probe_with_graph")
+
     if (
         np.isfinite(rel_dyn)
         and rel_dyn <= 1e-12
@@ -529,20 +568,25 @@ def build_verdict(
     ):
         rel_judge = (
             "动态图臂的 delta_rel 为 0，而且探针用户里有邻居的比例也≈0 —— "
-            "**图在评测时根本没被用上**（预热/参与率/构图条件不满足）；"
+            "图在评测时根本没被用上（预热/参与率/构图条件不满足）；"
             "这不是「图没用」的科学结论，先修设置"
             "（尤其 --graph-warmup-rounds 与 --participation-rate）。"
         )
     elif np.isfinite(rel_dyn) and rel_dyn < 0.05:
         rel_judge = (
             f"动态图臂约 {fmt_sci(rel_dyn)}，即图分支只占序列表示的 {rel_dyn * 100:.2f}%"
-            " —— 这个量级上无论 EMA 怎么调都不会明显改变推荐，"
-            "正好解释实验二里 ρ 不敏感的现象。"
+            " —— 这个量级上无论 EMA 怎么调都不会明显改变推荐。"
+        )
+    elif np.isfinite(rel_dyn) and rel_dyn >= 0.5:
+        rel_judge = (
+            f"动态图臂约 {fmt_sci(rel_dyn)}（≥0.5），图分支与序列表示同量级甚至更大 —— "
+            "协同分支是主导项之一，「图分支被稀释」的假设不成立。"
         )
     elif np.isfinite(rel_dyn):
         rel_judge = f"动态图臂约 {fmt_sci(rel_dyn)}，图分支占比不算小。"
     else:
         rel_judge = "没有 delta_rel 数据"
+
     push(
         "⑥",
         "图分支把最终用户表示挪动了多少（delta_rel = ‖Δ‖ / ‖seq_emb‖）",
@@ -556,14 +600,8 @@ def build_verdict(
         "图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦）",
         round(lift_dyn, 4) if np.isfinite(lift_dyn) else "",
         f"StaticGraph lift={fmt(lift_static, 3)}，DynamicGraph lift={fmt(lift_dyn, 3)}；"
-        f"有边用户数 StaticGraph={fmt(diag(ARM_STATIC, 'n_edges'), 0)}，"
-        f"DynamicGraph={fmt(diag(ARM_DYNAMIC, 'n_edges'), 0)}",
-        (
-            "lift > 1 说明 Top-K 邻居确实比随机用户更像自己（图有区分度）；"
-            "lift ≈ 1 说明图里的邻居和随机抽的人差不多，图本身没提供信息。"
-            if np.isfinite(lift_dyn)
-            else "没有邻居质量数据"
-        ),
+        f"有边用户数 StaticGraph={fmt(edges_static, 0)}，DynamicGraph={fmt(edges_dyn, 0)}",
+        _lift_judge(lift_dyn, lift_static),
     )
 
     if not hygiene.empty:
@@ -579,57 +617,91 @@ def build_verdict(
             "可以信任上面的差值" if bad.empty else "有检查未通过，上述差值不可作为结论",
         )
 
+    # ---------------- ⑨ 总体结论 ----------------
+    def positive(row: Optional[pd.Series]) -> bool:
+        return (
+            row is not None
+            and float(row["delta_mean"]) >= threshold
+            and float(row["p_paired"]) < 0.05
+        )
+
     def negligible(row: Optional[pd.Series]) -> bool:
         return row is not None and abs(float(row["delta_mean"])) < threshold
 
-    def sig_positive(row: Optional[pd.Series]) -> bool:
-        if row is None:
-            return False
+    def negative(row: Optional[pd.Series]) -> bool:
         return (
-            float(row["delta_mean"]) >= threshold
+            row is not None
+            and float(row["delta_mean"]) <= -threshold
             and float(row["p_paired"]) < 0.05
-            and float(row["win_rate"]) > 0.5
         )
 
-    graph_unused = (
+    def show(row: Optional[pd.Series]) -> str:
+        if row is None:
+            return "n/a"
+        return f"{float(row['delta_mean']):+.4f}"
+
+    def rate(row: Optional[pd.Series]) -> str:
+        if row is None:
+            return ""
+        return f"窗口正号 {float(row['win_rate']):.0%}、种子 {int(row['seeds_positive'])}/{int(row['seeds_total'])} 为正"
+
+    coverage_note = ""
+    if (
+        np.isfinite(edges_static)
+        and np.isfinite(edges_dyn)
+        and edges_dyn > 0
+        and edges_static < 0.9 * edges_dyn
+    ):
+        coverage_note = (
+            f"另外注意：静态臂的图只覆盖 {edges_static:.0f}/{edges_dyn:.0f} 个用户"
+            f"（{edges_static / edges_dyn:.0%}）—— 它在预热结束那一轮就冻结了，"
+            "之后新上传摘要的用户永远进不了图；所以 ① 为 0 也可能部分来自「覆盖不足」，"
+            "而不只是「静态本身无用」。想排除这一点就跑 periodic 臂（每窗口刷新、覆盖能拉满）或 "
+            "--freeze-round 120。"
+        )
+
+    if g1 is None or g2 is None or g3 is None:
+        conclusion = "缺臂：至少要有 nograph / static / dynamic 三条臂才能下结论。"
+    elif (
         np.isfinite(rel_dyn)
         and rel_dyn <= 1e-12
         and not (np.isfinite(with_graph_dyn) and with_graph_dyn > 0.05)
-    )
-    if g1 is None or g2 is None:
-        conclusion = "缺臂：至少要有 nograph / static / dynamic 三条臂才能下结论。"
-    elif graph_unused:
+    ):
         conclusion = (
             "评测时图分支根本没被用上（delta_rel=0 且探针用户里有邻居的比例≈0），"
             "所以 ①②③ 全为 0 是**设置问题**，不是「图没用」的结论。"
-            "先确认 graph_warmup_rounds / participation_rate / graph_state 让图在评测时确实有边，再重跑。"
         )
-    elif negligible(g1) and negligible(g2):
+    elif positive(g3) and negligible(g1) and positive(g2):
         conclusion = (
-            f"图分支（哪怕是静态的）对推荐指标没有可测贡献（①={float(g1['delta_mean']):+.4f}），"
-            f"动态性自然也无从贡献（②={float(g2['delta_mean']):+.4f}）。"
-            "在改 EMA 之前先解决「图分支为什么用不上」，去看 ⑥(delta_rel) 与 ⑦(neighbor_lift)："
-            "多半是图分支的数值占比太小，或者图里的邻居与随机用户没有区别。"
+            f"**动态图有明确贡献，而且贡献来自「动态」本身**："
+            f"冻结的静态图相对 NoGraph 没有可测收益（①={show(g1)}，可忽略"
+            f"{'、甚至显著更差' if negative(g1) else ''}），"
+            f"但每轮更新的动态图明显更好（②={show(g2)}，{rate(g2)}；"
+            f"③={show(g3)}，{rate(g3)}）。"
+            "换句话说：图的价值不在「有一张图」，而在「这张图跟着兴趣持续更新」。"
+            + coverage_note
         )
-    elif sig_positive(g1) and negligible(g2):
+    elif positive(g3) and positive(g1) and negligible(g2):
         conclusion = (
-            f"图有贡献（①={float(g1['delta_mean']):+.4f}），但「每轮 EMA 更新」没有额外贡献"
-            f"（②={float(g2['delta_mean']):+.4f}）⇒ 静态图已经够用，"
-            "继续研究「自适应更新速度」的收益有限。"
+            f"图有贡献（①={show(g1)}），但「每轮 EMA 更新」没有额外贡献"
+            f"（②={show(g2)}）⇒ 静态图已经够用，继续研究「自适应更新速度」的收益有限。"
         )
-    elif sig_positive(g1) and sig_positive(g2):
+    elif positive(g3) and positive(g1) and positive(g2):
         conclusion = (
-            f"图有贡献（①={float(g1['delta_mean']):+.4f}），动态性也有额外贡献"
-            f"（②={float(g2['delta_mean']):+.4f}）⇒ 动态更新是有效成分，"
-            "值得继续研究「什么时候更新、更新多少」。"
+            f"图有贡献（①={show(g1)}），动态性也有额外贡献（②={show(g2)}，③={show(g3)}）"
+            "⇒ 动态更新是有效成分，值得继续研究「什么时候更新、更新多少」。"
+        )
+    elif not positive(g3) and not negative(g3):
+        conclusion = (
+            f"动态图相对 NoGraph 没有可测的总贡献（③={show(g3)}，"
+            f"{'可忽略' if negligible(g3) else '未达显著'}）。"
+            "先看 ⑥ 的 delta_rel 与 ⑦ 的 neighbor_lift 定位原因。"
         )
     else:
         conclusion = (
-            f"组合异常：①={float(g1['delta_mean']):+.4f}"
-            f"（{'可忽略' if negligible(g1) else '非可忽略'}），"
-            f"②={float(g2['delta_mean']):+.4f}"
-            f"（{'可忽略' if negligible(g2) else '非可忽略'}）。"
-            "先看一致性/种子方差，再决定是否重跑。"
+            f"结果不一致：①={show(g1)}（{'可忽略' if negligible(g1) else '非可忽略'}），"
+            f"②={show(g2)}（{'可忽略' if negligible(g2) else '非可忽略'}），"
+            f"③={show(g3)}。先看种子方差与逐窗口差异，再决定是否重跑。"
         )
     push("⑨", "总体结论", "", conclusion, "这是本实验要回答的那句话")
     return rows
@@ -698,7 +770,6 @@ def make_figure(arm_win: pd.DataFrame, dataset: str, out_png: Path) -> Optional[
                                     color=color, alpha=0.12, lw=0)
             if scale == "symlog":
                 ax.set_yscale("symlog", linthresh=1e-4)
-                ax.set_ylim(bottom=0.0)
             else:
                 ax.set_yscale(scale)
             if hline is not None:
@@ -706,10 +777,14 @@ def make_figure(arm_win: pd.DataFrame, dataset: str, out_png: Path) -> Optional[
     axes[0].set_ylabel("NDCG@10")
     axes[1].set_ylabel("relative shift of user vector")
     axes[2].set_ylabel("lift over random")
-    for ax, (col, _, title, _) in zip(axes, panels):
+    for ax, (col, scale, title, _) in zip(axes, panels):
         ax.set_xlabel("window")
         ax.set_title(title, fontsize=10)
         ax.grid(alpha=0.3)
+        if scale == "symlog":
+            # 必须在所有臂画完之后再设下界，否则上界会被第一组数据锁死，
+            # 后面量级更大的臂会被裁到画布外（delta_rel 就踩过这个坑）
+            ax.set_ylim(bottom=0.0)
         if not plotted.get(col, False):
             ax.text(
                 0.5, 0.10, "no data in this run",

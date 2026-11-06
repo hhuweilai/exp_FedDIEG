@@ -1,0 +1,8 @@
+﻿dataset,check,ok,detail
+movielens-1m,协议参数一致（除图以外没有别的差别）,1,一致
+movielens-1m,个性化层位置（仅性能开关，不改数值）,1,personal_on_cpu=1（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，所以混用不影响可比性）
+movielens-1m,每条臂的种子数一致,1,"dynamic:3, nograph:3, static:3"
+movielens-1m,NoGraph 的图分支恒为 0,1,max delta_rel=0.000e+00（要求 ≤ 1e-12）
+movielens-1m,StaticGraph 冻结后边不再变化,1,edge_changed_after_freeze=0（要求 0）
+movielens-1m,DynamicGraph 预热后每轮都更新,1,max|updates-(global_round-20)|=0
+movielens-1m,同一窗口内各臂评测用户数一致,1,逐窗口跨臂最大差=0（各窗口人数不同是正常的：1421~1763 人）

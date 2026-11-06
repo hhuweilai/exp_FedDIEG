@@ -148,3 +148,1158 @@ Building 5 chronological slice windows for movielens-1m: users=6040, items=3416,
 [nograph] W5 R080/120 | loss 1.0022 | NDCG@10 0.2307 HR 0.4189 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.27s
 [nograph] W5 R090/120 | loss 1.0072 | NDCG@10 0.2319 HR 0.4229 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.17s
 [nograph] W5 R100/120 | loss 1.0118 | NDCG@10 0.2337 HR 0.4212 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.58s
+[nograph] W5 R110/120 | loss 1.0078 | NDCG@10 0.2339 HR 0.4241 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.12s
+[nograph] W5 R120/120 | loss 0.9952 | NDCG@10 0.2346 HR 0.4252 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.25s
+[nograph] W5 end | NDCG@10 0.2346 HR 0.4252 | rows=7898 probe=1280 | 1162s
+
+[nograph] seed42 done in 1161.9s | avg_window_ndcg=0.2383 final=0.2346 | delta_rel=0.000e+00 nbr_lift=nan | edges=0 updates=0
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/nograph/seed_42
+
+=== 21:31:30  movielens-1m | static | seed 42 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/static/seed_42
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 42,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[static] StaticGraph：预热结束建一次图，之后完全冻结
+[static] 图设置：{"neighbors": 20, "pool_size": 160, "state": "pool", "rho": 0.2, "min_sim": 0.0, "update_scope": "all", "warmup_rounds": 20, "ema_scale": "max(0, cos)", "arm": "static", "freeze_round": 21, "period": null, "n_updates": 0}
+[static] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[static] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[static] Window 1/5 | eval_users=1429
+[static] W1 R010/120 | loss 1.3647 | NDCG@10 0.1466 HR 0.2645 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.16s
+[static] W1 R020/120 | loss 1.3355 | NDCG@10 0.2174 HR 0.3765 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.64s
+[static] W1 R030/120 | loss 1.2775 | NDCG@10 0.2394 HR 0.4192 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.68e-01 nbr_lift 1.06 | 2.94s
+[static] W1 R040/120 | loss 1.2040 | NDCG@10 0.2413 HR 0.4353 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.42e-01 nbr_lift 1.04 | 2.92s
+[static] W1 R050/120 | loss 1.1131 | NDCG@10 0.2403 HR 0.4388 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.08e+00 nbr_lift 1.04 | 2.97s
+[static] W1 R060/120 | loss 1.0954 | NDCG@10 0.2415 HR 0.4402 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.34e+00 nbr_lift 1.04 | 3.08s
+[static] W1 R070/120 | loss 1.0506 | NDCG@10 0.2397 HR 0.4360 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.41e+00 nbr_lift 1.03 | 2.91s
+[static] W1 R080/120 | loss 1.0727 | NDCG@10 0.2406 HR 0.4395 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.32e+00 nbr_lift 1.03 | 3.00s
+[static] W1 R090/120 | loss 1.0429 | NDCG@10 0.2411 HR 0.4381 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.18e+00 nbr_lift 1.02 | 3.09s
+[static] W1 R100/120 | loss 1.0268 | NDCG@10 0.2418 HR 0.4395 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.05e+00 nbr_lift 1.04 | 3.05s
+[static] W1 R110/120 | loss 1.0257 | NDCG@10 0.2415 HR 0.4402 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 9.11e-01 nbr_lift 1.02 | 2.89s
+[static] W1 R120/120 | loss 1.0423 | NDCG@10 0.2414 HR 0.4423 (n=1429) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.93e-01 nbr_lift 1.04 | 3.05s
+[static] W1 end | NDCG@10 0.2414 HR 0.4423 | rows=1429 probe=256 | 102s
+
+[static] Window 2/5 | eval_users=1421
+[static] W2 R010/120 | loss 1.0768 | NDCG@10 0.2252 HR 0.4166 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.71e-02 nbr_lift 0.78 | 2.57s
+[static] W2 R020/120 | loss 1.0701 | NDCG@10 0.2249 HR 0.4194 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.17e-02 nbr_lift 0.77 | 3.19s
+[static] W2 R030/120 | loss 1.0575 | NDCG@10 0.2259 HR 0.4187 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.72e-02 nbr_lift 0.74 | 3.39s
+[static] W2 R040/120 | loss 1.0597 | NDCG@10 0.2259 HR 0.4187 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.37e-02 nbr_lift 0.76 | 3.36s
+[static] W2 R050/120 | loss 1.0337 | NDCG@10 0.2263 HR 0.4194 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.04e-02 nbr_lift 0.73 | 3.40s
+[static] W2 R060/120 | loss 1.0365 | NDCG@10 0.2266 HR 0.4201 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.76e-02 nbr_lift 0.73 | 3.43s
+[static] W2 R070/120 | loss 1.0582 | NDCG@10 0.2272 HR 0.4201 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.68e-02 nbr_lift 0.76 | 3.55s
+[static] W2 R080/120 | loss 1.0290 | NDCG@10 0.2273 HR 0.4194 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.49e-02 nbr_lift 0.73 | 3.44s
+[static] W2 R090/120 | loss 1.0490 | NDCG@10 0.2270 HR 0.4187 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.33e-02 nbr_lift 0.74 | 3.50s
+[static] W2 R100/120 | loss 1.0572 | NDCG@10 0.2277 HR 0.4208 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.33e-02 nbr_lift 0.73 | 3.41s
+[static] W2 R110/120 | loss 1.0338 | NDCG@10 0.2302 HR 0.4258 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.35e-02 nbr_lift 0.77 | 3.52s
+[static] W2 R120/120 | loss 1.0253 | NDCG@10 0.2317 HR 0.4279 (n=1421) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.38e-02 nbr_lift 0.74 | 3.37s
+[static] W2 end | NDCG@10 0.2317 HR 0.4279 | rows=2850 probe=512 | 261s
+
+[static] Window 3/5 | eval_users=1763
+[static] W3 R010/120 | loss 1.0559 | NDCG@10 0.2240 HR 0.4112 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.35e-02 nbr_lift 0.62 | 3.81s
+[static] W3 R020/120 | loss 1.0420 | NDCG@10 0.2243 HR 0.4124 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.42e-02 nbr_lift 0.63 | 4.23s
+[static] W3 R030/120 | loss 1.0431 | NDCG@10 0.2259 HR 0.4146 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.38e-02 nbr_lift 0.63 | 4.41s
+[static] W3 R040/120 | loss 1.0432 | NDCG@10 0.2259 HR 0.4135 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.41e-02 nbr_lift 0.62 | 4.45s
+[static] W3 R050/120 | loss 1.0206 | NDCG@10 0.2275 HR 0.4169 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.44e-02 nbr_lift 0.62 | 4.53s
+[static] W3 R060/120 | loss 1.0406 | NDCG@10 0.2288 HR 0.4192 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.49e-02 nbr_lift 0.63 | 4.59s
+[static] W3 R070/120 | loss 1.0356 | NDCG@10 0.2290 HR 0.4197 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.43e-02 nbr_lift 0.63 | 4.62s
+[static] W3 R080/120 | loss 1.0398 | NDCG@10 0.2298 HR 0.4186 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.54e-02 nbr_lift 0.61 | 4.63s
+[static] W3 R090/120 | loss 1.0151 | NDCG@10 0.2302 HR 0.4220 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.57e-02 nbr_lift 0.65 | 4.50s
+[static] W3 R100/120 | loss 1.0243 | NDCG@10 0.2301 HR 0.4203 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.70e-02 nbr_lift 0.64 | 4.57s
+[static] W3 R110/120 | loss 1.0209 | NDCG@10 0.2317 HR 0.4214 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.71e-02 nbr_lift 0.65 | 4.49s
+[static] W3 R120/120 | loss 1.0061 | NDCG@10 0.2326 HR 0.4243 (n=1763) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.76e-02 nbr_lift 0.65 | 4.66s
+[static] W3 end | NDCG@10 0.2326 HR 0.4243 | rows=4613 probe=768 | 500s
+
+[static] Window 4/5 | eval_users=1547
+[static] W4 R010/120 | loss 1.0267 | NDCG@10 0.2242 HR 0.4066 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.01e-02 nbr_lift 0.54 | 4.19s
+[static] W4 R020/120 | loss 1.0332 | NDCG@10 0.2257 HR 0.4098 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.03e-02 nbr_lift 0.53 | 4.48s
+[static] W4 R030/120 | loss 1.0365 | NDCG@10 0.2279 HR 0.4105 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.05e-02 nbr_lift 0.55 | 4.72s
+[static] W4 R040/120 | loss 1.0050 | NDCG@10 0.2295 HR 0.4124 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.04e-02 nbr_lift 0.49 | 4.81s
+[static] W4 R050/120 | loss 1.0210 | NDCG@10 0.2315 HR 0.4156 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.05e-02 nbr_lift 0.53 | 4.86s
+[static] W4 R060/120 | loss 1.0108 | NDCG@10 0.2348 HR 0.4228 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.07e-02 nbr_lift 0.53 | 4.81s
+[static] W4 R070/120 | loss 1.0129 | NDCG@10 0.2359 HR 0.4221 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.08e-02 nbr_lift 0.56 | 4.73s
+[static] W4 R080/120 | loss 1.0169 | NDCG@10 0.2365 HR 0.4286 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.10e-02 nbr_lift 0.57 | 4.69s
+[static] W4 R090/120 | loss 1.0074 | NDCG@10 0.2383 HR 0.4312 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.10e-02 nbr_lift 0.56 | 4.80s
+[static] W4 R100/120 | loss 1.0049 | NDCG@10 0.2391 HR 0.4312 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.12e-02 nbr_lift 0.58 | 4.74s
+[static] W4 R110/120 | loss 1.0139 | NDCG@10 0.2397 HR 0.4357 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.14e-02 nbr_lift 0.55 | 4.76s
+[static] W4 R120/120 | loss 1.0062 | NDCG@10 0.2407 HR 0.4344 (n=1547) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.13e-02 nbr_lift 0.59 | 4.88s
+[static] W4 end | NDCG@10 0.2407 HR 0.4344 | rows=6160 probe=1024 | 804s
+
+[static] Window 5/5 | eval_users=1738
+[static] W5 R010/120 | loss 1.0331 | NDCG@10 0.2183 HR 0.3970 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.22e-02 nbr_lift 0.63 | 4.89s
+[static] W5 R020/120 | loss 1.0194 | NDCG@10 0.2192 HR 0.3993 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.31e-02 nbr_lift 0.64 | 5.34s
+[static] W5 R030/120 | loss 1.0327 | NDCG@10 0.2209 HR 0.4051 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.44e-02 nbr_lift 0.65 | 5.21s
+[static] W5 R040/120 | loss 1.0262 | NDCG@10 0.2246 HR 0.4085 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.48e-02 nbr_lift 0.66 | 5.27s
+[static] W5 R050/120 | loss 1.0074 | NDCG@10 0.2260 HR 0.4114 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.60e-02 nbr_lift 0.64 | 5.21s
+[static] W5 R060/120 | loss 1.0068 | NDCG@10 0.2271 HR 0.4125 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.68e-02 nbr_lift 0.69 | 5.33s
+[static] W5 R070/120 | loss 1.0057 | NDCG@10 0.2280 HR 0.4154 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.72e-02 nbr_lift 0.72 | 5.21s
+[static] W5 R080/120 | loss 1.0022 | NDCG@10 0.2276 HR 0.4177 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.82e-02 nbr_lift 0.75 | 5.23s
+[static] W5 R090/120 | loss 1.0075 | NDCG@10 0.2287 HR 0.4166 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.97e-02 nbr_lift 0.74 | 5.36s
+[static] W5 R100/120 | loss 1.0111 | NDCG@10 0.2275 HR 0.4137 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 9.03e-02 nbr_lift 0.75 | 5.25s
+[static] W5 R110/120 | loss 1.0082 | NDCG@10 0.2285 HR 0.4148 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 9.08e-02 nbr_lift 0.73 | 5.16s
+[static] W5 R120/120 | loss 0.9950 | NDCG@10 0.2281 HR 0.4160 (n=1738) | edges 1264 upd 1 ECR 0.0000 (+0.00) | delta_rel 9.17e-02 nbr_lift 0.74 | 5.22s
+[static] W5 end | NDCG@10 0.2281 HR 0.4160 | rows=7898 probe=1280 | 1139s
+
+[static] seed42 done in 1139.5s | avg_window_ndcg=0.2349 final=0.2281 | delta_rel=2.122e-01 nbr_lift=0.72 | edges=1264 updates=1
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/static/seed_42
+
+=== 21:50:33  movielens-1m | dynamic | seed 42 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/dynamic/seed_42
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 42,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[dynamic] DynamicGraph：论文 EMA，每轮更新全部活跃节点的边
+[dynamic] 图设置：{"neighbors": 20, "pool_size": 160, "state": "pool", "rho": 0.2, "min_sim": 0.0, "update_scope": "all", "warmup_rounds": 20, "ema_scale": "max(0, cos)", "arm": "dynamic", "freeze_round": null, "period": null, "n_updates": 0}
+[dynamic] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[dynamic] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[dynamic] Window 1/5 | eval_users=1429
+[dynamic] W1 R010/120 | loss 1.3647 | NDCG@10 0.1466 HR 0.2645 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.15s
+[dynamic] W1 R020/120 | loss 1.3355 | NDCG@10 0.2174 HR 0.3765 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.63s
+[dynamic] W1 R030/120 | loss 1.2761 | NDCG@10 0.2398 HR 0.4199 (n=1429) | edges 1366 upd 10 ECR 0.2722 (+3.58) | delta_rel 5.02e-01 nbr_lift 1.08 | 2.79s
+[dynamic] W1 R040/120 | loss 1.1903 | NDCG@10 0.2402 HR 0.4339 (n=1429) | edges 1398 upd 20 ECR 0.2613 (+3.36) | delta_rel 8.45e-01 nbr_lift 1.08 | 2.83s
+[dynamic] W1 R050/120 | loss 1.0970 | NDCG@10 0.2404 HR 0.4402 (n=1429) | edges 1420 upd 30 ECR 0.2509 (+3.17) | delta_rel 1.27e+00 nbr_lift 1.09 | 2.91s
+[dynamic] W1 R060/120 | loss 1.0662 | NDCG@10 0.2408 HR 0.4402 (n=1429) | edges 1426 upd 40 ECR 0.2689 (+3.42) | delta_rel 1.58e+00 nbr_lift 1.10 | 2.98s
+[dynamic] W1 R070/120 | loss 1.0358 | NDCG@10 0.2392 HR 0.4346 (n=1429) | edges 1428 upd 50 ECR 0.2332 (+2.90) | delta_rel 1.61e+00 nbr_lift 1.11 | 2.90s
+[dynamic] W1 R080/120 | loss 1.0547 | NDCG@10 0.2402 HR 0.4367 (n=1429) | edges 1429 upd 60 ECR 0.2153 (+2.63) | delta_rel 1.47e+00 nbr_lift 1.15 | 2.87s
+[dynamic] W1 R090/120 | loss 1.0270 | NDCG@10 0.2416 HR 0.4388 (n=1429) | edges 1429 upd 70 ECR 0.1934 (+2.34) | delta_rel 1.30e+00 nbr_lift 1.18 | 2.91s
+[dynamic] W1 R100/120 | loss 1.0208 | NDCG@10 0.2416 HR 0.4388 (n=1429) | edges 1429 upd 80 ECR 0.1851 (+2.23) | delta_rel 1.15e+00 nbr_lift 1.24 | 2.93s
+[dynamic] W1 R110/120 | loss 1.0168 | NDCG@10 0.2419 HR 0.4416 (n=1429) | edges 1429 upd 90 ECR 0.1723 (+2.05) | delta_rel 1.00e+00 nbr_lift 1.26 | 2.88s
+[dynamic] W1 R120/120 | loss 1.0333 | NDCG@10 0.2406 HR 0.4423 (n=1429) | edges 1429 upd 100 ECR 0.1706 (+2.02) | delta_rel 8.81e-01 nbr_lift 1.33 | 2.98s
+[dynamic] W1 end | NDCG@10 0.2406 HR 0.4423 | rows=1429 probe=256 | 99s
+
+[dynamic] Window 2/5 | eval_users=1421
+[dynamic] W2 R010/120 | loss 1.0664 | NDCG@10 0.2271 HR 0.4194 (n=1421) | edges 2221 upd 110 ECR 0.2506 (+3.50) | delta_rel 5.34e-01 nbr_lift 1.20 | 2.71s
+[dynamic] W2 R020/120 | loss 1.0511 | NDCG@10 0.2261 HR 0.4194 (n=1421) | edges 2508 upd 120 ECR 0.2371 (+3.09) | delta_rel 6.37e-01 nbr_lift 1.26 | 3.22s
+[dynamic] W2 R030/120 | loss 1.0435 | NDCG@10 0.2265 HR 0.4187 (n=1421) | edges 2615 upd 130 ECR 0.2172 (+2.71) | delta_rel 6.57e-01 nbr_lift 1.26 | 3.46s
+[dynamic] W2 R040/120 | loss 1.0416 | NDCG@10 0.2278 HR 0.4173 (n=1421) | edges 2644 upd 140 ECR 0.2047 (+2.49) | delta_rel 6.46e-01 nbr_lift 1.33 | 3.49s
+[dynamic] W2 R050/120 | loss 1.0188 | NDCG@10 0.2284 HR 0.4194 (n=1421) | edges 2657 upd 150 ECR 0.1951 (+2.35) | delta_rel 6.54e-01 nbr_lift 1.34 | 3.56s
+[dynamic] W2 R060/120 | loss 1.0246 | NDCG@10 0.2284 HR 0.4187 (n=1421) | edges 2664 upd 160 ECR 0.2012 (+2.43) | delta_rel 6.71e-01 nbr_lift 1.39 | 3.46s
+[dynamic] W2 R070/120 | loss 1.0450 | NDCG@10 0.2307 HR 0.4236 (n=1421) | edges 2664 upd 170 ECR 0.1944 (+2.33) | delta_rel 6.88e-01 nbr_lift 1.44 | 3.58s
+[dynamic] W2 R080/120 | loss 1.0128 | NDCG@10 0.2310 HR 0.4229 (n=1421) | edges 2664 upd 180 ECR 0.1849 (+2.20) | delta_rel 7.08e-01 nbr_lift 1.44 | 3.46s
+[dynamic] W2 R090/120 | loss 1.0328 | NDCG@10 0.2326 HR 0.4236 (n=1421) | edges 2664 upd 190 ECR 0.1677 (+1.98) | delta_rel 7.33e-01 nbr_lift 1.48 | 3.49s
+[dynamic] W2 R100/120 | loss 1.0447 | NDCG@10 0.2334 HR 0.4314 (n=1421) | edges 2664 upd 200 ECR 0.1610 (+1.90) | delta_rel 7.62e-01 nbr_lift 1.52 | 3.50s
+[dynamic] W2 R110/120 | loss 1.0175 | NDCG@10 0.2372 HR 0.4363 (n=1421) | edges 2664 upd 210 ECR 0.1682 (+1.98) | delta_rel 7.94e-01 nbr_lift 1.61 | 3.57s
+[dynamic] W2 R120/120 | loss 1.0089 | NDCG@10 0.2387 HR 0.4412 (n=1421) | edges 2664 upd 220 ECR 0.1401 (+1.63) | delta_rel 8.34e-01 nbr_lift 1.59 | 3.55s
+[dynamic] W2 end | NDCG@10 0.2387 HR 0.4412 | rows=2850 probe=512 | 265s
+
+[dynamic] Window 3/5 | eval_users=1763
+[dynamic] W3 R010/120 | loss 1.0416 | NDCG@10 0.2246 HR 0.4124 (n=1763) | edges 3599 upd 230 ECR 0.2070 (+2.82) | delta_rel 6.39e-01 nbr_lift 1.37 | 3.86s
+[dynamic] W3 R020/120 | loss 1.0264 | NDCG@10 0.2254 HR 0.4180 (n=1763) | edges 3918 upd 240 ECR 0.2120 (+2.70) | delta_rel 8.06e-01 nbr_lift 1.42 | 4.38s
+[dynamic] W3 R030/120 | loss 1.0216 | NDCG@10 0.2265 HR 0.4220 (n=1763) | edges 4026 upd 250 ECR 0.1958 (+2.41) | delta_rel 9.21e-01 nbr_lift 1.46 | 4.49s
+[dynamic] W3 R040/120 | loss 1.0225 | NDCG@10 0.2279 HR 0.4226 (n=1763) | edges 4065 upd 260 ECR 0.1923 (+2.34) | delta_rel 9.89e-01 nbr_lift 1.49 | 4.60s
+[dynamic] W3 R050/120 | loss 0.9986 | NDCG@10 0.2321 HR 0.4282 (n=1763) | edges 4076 upd 270 ECR 0.1789 (+2.14) | delta_rel 1.05e+00 nbr_lift 1.53 | 4.54s
+[dynamic] W3 R060/120 | loss 1.0168 | NDCG@10 0.2331 HR 0.4311 (n=1763) | edges 4078 upd 280 ECR 0.1785 (+2.13) | delta_rel 1.09e+00 nbr_lift 1.59 | 4.62s
+[dynamic] W3 R070/120 | loss 1.0106 | NDCG@10 0.2346 HR 0.4345 (n=1763) | edges 4079 upd 290 ECR 0.1693 (+2.01) | delta_rel 1.15e+00 nbr_lift 1.63 | 4.80s
+[dynamic] W3 R080/120 | loss 1.0142 | NDCG@10 0.2376 HR 0.4379 (n=1763) | edges 4080 upd 300 ECR 0.1632 (+1.93) | delta_rel 1.18e+00 nbr_lift 1.60 | 4.64s
+[dynamic] W3 R090/120 | loss 0.9907 | NDCG@10 0.2378 HR 0.4396 (n=1763) | edges 4080 upd 310 ECR 0.1544 (+1.81) | delta_rel 1.22e+00 nbr_lift 1.70 | 4.57s
+[dynamic] W3 R100/120 | loss 0.9953 | NDCG@10 0.2398 HR 0.4413 (n=1763) | edges 4080 upd 320 ECR 0.1532 (+1.81) | delta_rel 1.27e+00 nbr_lift 1.71 | 4.62s
+[dynamic] W3 R110/120 | loss 0.9917 | NDCG@10 0.2429 HR 0.4430 (n=1763) | edges 4080 upd 330 ECR 0.1534 (+1.79) | delta_rel 1.31e+00 nbr_lift 1.75 | 4.69s
+[dynamic] W3 R120/120 | loss 0.9770 | NDCG@10 0.2446 HR 0.4464 (n=1763) | edges 4080 upd 340 ECR 0.1531 (+1.79) | delta_rel 1.35e+00 nbr_lift 1.77 | 4.54s
+[dynamic] W3 end | NDCG@10 0.2446 HR 0.4464 | rows=4613 probe=768 | 512s
+
+[dynamic] Window 4/5 | eval_users=1547
+[dynamic] W4 R010/120 | loss 1.0015 | NDCG@10 0.2343 HR 0.4228 (n=1547) | edges 4977 upd 350 ECR 0.1853 (+2.45) | delta_rel 1.05e+00 nbr_lift 1.51 | 4.14s
+[dynamic] W4 R020/120 | loss 0.9994 | NDCG@10 0.2396 HR 0.4266 (n=1547) | edges 5249 upd 360 ECR 0.1755 (+2.17) | delta_rel 1.37e+00 nbr_lift 1.51 | 4.60s
+[dynamic] W4 R030/120 | loss 1.0039 | NDCG@10 0.2442 HR 0.4312 (n=1547) | edges 5345 upd 370 ECR 0.1837 (+2.23) | delta_rel 1.57e+00 nbr_lift 1.53 | 4.82s
+[dynamic] W4 R040/120 | loss 0.9739 | NDCG@10 0.2479 HR 0.4357 (n=1547) | edges 5379 upd 380 ECR 0.1705 (+2.03) | delta_rel 1.63e+00 nbr_lift 1.55 | 4.96s
+[dynamic] W4 R050/120 | loss 0.9888 | NDCG@10 0.2536 HR 0.4421 (n=1547) | edges 5394 upd 390 ECR 0.1620 (+1.92) | delta_rel 1.67e+00 nbr_lift 1.64 | 4.92s
+[dynamic] W4 R060/120 | loss 0.9758 | NDCG@10 0.2569 HR 0.4473 (n=1547) | edges 5399 upd 400 ECR 0.1600 (+1.89) | delta_rel 1.72e+00 nbr_lift 1.67 | 4.90s
+[dynamic] W4 R070/120 | loss 0.9770 | NDCG@10 0.2608 HR 0.4551 (n=1547) | edges 5399 upd 410 ECR 0.1581 (+1.86) | delta_rel 1.74e+00 nbr_lift 1.74 | 4.82s
+[dynamic] W4 R080/120 | loss 0.9786 | NDCG@10 0.2616 HR 0.4551 (n=1547) | edges 5399 upd 420 ECR 0.1548 (+1.82) | delta_rel 1.77e+00 nbr_lift 1.77 | 4.82s
+[dynamic] W4 R090/120 | loss 0.9690 | NDCG@10 0.2641 HR 0.4551 (n=1547) | edges 5400 upd 430 ECR 0.1521 (+1.78) | delta_rel 1.81e+00 nbr_lift 1.80 | 4.90s
+[dynamic] W4 R100/120 | loss 0.9680 | NDCG@10 0.2665 HR 0.4557 (n=1547) | edges 5400 upd 440 ECR 0.1481 (+1.73) | delta_rel 1.84e+00 nbr_lift 1.85 | 4.80s
+[dynamic] W4 R110/120 | loss 0.9729 | NDCG@10 0.2668 HR 0.4583 (n=1547) | edges 5400 upd 450 ECR 0.1396 (+1.63) | delta_rel 1.87e+00 nbr_lift 1.87 | 4.88s
+[dynamic] W4 R120/120 | loss 0.9669 | NDCG@10 0.2681 HR 0.4596 (n=1547) | edges 5400 upd 460 ECR 0.1433 (+1.67) | delta_rel 1.90e+00 nbr_lift 1.98 | 4.94s
+[dynamic] W4 end | NDCG@10 0.2681 HR 0.4596 | rows=6160 probe=1024 | 825s
+
+[dynamic] Window 5/5 | eval_users=1738
+[dynamic] W5 R010/120 | loss 0.9989 | NDCG@10 0.2337 HR 0.4183 (n=1738) | edges 5816 upd 470 ECR 0.1595 (+1.97) | delta_rel 1.71e+00 nbr_lift 1.78 | 4.91s
+[dynamic] W5 R020/120 | loss 0.9787 | NDCG@10 0.2377 HR 0.4235 (n=1738) | edges 5964 upd 480 ECR 0.1579 (+1.90) | delta_rel 1.95e+00 nbr_lift 1.83 | 5.25s
+[dynamic] W5 R030/120 | loss 0.9893 | NDCG@10 0.2413 HR 0.4264 (n=1738) | edges 6013 upd 490 ECR 0.1434 (+1.68) | delta_rel 2.03e+00 nbr_lift 1.81 | 5.33s
+[dynamic] W5 R040/120 | loss 0.9826 | NDCG@10 0.2443 HR 0.4350 (n=1738) | edges 6033 upd 500 ECR 0.1505 (+1.76) | delta_rel 2.06e+00 nbr_lift 1.88 | 5.28s
+[dynamic] W5 R050/120 | loss 0.9627 | NDCG@10 0.2467 HR 0.4379 (n=1738) | edges 6037 upd 510 ECR 0.1442 (+1.68) | delta_rel 2.09e+00 nbr_lift 1.86 | 5.31s
+[dynamic] W5 R060/120 | loss 0.9654 | NDCG@10 0.2474 HR 0.4413 (n=1738) | edges 6039 upd 520 ECR 0.1438 (+1.67) | delta_rel 2.13e+00 nbr_lift 1.97 | 5.47s
+[dynamic] W5 R070/120 | loss 0.9611 | NDCG@10 0.2481 HR 0.4379 (n=1738) | edges 6040 upd 530 ECR 0.1386 (+1.61) | delta_rel 2.16e+00 nbr_lift 2.01 | 5.50s
+[dynamic] W5 R080/120 | loss 0.9563 | NDCG@10 0.2502 HR 0.4453 (n=1738) | edges 6040 upd 540 ECR 0.1363 (+1.57) | delta_rel 2.16e+00 nbr_lift 2.12 | 5.50s
+[dynamic] W5 R090/120 | loss 0.9620 | NDCG@10 0.2511 HR 0.4465 (n=1738) | edges 6040 upd 550 ECR 0.1313 (+1.52) | delta_rel 2.18e+00 nbr_lift 2.07 | 5.41s
+[dynamic] W5 R100/120 | loss 0.9650 | NDCG@10 0.2520 HR 0.4448 (n=1738) | edges 6040 upd 560 ECR 0.1330 (+1.54) | delta_rel 2.19e+00 nbr_lift 2.08 | 5.39s
+[dynamic] W5 R110/120 | loss 0.9617 | NDCG@10 0.2528 HR 0.4448 (n=1738) | edges 6040 upd 570 ECR 0.1315 (+1.51) | delta_rel 2.22e+00 nbr_lift 2.10 | 5.41s
+[dynamic] W5 R120/120 | loss 0.9470 | NDCG@10 0.2537 HR 0.4471 (n=1738) | edges 6040 upd 580 ECR 0.1287 (+1.49) | delta_rel 2.25e+00 nbr_lift 2.14 | 5.44s
+[dynamic] W5 end | NDCG@10 0.2537 HR 0.4471 | rows=7898 probe=1280 | 1174s
+
+[dynamic] seed42 done in 1174.4s | avg_window_ndcg=0.2492 final=0.2537 | delta_rel=1.300e+00 nbr_lift=1.58 | edges=6040 updates=580
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/dynamic/seed_42
+
+=== 22:10:11  movielens-1m | nograph | seed 777 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/nograph/seed_777
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 777,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[nograph] NoGraph：无图分支（u_i = seq_emb_i）
+[nograph] 图设置：{"arm": "nograph", "neighbors": 0, "pool_size": 0, "state": "none", "rho": 0.2, "min_sim": 0.0, "update_scope": "none", "warmup_rounds": 20, "ema_scale": "none", "freeze_round": null, "period": null}
+[nograph] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[nograph] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[nograph] Window 1/5 | eval_users=1429
+[nograph] W1 R010/120 | loss 1.3629 | NDCG@10 0.1362 HR 0.2505 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 1.99s
+[nograph] W1 R020/120 | loss 1.3353 | NDCG@10 0.2045 HR 0.3485 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.53s
+[nograph] W1 R030/120 | loss 1.3050 | NDCG@10 0.2190 HR 0.3940 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.68s
+[nograph] W1 R040/120 | loss 1.2671 | NDCG@10 0.2281 HR 0.4129 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.82s
+[nograph] W1 R050/120 | loss 1.2181 | NDCG@10 0.2318 HR 0.4269 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.79s
+[nograph] W1 R060/120 | loss 1.1909 | NDCG@10 0.2329 HR 0.4304 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.66s
+[nograph] W1 R070/120 | loss 1.1547 | NDCG@10 0.2328 HR 0.4276 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.76s
+[nograph] W1 R080/120 | loss 1.1293 | NDCG@10 0.2335 HR 0.4262 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.78s
+[nograph] W1 R090/120 | loss 1.0956 | NDCG@10 0.2347 HR 0.4304 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.80s
+[nograph] W1 R100/120 | loss 1.0961 | NDCG@10 0.2349 HR 0.4311 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.75s
+[nograph] W1 R110/120 | loss 1.0725 | NDCG@10 0.2339 HR 0.4297 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.76s
+[nograph] W1 R120/120 | loss 1.0716 | NDCG@10 0.2353 HR 0.4311 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.73s
+[nograph] W1 end | NDCG@10 0.2353 HR 0.4311 | rows=1429 probe=256 | 94s
+
+[nograph] Window 2/5 | eval_users=1421
+[nograph] W2 R010/120 | loss 1.0960 | NDCG@10 0.2273 HR 0.4138 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.56s
+[nograph] W2 R020/120 | loss 1.0873 | NDCG@10 0.2287 HR 0.4152 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.09s
+[nograph] W2 R030/120 | loss 1.0907 | NDCG@10 0.2308 HR 0.4201 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.26s
+[nograph] W2 R040/120 | loss 1.0902 | NDCG@10 0.2311 HR 0.4201 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.33s
+[nograph] W2 R050/120 | loss 1.0702 | NDCG@10 0.2314 HR 0.4187 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.30s
+[nograph] W2 R060/120 | loss 1.0797 | NDCG@10 0.2337 HR 0.4236 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.25s
+[nograph] W2 R070/120 | loss 1.0539 | NDCG@10 0.2352 HR 0.4279 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.28s
+[nograph] W2 R080/120 | loss 1.0694 | NDCG@10 0.2368 HR 0.4314 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.29s
+[nograph] W2 R090/120 | loss 1.0635 | NDCG@10 0.2385 HR 0.4363 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.26s
+[nograph] W2 R100/120 | loss 1.0673 | NDCG@10 0.2404 HR 0.4384 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.26s
+[nograph] W2 R110/120 | loss 1.0384 | NDCG@10 0.2407 HR 0.4419 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.24s
+[nograph] W2 R120/120 | loss 1.0574 | NDCG@10 0.2407 HR 0.4412 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.26s
+[nograph] W2 end | NDCG@10 0.2407 HR 0.4412 | rows=2850 probe=512 | 249s
+
+[nograph] Window 3/5 | eval_users=1763
+[nograph] W3 R010/120 | loss 1.0544 | NDCG@10 0.2240 HR 0.4078 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.56s
+[nograph] W3 R020/120 | loss 1.0587 | NDCG@10 0.2254 HR 0.4118 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.16s
+[nograph] W3 R030/120 | loss 1.0554 | NDCG@10 0.2275 HR 0.4146 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.22s
+[nograph] W3 R040/120 | loss 1.0340 | NDCG@10 0.2281 HR 0.4169 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.25s
+[nograph] W3 R050/120 | loss 1.0306 | NDCG@10 0.2292 HR 0.4192 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.30s
+[nograph] W3 R060/120 | loss 1.0460 | NDCG@10 0.2303 HR 0.4203 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.23s
+[nograph] W3 R070/120 | loss 1.0464 | NDCG@10 0.2324 HR 0.4237 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.33s
+[nograph] W3 R080/120 | loss 1.0299 | NDCG@10 0.2347 HR 0.4254 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.25s
+[nograph] W3 R090/120 | loss 1.0334 | NDCG@10 0.2338 HR 0.4243 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.28s
+[nograph] W3 R100/120 | loss 1.0358 | NDCG@10 0.2346 HR 0.4248 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.29s
+[nograph] W3 R110/120 | loss 1.0235 | NDCG@10 0.2351 HR 0.4277 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.37s
+[nograph] W3 R120/120 | loss 1.0271 | NDCG@10 0.2362 HR 0.4288 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.36s
+[nograph] W3 end | NDCG@10 0.2362 HR 0.4288 | rows=4613 probe=768 | 479s
+
+[nograph] Window 4/5 | eval_users=1547
+[nograph] W4 R010/120 | loss 1.0577 | NDCG@10 0.2223 HR 0.4053 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.81s
+[nograph] W4 R020/120 | loss 1.0266 | NDCG@10 0.2264 HR 0.4111 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.42s
+[nograph] W4 R030/120 | loss 1.0420 | NDCG@10 0.2290 HR 0.4182 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.53s
+[nograph] W4 R040/120 | loss 1.0539 | NDCG@10 0.2328 HR 0.4215 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.47s
+[nograph] W4 R050/120 | loss 1.0145 | NDCG@10 0.2359 HR 0.4253 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.62s
+[nograph] W4 R060/120 | loss 1.0313 | NDCG@10 0.2374 HR 0.4286 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.69s
+[nograph] W4 R070/120 | loss 1.0252 | NDCG@10 0.2369 HR 0.4312 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.55s
+[nograph] W4 R080/120 | loss 1.0273 | NDCG@10 0.2384 HR 0.4337 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.56s
+[nograph] W4 R090/120 | loss 1.0301 | NDCG@10 0.2389 HR 0.4370 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.65s
+[nograph] W4 R100/120 | loss 1.0288 | NDCG@10 0.2414 HR 0.4415 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.56s
+[nograph] W4 R110/120 | loss 1.0211 | NDCG@10 0.2415 HR 0.4389 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.77s
+[nograph] W4 R120/120 | loss 1.0155 | NDCG@10 0.2438 HR 0.4415 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.55s
+[nograph] W4 end | NDCG@10 0.2438 HR 0.4415 | rows=6160 probe=1024 | 772s
+
+[nograph] Window 5/5 | eval_users=1738
+[nograph] W5 R010/120 | loss 1.0422 | NDCG@10 0.2206 HR 0.3964 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.79s
+[nograph] W5 R020/120 | loss 1.0338 | NDCG@10 0.2232 HR 0.4028 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.09s
+[nograph] W5 R030/120 | loss 1.0393 | NDCG@10 0.2248 HR 0.4051 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.99s
+[nograph] W5 R040/120 | loss 1.0374 | NDCG@10 0.2253 HR 0.4068 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.08s
+[nograph] W5 R050/120 | loss 1.0271 | NDCG@10 0.2273 HR 0.4102 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.05s
+[nograph] W5 R060/120 | loss 1.0288 | NDCG@10 0.2277 HR 0.4131 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.13s
+[nograph] W5 R070/120 | loss 1.0124 | NDCG@10 0.2268 HR 0.4120 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.18s
+[nograph] W5 R080/120 | loss 1.0246 | NDCG@10 0.2265 HR 0.4068 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.13s
+[nograph] W5 R090/120 | loss 1.0270 | NDCG@10 0.2279 HR 0.4085 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.10s
+[nograph] W5 R100/120 | loss 1.0127 | NDCG@10 0.2272 HR 0.4068 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.20s
+[nograph] W5 R110/120 | loss 1.0109 | NDCG@10 0.2296 HR 0.4102 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.03s
+[nograph] W5 R120/120 | loss 1.0094 | NDCG@10 0.2276 HR 0.4068 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.19s
+[nograph] W5 end | NDCG@10 0.2276 HR 0.4068 | rows=7898 probe=1280 | 1101s
+
+[nograph] seed777 done in 1101.5s | avg_window_ndcg=0.2367 final=0.2276 | delta_rel=0.000e+00 nbr_lift=nan | edges=0 updates=0
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/nograph/seed_777
+
+=== 22:28:36  movielens-1m | static | seed 777 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/static/seed_777
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 777,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[static] StaticGraph：预热结束建一次图，之后完全冻结
+[static] 图设置：{"neighbors": 20, "pool_size": 160, "state": "pool", "rho": 0.2, "min_sim": 0.0, "update_scope": "all", "warmup_rounds": 20, "ema_scale": "max(0, cos)", "arm": "static", "freeze_round": 21, "period": null, "n_updates": 0}
+[static] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[static] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[static] Window 1/5 | eval_users=1429
+[static] W1 R010/120 | loss 1.3629 | NDCG@10 0.1362 HR 0.2505 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.07s
+[static] W1 R020/120 | loss 1.3353 | NDCG@10 0.2045 HR 0.3485 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.65s
+[static] W1 R030/120 | loss 1.2854 | NDCG@10 0.2212 HR 0.3996 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.02e-01 nbr_lift 1.05 | 2.92s
+[static] W1 R040/120 | loss 1.2122 | NDCG@10 0.2272 HR 0.4129 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.16e-01 nbr_lift 1.04 | 3.03s
+[static] W1 R050/120 | loss 1.1179 | NDCG@10 0.2297 HR 0.4192 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 9.21e-01 nbr_lift 1.04 | 2.96s
+[static] W1 R060/120 | loss 1.0885 | NDCG@10 0.2337 HR 0.4269 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.19e+00 nbr_lift 1.03 | 2.92s
+[static] W1 R070/120 | loss 1.0534 | NDCG@10 0.2342 HR 0.4283 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.30e+00 nbr_lift 1.04 | 2.96s
+[static] W1 R080/120 | loss 1.0640 | NDCG@10 0.2360 HR 0.4311 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.28e+00 nbr_lift 1.04 | 2.98s
+[static] W1 R090/120 | loss 1.0349 | NDCG@10 0.2349 HR 0.4283 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.17e+00 nbr_lift 1.03 | 3.00s
+[static] W1 R100/120 | loss 1.0481 | NDCG@10 0.2354 HR 0.4262 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.02e+00 nbr_lift 1.02 | 2.95s
+[static] W1 R110/120 | loss 1.0315 | NDCG@10 0.2368 HR 0.4297 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.92e-01 nbr_lift 1.05 | 2.95s
+[static] W1 R120/120 | loss 1.0415 | NDCG@10 0.2380 HR 0.4318 (n=1429) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.91e-01 nbr_lift 1.04 | 2.90s
+[static] W1 end | NDCG@10 0.2380 HR 0.4318 | rows=1429 probe=256 | 99s
+
+[static] Window 2/5 | eval_users=1421
+[static] W2 R010/120 | loss 1.0793 | NDCG@10 0.2309 HR 0.4243 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.35e-02 nbr_lift 0.82 | 2.72s
+[static] W2 R020/120 | loss 1.0677 | NDCG@10 0.2307 HR 0.4222 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.65e-02 nbr_lift 0.79 | 3.19s
+[static] W2 R030/120 | loss 1.0766 | NDCG@10 0.2317 HR 0.4243 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.12e-02 nbr_lift 0.75 | 3.26s
+[static] W2 R040/120 | loss 1.0733 | NDCG@10 0.2317 HR 0.4236 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.60e-02 nbr_lift 0.76 | 3.43s
+[static] W2 R050/120 | loss 1.0508 | NDCG@10 0.2340 HR 0.4258 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.21e-02 nbr_lift 0.75 | 3.44s
+[static] W2 R060/120 | loss 1.0635 | NDCG@10 0.2356 HR 0.4265 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.88e-02 nbr_lift 0.77 | 3.46s
+[static] W2 R070/120 | loss 1.0345 | NDCG@10 0.2362 HR 0.4286 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.56e-02 nbr_lift 0.72 | 3.42s
+[static] W2 R080/120 | loss 1.0515 | NDCG@10 0.2376 HR 0.4314 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.41e-02 nbr_lift 0.76 | 3.47s
+[static] W2 R090/120 | loss 1.0452 | NDCG@10 0.2395 HR 0.4349 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.21e-02 nbr_lift 0.74 | 3.41s
+[static] W2 R100/120 | loss 1.0484 | NDCG@10 0.2399 HR 0.4370 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.14e-02 nbr_lift 0.78 | 3.37s
+[static] W2 R110/120 | loss 1.0216 | NDCG@10 0.2402 HR 0.4363 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.05e-02 nbr_lift 0.78 | 3.42s
+[static] W2 R120/120 | loss 1.0426 | NDCG@10 0.2410 HR 0.4377 (n=1421) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.02e-02 nbr_lift 0.76 | 3.45s
+[static] W2 end | NDCG@10 0.2410 HR 0.4377 | rows=2850 probe=512 | 260s
+
+[static] Window 3/5 | eval_users=1763
+[static] W3 R010/120 | loss 1.0408 | NDCG@10 0.2216 HR 0.4005 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.25e-02 nbr_lift 0.58 | 3.89s
+[static] W3 R020/120 | loss 1.0418 | NDCG@10 0.2230 HR 0.4050 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.29e-02 nbr_lift 0.59 | 4.27s
+[static] W3 R030/120 | loss 1.0418 | NDCG@10 0.2239 HR 0.4084 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.27e-02 nbr_lift 0.58 | 4.49s
+[static] W3 R040/120 | loss 1.0188 | NDCG@10 0.2256 HR 0.4141 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.28e-02 nbr_lift 0.59 | 4.45s
+[static] W3 R050/120 | loss 1.0174 | NDCG@10 0.2261 HR 0.4135 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.32e-02 nbr_lift 0.58 | 4.59s
+[static] W3 R060/120 | loss 1.0326 | NDCG@10 0.2270 HR 0.4158 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.34e-02 nbr_lift 0.59 | 4.44s
+[static] W3 R070/120 | loss 1.0345 | NDCG@10 0.2275 HR 0.4163 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.32e-02 nbr_lift 0.66 | 4.62s
+[static] W3 R080/120 | loss 1.0182 | NDCG@10 0.2297 HR 0.4186 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.33e-02 nbr_lift 0.63 | 4.67s
+[static] W3 R090/120 | loss 1.0203 | NDCG@10 0.2311 HR 0.4226 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.38e-02 nbr_lift 0.63 | 4.60s
+[static] W3 R100/120 | loss 1.0246 | NDCG@10 0.2306 HR 0.4214 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.41e-02 nbr_lift 0.63 | 4.57s
+[static] W3 R110/120 | loss 1.0124 | NDCG@10 0.2313 HR 0.4243 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.49e-02 nbr_lift 0.64 | 4.49s
+[static] W3 R120/120 | loss 1.0171 | NDCG@10 0.2327 HR 0.4260 (n=1763) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.48e-02 nbr_lift 0.65 | 4.56s
+[static] W3 end | NDCG@10 0.2327 HR 0.4260 | rows=4613 probe=768 | 501s
+
+[static] Window 4/5 | eval_users=1547
+[static] W4 R010/120 | loss 1.0456 | NDCG@10 0.2219 HR 0.4047 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.31e-03 nbr_lift 0.56 | 4.02s
+[static] W4 R020/120 | loss 1.0145 | NDCG@10 0.2261 HR 0.4144 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.34e-03 nbr_lift 0.62 | 4.57s
+[static] W4 R030/120 | loss 1.0323 | NDCG@10 0.2286 HR 0.4189 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.36e-03 nbr_lift 0.65 | 4.69s
+[static] W4 R040/120 | loss 1.0441 | NDCG@10 0.2302 HR 0.4208 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.48e-03 nbr_lift 0.69 | 4.67s
+[static] W4 R050/120 | loss 1.0046 | NDCG@10 0.2337 HR 0.4253 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.66e-03 nbr_lift 0.72 | 4.81s
+[static] W4 R060/120 | loss 1.0231 | NDCG@10 0.2338 HR 0.4292 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.70e-03 nbr_lift 0.71 | 4.94s
+[static] W4 R070/120 | loss 1.0154 | NDCG@10 0.2334 HR 0.4273 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.96e-03 nbr_lift 0.73 | 4.85s
+[static] W4 R080/120 | loss 1.0183 | NDCG@10 0.2369 HR 0.4324 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.03e-03 nbr_lift 0.72 | 4.80s
+[static] W4 R090/120 | loss 1.0207 | NDCG@10 0.2369 HR 0.4337 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.03e-03 nbr_lift 0.77 | 4.82s
+[static] W4 R100/120 | loss 1.0194 | NDCG@10 0.2373 HR 0.4344 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.14e-03 nbr_lift 0.75 | 4.69s
+[static] W4 R110/120 | loss 1.0119 | NDCG@10 0.2395 HR 0.4396 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.20e-03 nbr_lift 0.86 | 4.86s
+[static] W4 R120/120 | loss 1.0082 | NDCG@10 0.2401 HR 0.4402 (n=1547) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.28e-03 nbr_lift 0.82 | 4.77s
+[static] W4 end | NDCG@10 0.2401 HR 0.4402 | rows=6160 probe=1024 | 807s
+
+[static] Window 5/5 | eval_users=1738
+[static] W5 R010/120 | loss 1.0336 | NDCG@10 0.2182 HR 0.3947 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.96e-02 nbr_lift 0.63 | 5.17s
+[static] W5 R020/120 | loss 1.0265 | NDCG@10 0.2207 HR 0.3976 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.02e-02 nbr_lift 0.62 | 5.22s
+[static] W5 R030/120 | loss 1.0316 | NDCG@10 0.2224 HR 0.4005 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.11e-02 nbr_lift 0.64 | 5.37s
+[static] W5 R040/120 | loss 1.0308 | NDCG@10 0.2235 HR 0.4005 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.15e-02 nbr_lift 0.64 | 5.31s
+[static] W5 R050/120 | loss 1.0196 | NDCG@10 0.2239 HR 0.4051 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.30e-02 nbr_lift 0.66 | 5.43s
+[static] W5 R060/120 | loss 1.0224 | NDCG@10 0.2244 HR 0.4051 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.32e-02 nbr_lift 0.67 | 5.35s
+[static] W5 R070/120 | loss 1.0051 | NDCG@10 0.2252 HR 0.4085 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.44e-02 nbr_lift 0.69 | 5.43s
+[static] W5 R080/120 | loss 1.0191 | NDCG@10 0.2255 HR 0.4074 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.49e-02 nbr_lift 0.67 | 5.49s
+[static] W5 R090/120 | loss 1.0208 | NDCG@10 0.2259 HR 0.4051 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.54e-02 nbr_lift 0.70 | 5.31s
+[static] W5 R100/120 | loss 1.0061 | NDCG@10 0.2253 HR 0.4045 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.57e-02 nbr_lift 0.71 | 5.36s
+[static] W5 R110/120 | loss 1.0046 | NDCG@10 0.2263 HR 0.4068 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.74e-02 nbr_lift 0.70 | 5.38s
+[static] W5 R120/120 | loss 1.0034 | NDCG@10 0.2257 HR 0.4068 (n=1738) | edges 1277 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.89e-02 nbr_lift 0.72 | 5.48s
+[static] W5 end | NDCG@10 0.2257 HR 0.4068 | rows=7898 probe=1280 | 1153s
+
+[static] seed777 done in 1153.4s | avg_window_ndcg=0.2355 final=0.2257 | delta_rel=1.963e-01 nbr_lift=0.75 | edges=1277 updates=1
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/static/seed_777
+
+=== 22:47:52  movielens-1m | dynamic | seed 777 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/dynamic/seed_777
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 777,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[dynamic] DynamicGraph：论文 EMA，每轮更新全部活跃节点的边
+[dynamic] 图设置：{"neighbors": 20, "pool_size": 160, "state": "pool", "rho": 0.2, "min_sim": 0.0, "update_scope": "all", "warmup_rounds": 20, "ema_scale": "max(0, cos)", "arm": "dynamic", "freeze_round": null, "period": null, "n_updates": 0}
+[dynamic] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[dynamic] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[dynamic] Window 1/5 | eval_users=1429
+[dynamic] W1 R010/120 | loss 1.3629 | NDCG@10 0.1362 HR 0.2505 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.08s
+[dynamic] W1 R020/120 | loss 1.3353 | NDCG@10 0.2045 HR 0.3485 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.61s
+[dynamic] W1 R030/120 | loss 1.2832 | NDCG@10 0.2212 HR 0.3982 (n=1429) | edges 1371 upd 10 ECR 0.2952 (+3.96) | delta_rel 4.37e-01 nbr_lift 1.08 | 2.91s
+[dynamic] W1 R040/120 | loss 1.2024 | NDCG@10 0.2289 HR 0.4164 (n=1429) | edges 1411 upd 20 ECR 0.2860 (+3.77) | delta_rel 7.07e-01 nbr_lift 1.07 | 3.02s
+[dynamic] W1 R050/120 | loss 1.1021 | NDCG@10 0.2306 HR 0.4185 (n=1429) | edges 1425 upd 30 ECR 0.2432 (+3.09) | delta_rel 1.09e+00 nbr_lift 1.08 | 3.03s
+[dynamic] W1 R060/120 | loss 1.0735 | NDCG@10 0.2331 HR 0.4248 (n=1429) | edges 1427 upd 40 ECR 0.2120 (+2.63) | delta_rel 1.41e+00 nbr_lift 1.09 | 2.86s
+[dynamic] W1 R070/120 | loss 1.0409 | NDCG@10 0.2355 HR 0.4311 (n=1429) | edges 1428 upd 50 ECR 0.2203 (+2.71) | delta_rel 1.50e+00 nbr_lift 1.12 | 2.93s
+[dynamic] W1 R080/120 | loss 1.0522 | NDCG@10 0.2342 HR 0.4255 (n=1429) | edges 1429 upd 60 ECR 0.2054 (+2.55) | delta_rel 1.44e+00 nbr_lift 1.16 | 3.02s
+[dynamic] W1 R090/120 | loss 1.0229 | NDCG@10 0.2351 HR 0.4269 (n=1429) | edges 1429 upd 70 ECR 0.2008 (+2.44) | delta_rel 1.29e+00 nbr_lift 1.18 | 2.99s
+[dynamic] W1 R100/120 | loss 1.0389 | NDCG@10 0.2345 HR 0.4248 (n=1429) | edges 1429 upd 80 ECR 0.1816 (+2.18) | delta_rel 1.12e+00 nbr_lift 1.22 | 2.97s
+[dynamic] W1 R110/120 | loss 1.0215 | NDCG@10 0.2361 HR 0.4290 (n=1429) | edges 1429 upd 90 ECR 0.1935 (+2.31) | delta_rel 9.78e-01 nbr_lift 1.30 | 2.97s
+[dynamic] W1 R120/120 | loss 1.0345 | NDCG@10 0.2361 HR 0.4283 (n=1429) | edges 1429 upd 100 ECR 0.1590 (+1.89) | delta_rel 8.68e-01 nbr_lift 1.35 | 2.90s
+[dynamic] W1 end | NDCG@10 0.2361 HR 0.4283 | rows=1429 probe=256 | 101s
+
+[dynamic] Window 2/5 | eval_users=1421
+[dynamic] W2 R010/120 | loss 1.0677 | NDCG@10 0.2301 HR 0.4236 (n=1421) | edges 2213 upd 110 ECR 0.2620 (+3.69) | delta_rel 5.07e-01 nbr_lift 1.23 | 2.71s
+[dynamic] W2 R020/120 | loss 1.0540 | NDCG@10 0.2312 HR 0.4229 (n=1421) | edges 2512 upd 120 ECR 0.2434 (+3.17) | delta_rel 6.06e-01 nbr_lift 1.25 | 3.18s
+[dynamic] W2 R030/120 | loss 1.0637 | NDCG@10 0.2323 HR 0.4258 (n=1421) | edges 2616 upd 130 ECR 0.2071 (+2.56) | delta_rel 5.99e-01 nbr_lift 1.31 | 3.28s
+[dynamic] W2 R040/120 | loss 1.0631 | NDCG@10 0.2330 HR 0.4236 (n=1421) | edges 2649 upd 140 ECR 0.2198 (+2.70) | delta_rel 5.83e-01 nbr_lift 1.36 | 3.44s
+[dynamic] W2 R050/120 | loss 1.0385 | NDCG@10 0.2344 HR 0.4258 (n=1421) | edges 2661 upd 150 ECR 0.1920 (+2.33) | delta_rel 5.67e-01 nbr_lift 1.41 | 3.61s
+[dynamic] W2 R060/120 | loss 1.0521 | NDCG@10 0.2363 HR 0.4279 (n=1421) | edges 2661 upd 160 ECR 0.1802 (+2.17) | delta_rel 5.57e-01 nbr_lift 1.46 | 3.47s
+[dynamic] W2 R070/120 | loss 1.0221 | NDCG@10 0.2386 HR 0.4328 (n=1421) | edges 2662 upd 170 ECR 0.1756 (+2.10) | delta_rel 5.60e-01 nbr_lift 1.45 | 3.46s
+[dynamic] W2 R080/120 | loss 1.0384 | NDCG@10 0.2398 HR 0.4335 (n=1421) | edges 2664 upd 180 ECR 0.1830 (+2.19) | delta_rel 5.68e-01 nbr_lift 1.50 | 3.56s
+[dynamic] W2 R090/120 | loss 1.0320 | NDCG@10 0.2409 HR 0.4349 (n=1421) | edges 2664 upd 190 ECR 0.1647 (+1.95) | delta_rel 5.83e-01 nbr_lift 1.53 | 3.59s
+[dynamic] W2 R100/120 | loss 1.0359 | NDCG@10 0.2414 HR 0.4356 (n=1421) | edges 2664 upd 200 ECR 0.1597 (+1.87) | delta_rel 6.06e-01 nbr_lift 1.61 | 3.41s
+[dynamic] W2 R110/120 | loss 1.0081 | NDCG@10 0.2420 HR 0.4398 (n=1421) | edges 2664 upd 210 ECR 0.1557 (+1.84) | delta_rel 6.41e-01 nbr_lift 1.62 | 3.49s
+[dynamic] W2 R120/120 | loss 1.0262 | NDCG@10 0.2434 HR 0.4412 (n=1421) | edges 2664 upd 220 ECR 0.1642 (+1.93) | delta_rel 6.73e-01 nbr_lift 1.64 | 3.51s
+[dynamic] W2 end | NDCG@10 0.2434 HR 0.4412 | rows=2850 probe=512 | 268s
+
+[dynamic] Window 3/5 | eval_users=1763
+[dynamic] W3 R010/120 | loss 1.0283 | NDCG@10 0.2209 HR 0.4050 (n=1763) | edges 3588 upd 230 ECR 0.2253 (+3.11) | delta_rel 5.15e-01 nbr_lift 1.42 | 3.85s
+[dynamic] W3 R020/120 | loss 1.0256 | NDCG@10 0.2251 HR 0.4129 (n=1763) | edges 3913 upd 240 ECR 0.2079 (+2.64) | delta_rel 6.66e-01 nbr_lift 1.43 | 4.35s
+[dynamic] W3 R030/120 | loss 1.0244 | NDCG@10 0.2263 HR 0.4141 (n=1763) | edges 4028 upd 250 ECR 0.2112 (+2.61) | delta_rel 7.44e-01 nbr_lift 1.44 | 4.59s
+[dynamic] W3 R040/120 | loss 1.0023 | NDCG@10 0.2299 HR 0.4197 (n=1763) | edges 4057 upd 260 ECR 0.2070 (+2.51) | delta_rel 7.99e-01 nbr_lift 1.51 | 4.51s
+[dynamic] W3 R050/120 | loss 0.9989 | NDCG@10 0.2308 HR 0.4203 (n=1763) | edges 4073 upd 270 ECR 0.1824 (+2.20) | delta_rel 8.76e-01 nbr_lift 1.53 | 4.61s
+[dynamic] W3 R060/120 | loss 1.0141 | NDCG@10 0.2318 HR 0.4248 (n=1763) | edges 4076 upd 280 ECR 0.1840 (+2.20) | delta_rel 9.20e-01 nbr_lift 1.55 | 4.63s
+[dynamic] W3 R070/120 | loss 1.0136 | NDCG@10 0.2331 HR 0.4282 (n=1763) | edges 4078 upd 290 ECR 0.1695 (+2.01) | delta_rel 9.73e-01 nbr_lift 1.64 | 4.54s
+[dynamic] W3 R080/120 | loss 0.9988 | NDCG@10 0.2357 HR 0.4328 (n=1763) | edges 4080 upd 300 ECR 0.1705 (+2.03) | delta_rel 1.01e+00 nbr_lift 1.65 | 4.47s
+[dynamic] W3 R090/120 | loss 0.9986 | NDCG@10 0.2373 HR 0.4368 (n=1763) | edges 4080 upd 310 ECR 0.1583 (+1.87) | delta_rel 1.07e+00 nbr_lift 1.66 | 4.59s
+[dynamic] W3 R100/120 | loss 1.0022 | NDCG@10 0.2379 HR 0.4373 (n=1763) | edges 4080 upd 320 ECR 0.1508 (+1.76) | delta_rel 1.12e+00 nbr_lift 1.69 | 4.55s
+[dynamic] W3 R110/120 | loss 0.9877 | NDCG@10 0.2415 HR 0.4419 (n=1763) | edges 4080 upd 330 ECR 0.1515 (+1.77) | delta_rel 1.17e+00 nbr_lift 1.73 | 4.56s
+[dynamic] W3 R120/120 | loss 0.9905 | NDCG@10 0.2413 HR 0.4424 (n=1763) | edges 4080 upd 340 ECR 0.1539 (+1.81) | delta_rel 1.22e+00 nbr_lift 1.73 | 4.56s
+[dynamic] W3 end | NDCG@10 0.2413 HR 0.4424 | rows=4613 probe=768 | 512s
+
+[dynamic] Window 4/5 | eval_users=1547
+[dynamic] W4 R010/120 | loss 1.0235 | NDCG@10 0.2311 HR 0.4202 (n=1547) | edges 4954 upd 350 ECR 0.1872 (+2.47) | delta_rel 8.75e-01 nbr_lift 1.49 | 4.00s
+[dynamic] W4 R020/120 | loss 0.9896 | NDCG@10 0.2327 HR 0.4240 (n=1547) | edges 5255 upd 360 ECR 0.1882 (+2.34) | delta_rel 1.16e+00 nbr_lift 1.53 | 4.63s
+[dynamic] W4 R030/120 | loss 1.0035 | NDCG@10 0.2389 HR 0.4324 (n=1547) | edges 5358 upd 370 ECR 0.1741 (+2.11) | delta_rel 1.28e+00 nbr_lift 1.55 | 4.74s
+[dynamic] W4 R040/120 | loss 1.0152 | NDCG@10 0.2442 HR 0.4370 (n=1547) | edges 5389 upd 380 ECR 0.1788 (+2.14) | delta_rel 1.37e+00 nbr_lift 1.65 | 4.77s
+[dynamic] W4 R050/120 | loss 0.9742 | NDCG@10 0.2469 HR 0.4428 (n=1547) | edges 5396 upd 390 ECR 0.1697 (+2.02) | delta_rel 1.42e+00 nbr_lift 1.67 | 4.93s
+[dynamic] W4 R060/120 | loss 0.9927 | NDCG@10 0.2488 HR 0.4454 (n=1547) | edges 5398 upd 400 ECR 0.1638 (+1.94) | delta_rel 1.47e+00 nbr_lift 1.74 | 5.03s
+[dynamic] W4 R070/120 | loss 0.9815 | NDCG@10 0.2484 HR 0.4415 (n=1547) | edges 5400 upd 410 ECR 0.1597 (+1.88) | delta_rel 1.51e+00 nbr_lift 1.70 | 4.90s
+[dynamic] W4 R080/120 | loss 0.9847 | NDCG@10 0.2517 HR 0.4480 (n=1547) | edges 5400 upd 420 ECR 0.1548 (+1.82) | delta_rel 1.55e+00 nbr_lift 1.79 | 4.98s
+[dynamic] W4 R090/120 | loss 0.9859 | NDCG@10 0.2564 HR 0.4538 (n=1547) | edges 5400 upd 430 ECR 0.1510 (+1.77) | delta_rel 1.59e+00 nbr_lift 1.78 | 4.99s
+[dynamic] W4 R100/120 | loss 0.9844 | NDCG@10 0.2584 HR 0.4590 (n=1547) | edges 5400 upd 440 ECR 0.1423 (+1.66) | delta_rel 1.63e+00 nbr_lift 1.80 | 4.93s
+[dynamic] W4 R110/120 | loss 0.9768 | NDCG@10 0.2610 HR 0.4590 (n=1547) | edges 5400 upd 450 ECR 0.1511 (+1.77) | delta_rel 1.65e+00 nbr_lift 1.91 | 4.89s
+[dynamic] W4 R120/120 | loss 0.9700 | NDCG@10 0.2624 HR 0.4596 (n=1547) | edges 5400 upd 460 ECR 0.1371 (+1.59) | delta_rel 1.68e+00 nbr_lift 1.92 | 4.90s
+[dynamic] W4 end | NDCG@10 0.2624 HR 0.4596 | rows=6160 probe=1024 | 827s
+
+[dynamic] Window 5/5 | eval_users=1738
+[dynamic] W5 R010/120 | loss 1.0017 | NDCG@10 0.2297 HR 0.4085 (n=1738) | edges 5815 upd 470 ECR 0.1628 (+2.04) | delta_rel 1.46e+00 nbr_lift 1.74 | 5.06s
+[dynamic] W5 R020/120 | loss 0.9911 | NDCG@10 0.2341 HR 0.4148 (n=1738) | edges 5976 upd 480 ECR 0.1584 (+1.89) | delta_rel 1.68e+00 nbr_lift 1.76 | 5.30s
+[dynamic] W5 R030/120 | loss 0.9947 | NDCG@10 0.2374 HR 0.4241 (n=1738) | edges 6024 upd 490 ECR 0.1614 (+1.90) | delta_rel 1.77e+00 nbr_lift 1.83 | 5.38s
+[dynamic] W5 R040/120 | loss 0.9920 | NDCG@10 0.2376 HR 0.4194 (n=1738) | edges 6034 upd 500 ECR 0.1515 (+1.78) | delta_rel 1.82e+00 nbr_lift 1.90 | 5.47s
+[dynamic] W5 R050/120 | loss 0.9801 | NDCG@10 0.2394 HR 0.4217 (n=1738) | edges 6039 upd 510 ECR 0.1451 (+1.69) | delta_rel 1.83e+00 nbr_lift 1.99 | 5.46s
+[dynamic] W5 R060/120 | loss 0.9817 | NDCG@10 0.2394 HR 0.4229 (n=1738) | edges 6040 upd 520 ECR 0.1451 (+1.69) | delta_rel 1.86e+00 nbr_lift 1.99 | 5.33s
+[dynamic] W5 R070/120 | loss 0.9626 | NDCG@10 0.2412 HR 0.4212 (n=1738) | edges 6040 upd 530 ECR 0.1467 (+1.71) | delta_rel 1.89e+00 nbr_lift 2.01 | 5.34s
+[dynamic] W5 R080/120 | loss 0.9781 | NDCG@10 0.2449 HR 0.4275 (n=1738) | edges 6040 upd 540 ECR 0.1380 (+1.60) | delta_rel 1.91e+00 nbr_lift 1.98 | 5.42s
+[dynamic] W5 R090/120 | loss 0.9766 | NDCG@10 0.2472 HR 0.4361 (n=1738) | edges 6040 upd 550 ECR 0.1396 (+1.62) | delta_rel 1.95e+00 nbr_lift 2.06 | 5.47s
+[dynamic] W5 R100/120 | loss 0.9614 | NDCG@10 0.2473 HR 0.4344 (n=1738) | edges 6040 upd 560 ECR 0.1378 (+1.59) | delta_rel 1.98e+00 nbr_lift 2.12 | 5.48s
+[dynamic] W5 R110/120 | loss 0.9620 | NDCG@10 0.2490 HR 0.4384 (n=1738) | edges 6040 upd 570 ECR 0.1318 (+1.52) | delta_rel 1.97e+00 nbr_lift 2.15 | 5.31s
+[dynamic] W5 R120/120 | loss 0.9586 | NDCG@10 0.2479 HR 0.4361 (n=1738) | edges 6040 upd 580 ECR 0.1346 (+1.55) | delta_rel 2.00e+00 nbr_lift 2.12 | 5.29s
+[dynamic] W5 end | NDCG@10 0.2479 HR 0.4361 | rows=7898 probe=1280 | 1180s
+
+[dynamic] seed777 done in 1179.8s | avg_window_ndcg=0.2462 final=0.2479 | delta_rel=1.137e+00 nbr_lift=1.59 | edges=6040 updates=580
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/dynamic/seed_777
+
+=== 23:07:36  movielens-1m | nograph | seed 2024 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/nograph/seed_2024
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 2024,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[nograph] NoGraph：无图分支（u_i = seq_emb_i）
+[nograph] 图设置：{"arm": "nograph", "neighbors": 0, "pool_size": 0, "state": "none", "rho": 0.2, "min_sim": 0.0, "update_scope": "none", "warmup_rounds": 20, "ema_scale": "none", "freeze_round": null, "period": null}
+[nograph] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[nograph] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[nograph] Window 1/5 | eval_users=1429
+[nograph] W1 R010/120 | loss 1.3607 | NDCG@10 0.1570 HR 0.2799 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.00s
+[nograph] W1 R020/120 | loss 1.3189 | NDCG@10 0.2164 HR 0.3842 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.55s
+[nograph] W1 R030/120 | loss 1.2749 | NDCG@10 0.2302 HR 0.4129 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.71s
+[nograph] W1 R040/120 | loss 1.2365 | NDCG@10 0.2317 HR 0.4101 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.67s
+[nograph] W1 R050/120 | loss 1.1889 | NDCG@10 0.2334 HR 0.4122 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.77s
+[nograph] W1 R060/120 | loss 1.1525 | NDCG@10 0.2324 HR 0.4108 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.64s
+[nograph] W1 R070/120 | loss 1.1460 | NDCG@10 0.2331 HR 0.4143 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.71s
+[nograph] W1 R080/120 | loss 1.1020 | NDCG@10 0.2346 HR 0.4178 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.65s
+[nograph] W1 R090/120 | loss 1.0782 | NDCG@10 0.2355 HR 0.4185 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.77s
+[nograph] W1 R100/120 | loss 1.0757 | NDCG@10 0.2347 HR 0.4143 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.79s
+[nograph] W1 R110/120 | loss 1.0791 | NDCG@10 0.2342 HR 0.4150 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.73s
+[nograph] W1 R120/120 | loss 1.0856 | NDCG@10 0.2342 HR 0.4150 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.75s
+[nograph] W1 end | NDCG@10 0.2342 HR 0.4150 | rows=1429 probe=256 | 92s
+
+[nograph] Window 2/5 | eval_users=1421
+[nograph] W2 R010/120 | loss 1.0879 | NDCG@10 0.2249 HR 0.4138 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.57s
+[nograph] W2 R020/120 | loss 1.0743 | NDCG@10 0.2280 HR 0.4187 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.92s
+[nograph] W2 R030/120 | loss 1.0928 | NDCG@10 0.2285 HR 0.4201 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.25s
+[nograph] W2 R040/120 | loss 1.0691 | NDCG@10 0.2284 HR 0.4208 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.17s
+[nograph] W2 R050/120 | loss 1.0506 | NDCG@10 0.2282 HR 0.4208 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.17s
+[nograph] W2 R060/120 | loss 1.0881 | NDCG@10 0.2308 HR 0.4243 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.19s
+[nograph] W2 R070/120 | loss 1.0695 | NDCG@10 0.2319 HR 0.4251 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.29s
+[nograph] W2 R080/120 | loss 1.0672 | NDCG@10 0.2328 HR 0.4286 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.23s
+[nograph] W2 R090/120 | loss 1.0367 | NDCG@10 0.2353 HR 0.4342 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.15s
+[nograph] W2 R100/120 | loss 1.0588 | NDCG@10 0.2342 HR 0.4314 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.29s
+[nograph] W2 R110/120 | loss 1.0315 | NDCG@10 0.2375 HR 0.4377 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.28s
+[nograph] W2 R120/120 | loss 1.0340 | NDCG@10 0.2383 HR 0.4377 (n=1421) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.23s
+[nograph] W2 end | NDCG@10 0.2383 HR 0.4377 | rows=2850 probe=512 | 244s
+
+[nograph] Window 3/5 | eval_users=1763
+[nograph] W3 R010/120 | loss 1.0641 | NDCG@10 0.2168 HR 0.4039 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.54s
+[nograph] W3 R020/120 | loss 1.0628 | NDCG@10 0.2197 HR 0.4061 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.08s
+[nograph] W3 R030/120 | loss 1.0452 | NDCG@10 0.2213 HR 0.4078 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.25s
+[nograph] W3 R040/120 | loss 1.0494 | NDCG@10 0.2228 HR 0.4095 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.23s
+[nograph] W3 R050/120 | loss 1.0596 | NDCG@10 0.2252 HR 0.4118 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.22s
+[nograph] W3 R060/120 | loss 1.0414 | NDCG@10 0.2260 HR 0.4135 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.32s
+[nograph] W3 R070/120 | loss 1.0347 | NDCG@10 0.2275 HR 0.4169 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.28s
+[nograph] W3 R080/120 | loss 1.0605 | NDCG@10 0.2295 HR 0.4197 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.24s
+[nograph] W3 R090/120 | loss 1.0349 | NDCG@10 0.2289 HR 0.4197 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.23s
+[nograph] W3 R100/120 | loss 1.0327 | NDCG@10 0.2309 HR 0.4203 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.53s
+[nograph] W3 R110/120 | loss 1.0284 | NDCG@10 0.2325 HR 0.4231 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.27s
+[nograph] W3 R120/120 | loss 1.0102 | NDCG@10 0.2354 HR 0.4277 (n=1763) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.24s
+[nograph] W3 end | NDCG@10 0.2354 HR 0.4277 | rows=4613 probe=768 | 474s
+
+[nograph] Window 4/5 | eval_users=1547
+[nograph] W4 R010/120 | loss 1.0542 | NDCG@10 0.2255 HR 0.3956 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 3.79s
+[nograph] W4 R020/120 | loss 1.0464 | NDCG@10 0.2296 HR 0.4040 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.26s
+[nograph] W4 R030/120 | loss 1.0417 | NDCG@10 0.2324 HR 0.4105 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.42s
+[nograph] W4 R040/120 | loss 1.0534 | NDCG@10 0.2364 HR 0.4195 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.48s
+[nograph] W4 R050/120 | loss 1.0421 | NDCG@10 0.2382 HR 0.4266 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.42s
+[nograph] W4 R060/120 | loss 1.0255 | NDCG@10 0.2403 HR 0.4299 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.47s
+[nograph] W4 R070/120 | loss 1.0354 | NDCG@10 0.2433 HR 0.4331 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.55s
+[nograph] W4 R080/120 | loss 1.0435 | NDCG@10 0.2445 HR 0.4370 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.61s
+[nograph] W4 R090/120 | loss 1.0157 | NDCG@10 0.2458 HR 0.4402 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.59s
+[nograph] W4 R100/120 | loss 1.0285 | NDCG@10 0.2481 HR 0.4434 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.64s
+[nograph] W4 R110/120 | loss 1.0057 | NDCG@10 0.2490 HR 0.4454 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.68s
+[nograph] W4 R120/120 | loss 1.0328 | NDCG@10 0.2500 HR 0.4441 (n=1547) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.55s
+[nograph] W4 end | NDCG@10 0.2500 HR 0.4441 | rows=6160 probe=1024 | 762s
+
+[nograph] Window 5/5 | eval_users=1738
+[nograph] W5 R010/120 | loss 1.0317 | NDCG@10 0.2188 HR 0.4033 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.62s
+[nograph] W5 R020/120 | loss 1.0242 | NDCG@10 0.2225 HR 0.4091 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.85s
+[nograph] W5 R030/120 | loss 1.0353 | NDCG@10 0.2225 HR 0.4079 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.96s
+[nograph] W5 R040/120 | loss 1.0291 | NDCG@10 0.2238 HR 0.4120 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.00s
+[nograph] W5 R050/120 | loss 1.0272 | NDCG@10 0.2251 HR 0.4148 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.22s
+[nograph] W5 R060/120 | loss 1.0292 | NDCG@10 0.2276 HR 0.4125 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.06s
+[nograph] W5 R070/120 | loss 1.0197 | NDCG@10 0.2287 HR 0.4160 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.98s
+[nograph] W5 R080/120 | loss 1.0190 | NDCG@10 0.2290 HR 0.4160 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.03s
+[nograph] W5 R090/120 | loss 1.0152 | NDCG@10 0.2292 HR 0.4200 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.98s
+[nograph] W5 R100/120 | loss 1.0159 | NDCG@10 0.2313 HR 0.4189 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.09s
+[nograph] W5 R110/120 | loss 1.0178 | NDCG@10 0.2321 HR 0.4217 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 4.96s
+[nograph] W5 R120/120 | loss 1.0150 | NDCG@10 0.2313 HR 0.4206 (n=1738) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 5.11s
+[nograph] W5 end | NDCG@10 0.2313 HR 0.4206 | rows=7898 probe=1280 | 1087s
+
+[nograph] seed2024 done in 1087.1s | avg_window_ndcg=0.2378 final=0.2313 | delta_rel=0.000e+00 nbr_lift=nan | edges=0 updates=0
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/nograph/seed_2024
+
+=== 23:25:46  movielens-1m | static | seed 2024 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/static/seed_2024
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 2024,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[static] StaticGraph：预热结束建一次图，之后完全冻结
+[static] 图设置：{"neighbors": 20, "pool_size": 160, "state": "pool", "rho": 0.2, "min_sim": 0.0, "update_scope": "all", "warmup_rounds": 20, "ema_scale": "max(0, cos)", "arm": "static", "freeze_round": 21, "period": null, "n_updates": 0}
+[static] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[static] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[static] Window 1/5 | eval_users=1429
+[static] W1 R010/120 | loss 1.3607 | NDCG@10 0.1570 HR 0.2799 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.13s
+[static] W1 R020/120 | loss 1.3189 | NDCG@10 0.2164 HR 0.3842 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.77s
+[static] W1 R030/120 | loss 1.2642 | NDCG@10 0.2298 HR 0.4101 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 2.84e-01 nbr_lift 1.04 | 3.08s
+[static] W1 R040/120 | loss 1.1959 | NDCG@10 0.2315 HR 0.4122 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.93e-01 nbr_lift 1.04 | 2.93s
+[static] W1 R050/120 | loss 1.1136 | NDCG@10 0.2328 HR 0.4122 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 8.00e-01 nbr_lift 1.04 | 3.02s
+[static] W1 R060/120 | loss 1.0819 | NDCG@10 0.2330 HR 0.4115 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.04e+00 nbr_lift 1.03 | 2.92s
+[static] W1 R070/120 | loss 1.0761 | NDCG@10 0.2342 HR 0.4157 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.09e+00 nbr_lift 1.04 | 2.97s
+[static] W1 R080/120 | loss 1.0562 | NDCG@10 0.2345 HR 0.4150 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.02e+00 nbr_lift 1.04 | 2.95s
+[static] W1 R090/120 | loss 1.0325 | NDCG@10 0.2348 HR 0.4178 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 9.06e-01 nbr_lift 1.05 | 3.03s
+[static] W1 R100/120 | loss 1.0421 | NDCG@10 0.2349 HR 0.4178 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.62e-01 nbr_lift 1.07 | 3.10s
+[static] W1 R110/120 | loss 1.0553 | NDCG@10 0.2355 HR 0.4185 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.51e-01 nbr_lift 1.05 | 3.05s
+[static] W1 R120/120 | loss 1.0604 | NDCG@10 0.2345 HR 0.4136 (n=1429) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.81e-01 nbr_lift 1.04 | 3.06s
+[static] W1 end | NDCG@10 0.2345 HR 0.4136 | rows=1429 probe=256 | 100s
+
+[static] Window 2/5 | eval_users=1421
+[static] W2 R010/120 | loss 1.0717 | NDCG@10 0.2283 HR 0.4173 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.79e-02 nbr_lift 0.83 | 2.78s
+[static] W2 R020/120 | loss 1.0535 | NDCG@10 0.2285 HR 0.4187 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.30e-02 nbr_lift 0.80 | 3.15s
+[static] W2 R030/120 | loss 1.0776 | NDCG@10 0.2292 HR 0.4215 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.92e-02 nbr_lift 0.80 | 3.49s
+[static] W2 R040/120 | loss 1.0508 | NDCG@10 0.2301 HR 0.4251 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.63e-02 nbr_lift 0.79 | 3.50s
+[static] W2 R050/120 | loss 1.0331 | NDCG@10 0.2298 HR 0.4229 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.39e-02 nbr_lift 0.75 | 3.45s
+[static] W2 R060/120 | loss 1.0702 | NDCG@10 0.2307 HR 0.4258 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.16e-02 nbr_lift 0.76 | 3.56s
+[static] W2 R070/120 | loss 1.0550 | NDCG@10 0.2323 HR 0.4272 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.07e-02 nbr_lift 0.73 | 3.71s
+[static] W2 R080/120 | loss 1.0518 | NDCG@10 0.2331 HR 0.4314 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.01e-02 nbr_lift 0.78 | 3.44s
+[static] W2 R090/120 | loss 1.0217 | NDCG@10 0.2328 HR 0.4293 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.97e-02 nbr_lift 0.74 | 3.51s
+[static] W2 R100/120 | loss 1.0463 | NDCG@10 0.2334 HR 0.4300 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.95e-02 nbr_lift 0.76 | 3.53s
+[static] W2 R110/120 | loss 1.0167 | NDCG@10 0.2354 HR 0.4328 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.98e-02 nbr_lift 0.74 | 3.62s
+[static] W2 R120/120 | loss 1.0221 | NDCG@10 0.2385 HR 0.4377 (n=1421) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 3.97e-02 nbr_lift 0.73 | 3.49s
+[static] W2 end | NDCG@10 0.2385 HR 0.4377 | rows=2850 probe=512 | 266s
+
+[static] Window 3/5 | eval_users=1763
+[static] W3 R010/120 | loss 1.0521 | NDCG@10 0.2189 HR 0.4061 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.62e-02 nbr_lift 0.62 | 3.83s
+[static] W3 R020/120 | loss 1.0506 | NDCG@10 0.2207 HR 0.4078 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.62e-02 nbr_lift 0.60 | 4.53s
+[static] W3 R030/120 | loss 1.0352 | NDCG@10 0.2217 HR 0.4090 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.67e-02 nbr_lift 0.60 | 4.54s
+[static] W3 R040/120 | loss 1.0394 | NDCG@10 0.2245 HR 0.4124 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.69e-02 nbr_lift 0.61 | 4.67s
+[static] W3 R050/120 | loss 1.0505 | NDCG@10 0.2258 HR 0.4129 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.80e-02 nbr_lift 0.64 | 4.54s
+[static] W3 R060/120 | loss 1.0340 | NDCG@10 0.2263 HR 0.4135 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.83e-02 nbr_lift 0.64 | 4.67s
+[static] W3 R070/120 | loss 1.0256 | NDCG@10 0.2269 HR 0.4169 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.87e-02 nbr_lift 0.64 | 4.71s
+[static] W3 R080/120 | loss 1.0524 | NDCG@10 0.2278 HR 0.4169 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 4.94e-02 nbr_lift 0.67 | 4.66s
+[static] W3 R090/120 | loss 1.0290 | NDCG@10 0.2289 HR 0.4169 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.00e-02 nbr_lift 0.69 | 4.53s
+[static] W3 R100/120 | loss 1.0263 | NDCG@10 0.2312 HR 0.4203 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.06e-02 nbr_lift 0.70 | 4.57s
+[static] W3 R110/120 | loss 1.0230 | NDCG@10 0.2311 HR 0.4220 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.15e-02 nbr_lift 0.72 | 4.60s
+[static] W3 R120/120 | loss 1.0053 | NDCG@10 0.2318 HR 0.4203 (n=1763) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 5.21e-02 nbr_lift 0.74 | 4.60s
+[static] W3 end | NDCG@10 0.2318 HR 0.4203 | rows=4613 probe=768 | 513s
+
+[static] Window 4/5 | eval_users=1547
+[static] W4 R010/120 | loss 1.0476 | NDCG@10 0.2259 HR 0.3969 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.07e-02 nbr_lift 0.64 | 4.13s
+[static] W4 R020/120 | loss 1.0401 | NDCG@10 0.2307 HR 0.4079 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.08e-02 nbr_lift 0.64 | 4.65s
+[static] W4 R030/120 | loss 1.0367 | NDCG@10 0.2344 HR 0.4150 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.09e-02 nbr_lift 0.65 | 4.90s
+[static] W4 R040/120 | loss 1.0484 | NDCG@10 0.2372 HR 0.4176 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.09e-02 nbr_lift 0.67 | 4.94s
+[static] W4 R050/120 | loss 1.0370 | NDCG@10 0.2385 HR 0.4202 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.10e-02 nbr_lift 0.66 | 4.78s
+[static] W4 R060/120 | loss 1.0222 | NDCG@10 0.2382 HR 0.4195 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.12e-02 nbr_lift 0.71 | 4.89s
+[static] W4 R070/120 | loss 1.0327 | NDCG@10 0.2408 HR 0.4247 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.14e-02 nbr_lift 0.74 | 5.05s
+[static] W4 R080/120 | loss 1.0404 | NDCG@10 0.2416 HR 0.4279 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.16e-02 nbr_lift 0.72 | 5.04s
+[static] W4 R090/120 | loss 1.0123 | NDCG@10 0.2410 HR 0.4273 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.16e-02 nbr_lift 0.76 | 4.89s
+[static] W4 R100/120 | loss 1.0243 | NDCG@10 0.2442 HR 0.4324 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.18e-02 nbr_lift 0.77 | 5.09s
+[static] W4 R110/120 | loss 1.0024 | NDCG@10 0.2469 HR 0.4350 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.19e-02 nbr_lift 0.81 | 4.93s
+[static] W4 R120/120 | loss 1.0303 | NDCG@10 0.2469 HR 0.4357 (n=1547) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 1.20e-02 nbr_lift 0.80 | 4.84s
+[static] W4 end | NDCG@10 0.2469 HR 0.4357 | rows=6160 probe=1024 | 825s
+
+[static] Window 5/5 | eval_users=1738
+[static] W5 R010/120 | loss 1.0285 | NDCG@10 0.2201 HR 0.4005 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.18e-02 nbr_lift 0.71 | 5.00s
+[static] W5 R020/120 | loss 1.0210 | NDCG@10 0.2214 HR 0.4039 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.24e-02 nbr_lift 0.72 | 5.21s
+[static] W5 R030/120 | loss 1.0324 | NDCG@10 0.2211 HR 0.4028 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.36e-02 nbr_lift 0.70 | 5.36s
+[static] W5 R040/120 | loss 1.0279 | NDCG@10 0.2232 HR 0.4085 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.44e-02 nbr_lift 0.74 | 5.37s
+[static] W5 R050/120 | loss 1.0251 | NDCG@10 0.2243 HR 0.4091 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.47e-02 nbr_lift 0.72 | 5.47s
+[static] W5 R060/120 | loss 1.0273 | NDCG@10 0.2276 HR 0.4154 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.57e-02 nbr_lift 0.71 | 5.38s
+[static] W5 R070/120 | loss 1.0183 | NDCG@10 0.2271 HR 0.4143 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.67e-02 nbr_lift 0.75 | 5.51s
+[static] W5 R080/120 | loss 1.0182 | NDCG@10 0.2278 HR 0.4189 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.73e-02 nbr_lift 0.78 | 5.36s
+[static] W5 R090/120 | loss 1.0146 | NDCG@10 0.2268 HR 0.4189 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.79e-02 nbr_lift 0.76 | 5.62s
+[static] W5 R100/120 | loss 1.0144 | NDCG@10 0.2281 HR 0.4166 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.91e-02 nbr_lift 0.79 | 5.63s
+[static] W5 R110/120 | loss 1.0178 | NDCG@10 0.2258 HR 0.4160 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 6.97e-02 nbr_lift 0.78 | 5.46s
+[static] W5 R120/120 | loss 1.0134 | NDCG@10 0.2289 HR 0.4200 (n=1738) | edges 1275 upd 1 ECR 0.0000 (+0.00) | delta_rel 7.02e-02 nbr_lift 0.78 | 5.51s
+[static] W5 end | NDCG@10 0.2289 HR 0.4200 | rows=7898 probe=1280 | 1174s
+
+[static] seed2024 done in 1174.0s | avg_window_ndcg=0.2361 final=0.2289 | delta_rel=1.611e-01 nbr_lift=0.78 | edges=1275 updates=1
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/static/seed_2024
+
+=== 23:45:24  movielens-1m | dynamic | seed 2024 ===
+Output directory: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/dynamic/seed_2024
+Device: cuda | GPU: NVIDIA GeForce RTX 3090
+Config: {
+  "dataset": "movielens-1m",
+  "latent_dim": 64,
+  "max_len": 50,
+  "num_heads": 4,
+  "num_blocks": 2,
+  "dropout_rate": 0.2,
+  "top_k": 10,
+  "candidate_count": 99,
+  "window_mode": "slice",
+  "seed": 2024,
+  "rounds": 600,
+  "participation_rate": 0.1,
+  "clients_per_round": null,
+  "local_epochs": 1,
+  "lr": 0.001,
+  "server_lr_init": 15.0,
+  "server_lr_final": 1.0,
+  "server_lr_decay_frac": 0.8,
+  "fedavg_weighting": "uniform",
+  "personalization": "encoder",
+  "personal_on_cpu": true,
+  "lambda_temp": 1e-05,
+  "lambda_struct": 0.0,
+  "struct_target": "delta_e",
+  "neighbors": 20,
+  "rho": 0.2,
+  "min_sim": 0.0,
+  "graph_warmup_rounds": 20,
+  "graph_update_scope": "all",
+  "graph_state": "pool",
+  "graph_pool_size": 0,
+  "graph_new_edge": "zero",
+  "graph_mix": 1.0,
+  "active_norm_eps": 1e-06,
+  "graph_block_size": 1024,
+  "summary_momentum": 0.0,
+  "num_windows": 5,
+  "rounds_per_window": 120,
+  "eval_every": 10,
+  "eval_batch_size": 2048,
+  "max_eval_users": null,
+  "num_threads": 4,
+  "device": "auto",
+  "out_dir": null
+}
+Building 5 chronological slice windows for movielens-1m: users=6040, items=3416, interactions=999611
+  W1: interactions=0..199922, eval_users=1429, train_shape=(6040, 50)
+  W2: interactions=199922..399844, eval_users=1421, train_shape=(6040, 50)
+  W3: interactions=399844..599766, eval_users=1763, train_shape=(6040, 50)
+  W4: interactions=599766..799688, eval_users=1547, train_shape=(6040, 50)
+  W5: interactions=799688..999611, eval_users=1738, train_shape=(6040, 50)
+[dynamic] DynamicGraph：论文 EMA，每轮更新全部活跃节点的边
+[dynamic] 图设置：{"neighbors": 20, "pool_size": 160, "state": "pool", "rho": 0.2, "min_sim": 0.0, "update_scope": "all", "warmup_rounds": 20, "ema_scale": "max(0, cos)", "arm": "dynamic", "freeze_round": null, "period": null, "n_updates": 0}
+[dynamic] 联邦设置：N=6040, items=3416, m=604 (C=0.1), E=1, lr=0.001, FedAvg=uniform, personalization=encoder
+[dynamic] 只差图这一件事：lambda_temp=1e-05, lambda_struct=0.0, graph_mix=1.0, neighbors=20, rho=0.2, warmup=20, update_scope=all
+
+[dynamic] Window 1/5 | eval_users=1429
+[dynamic] W1 R010/120 | loss 1.3607 | NDCG@10 0.1570 HR 0.2799 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.10s
+[dynamic] W1 R020/120 | loss 1.3189 | NDCG@10 0.2164 HR 0.3842 (n=1429) | edges 0 upd 0 ECR 0.0000 (+0.00) | delta_rel 0.00e+00 nbr_lift nan | 2.67s
+[dynamic] W1 R030/120 | loss 1.2626 | NDCG@10 0.2289 HR 0.4059 (n=1429) | edges 1362 upd 10 ECR 0.3037 (+4.05) | delta_rel 3.11e-01 nbr_lift 1.06 | 2.98s
+[dynamic] W1 R040/120 | loss 1.1860 | NDCG@10 0.2308 HR 0.4108 (n=1429) | edges 1410 upd 20 ECR 0.2538 (+3.22) | delta_rel 5.79e-01 nbr_lift 1.06 | 2.95s
+[dynamic] W1 R050/120 | loss 1.0991 | NDCG@10 0.2315 HR 0.4087 (n=1429) | edges 1423 upd 30 ECR 0.2587 (+3.28) | delta_rel 9.63e-01 nbr_lift 1.07 | 3.06s
+[dynamic] W1 R060/120 | loss 1.0714 | NDCG@10 0.2326 HR 0.4108 (n=1429) | edges 1427 upd 40 ECR 0.2117 (+2.60) | delta_rel 1.24e+00 nbr_lift 1.07 | 2.89s
+[dynamic] W1 R070/120 | loss 1.0764 | NDCG@10 0.2332 HR 0.4129 (n=1429) | edges 1428 upd 50 ECR 0.1850 (+2.24) | delta_rel 1.26e+00 nbr_lift 1.09 | 2.94s
+[dynamic] W1 R080/120 | loss 1.0479 | NDCG@10 0.2340 HR 0.4129 (n=1429) | edges 1429 upd 60 ECR 0.1899 (+2.27) | delta_rel 1.15e+00 nbr_lift 1.11 | 3.01s
+[dynamic] W1 R090/120 | loss 1.0257 | NDCG@10 0.2348 HR 0.4171 (n=1429) | edges 1429 upd 70 ECR 0.2064 (+2.48) | delta_rel 1.01e+00 nbr_lift 1.16 | 3.05s
+[dynamic] W1 R100/120 | loss 1.0365 | NDCG@10 0.2345 HR 0.4164 (n=1429) | edges 1429 upd 80 ECR 0.1643 (+1.96) | delta_rel 8.52e-01 nbr_lift 1.21 | 3.03s
+[dynamic] W1 R110/120 | loss 1.0487 | NDCG@10 0.2335 HR 0.4136 (n=1429) | edges 1429 upd 90 ECR 0.1499 (+1.77) | delta_rel 7.39e-01 nbr_lift 1.23 | 2.96s
+[dynamic] W1 R120/120 | loss 1.0555 | NDCG@10 0.2333 HR 0.4143 (n=1429) | edges 1429 upd 100 ECR 0.1384 (+1.62) | delta_rel 6.64e-01 nbr_lift 1.26 | 2.98s
+[dynamic] W1 end | NDCG@10 0.2333 HR 0.4143 | rows=1429 probe=256 | 101s
+
+[dynamic] Window 2/5 | eval_users=1421
+[dynamic] W2 R010/120 | loss 1.0620 | NDCG@10 0.2250 HR 0.4159 (n=1421) | edges 2239 upd 110 ECR 0.2462 (+3.57) | delta_rel 3.90e-01 nbr_lift 1.17 | 2.74s
+[dynamic] W2 R020/120 | loss 1.0483 | NDCG@10 0.2271 HR 0.4166 (n=1421) | edges 2497 upd 120 ECR 0.2224 (+2.85) | delta_rel 4.66e-01 nbr_lift 1.22 | 3.17s
+[dynamic] W2 R030/120 | loss 1.0712 | NDCG@10 0.2278 HR 0.4194 (n=1421) | edges 2602 upd 130 ECR 0.2195 (+2.73) | delta_rel 4.84e-01 nbr_lift 1.26 | 3.51s
+[dynamic] W2 R040/120 | loss 1.0440 | NDCG@10 0.2291 HR 0.4229 (n=1421) | edges 2636 upd 140 ECR 0.2008 (+2.43) | delta_rel 4.85e-01 nbr_lift 1.32 | 3.53s
+[dynamic] W2 R050/120 | loss 1.0246 | NDCG@10 0.2299 HR 0.4251 (n=1421) | edges 2646 upd 150 ECR 0.1778 (+2.11) | delta_rel 4.87e-01 nbr_lift 1.31 | 3.54s
+[dynamic] W2 R060/120 | loss 1.0656 | NDCG@10 0.2327 HR 0.4293 (n=1421) | edges 2658 upd 160 ECR 0.1751 (+2.08) | delta_rel 5.02e-01 nbr_lift 1.38 | 3.56s
+[dynamic] W2 R070/120 | loss 1.0465 | NDCG@10 0.2324 HR 0.4300 (n=1421) | edges 2661 upd 170 ECR 0.1652 (+1.95) | delta_rel 5.24e-01 nbr_lift 1.36 | 3.60s
+[dynamic] W2 R080/120 | loss 1.0439 | NDCG@10 0.2322 HR 0.4307 (n=1421) | edges 2664 upd 180 ECR 0.1593 (+1.87) | delta_rel 5.51e-01 nbr_lift 1.45 | 3.53s
+[dynamic] W2 R090/120 | loss 1.0129 | NDCG@10 0.2334 HR 0.4356 (n=1421) | edges 2664 upd 190 ECR 0.1529 (+1.79) | delta_rel 5.84e-01 nbr_lift 1.44 | 3.49s
+[dynamic] W2 R100/120 | loss 1.0349 | NDCG@10 0.2358 HR 0.4391 (n=1421) | edges 2664 upd 200 ECR 0.1525 (+1.78) | delta_rel 6.14e-01 nbr_lift 1.52 | 3.62s
+[dynamic] W2 R110/120 | loss 1.0051 | NDCG@10 0.2389 HR 0.4455 (n=1421) | edges 2664 upd 210 ECR 0.1494 (+1.73) | delta_rel 6.50e-01 nbr_lift 1.51 | 3.68s
+[dynamic] W2 R120/120 | loss 1.0098 | NDCG@10 0.2398 HR 0.4483 (n=1421) | edges 2664 upd 220 ECR 0.1414 (+1.63) | delta_rel 6.88e-01 nbr_lift 1.54 | 3.56s
+[dynamic] W2 end | NDCG@10 0.2398 HR 0.4483 | rows=2850 probe=512 | 270s
+
+[dynamic] Window 3/5 | eval_users=1763
+[dynamic] W3 R010/120 | loss 1.0414 | NDCG@10 0.2180 HR 0.4022 (n=1763) | edges 3604 upd 230 ECR 0.2042 (+2.78) | delta_rel 5.29e-01 nbr_lift 1.35 | 3.96s
+[dynamic] W3 R020/120 | loss 1.0371 | NDCG@10 0.2203 HR 0.4084 (n=1763) | edges 3922 upd 240 ECR 0.1989 (+2.47) | delta_rel 6.85e-01 nbr_lift 1.37 | 4.48s
+[dynamic] W3 R030/120 | loss 1.0211 | NDCG@10 0.2223 HR 0.4090 (n=1763) | edges 4027 upd 250 ECR 0.1864 (+2.25) | delta_rel 7.87e-01 nbr_lift 1.42 | 4.67s
+[dynamic] W3 R040/120 | loss 1.0239 | NDCG@10 0.2252 HR 0.4129 (n=1763) | edges 4064 upd 260 ECR 0.1814 (+2.18) | delta_rel 8.47e-01 nbr_lift 1.44 | 4.66s
+[dynamic] W3 R050/120 | loss 1.0327 | NDCG@10 0.2287 HR 0.4192 (n=1763) | edges 4077 upd 270 ECR 0.1682 (+2.00) | delta_rel 8.94e-01 nbr_lift 1.50 | 4.52s
+[dynamic] W3 R060/120 | loss 1.0164 | NDCG@10 0.2304 HR 0.4192 (n=1763) | edges 4079 upd 280 ECR 0.1619 (+1.91) | delta_rel 9.41e-01 nbr_lift 1.55 | 4.69s
+[dynamic] W3 R070/120 | loss 1.0078 | NDCG@10 0.2301 HR 0.4186 (n=1763) | edges 4080 upd 290 ECR 0.1530 (+1.79) | delta_rel 9.87e-01 nbr_lift 1.56 | 4.65s
+[dynamic] W3 R080/120 | loss 1.0333 | NDCG@10 0.2338 HR 0.4254 (n=1763) | edges 4080 upd 300 ECR 0.1432 (+1.66) | delta_rel 1.03e+00 nbr_lift 1.64 | 4.76s
+[dynamic] W3 R090/120 | loss 1.0091 | NDCG@10 0.2349 HR 0.4254 (n=1763) | edges 4080 upd 310 ECR 0.1510 (+1.76) | delta_rel 1.06e+00 nbr_lift 1.68 | 4.75s
+[dynamic] W3 R100/120 | loss 1.0070 | NDCG@10 0.2376 HR 0.4288 (n=1763) | edges 4080 upd 320 ECR 0.1491 (+1.73) | delta_rel 1.10e+00 nbr_lift 1.70 | 4.87s
+[dynamic] W3 R110/120 | loss 1.0022 | NDCG@10 0.2400 HR 0.4322 (n=1763) | edges 4080 upd 330 ECR 0.1344 (+1.56) | delta_rel 1.14e+00 nbr_lift 1.72 | 4.79s
+[dynamic] W3 R120/120 | loss 0.9834 | NDCG@10 0.2434 HR 0.4390 (n=1763) | edges 4080 upd 340 ECR 0.1392 (+1.62) | delta_rel 1.18e+00 nbr_lift 1.76 | 4.72s
+[dynamic] W3 end | NDCG@10 0.2434 HR 0.4390 | rows=4613 probe=768 | 525s
+
+[dynamic] Window 4/5 | eval_users=1547
+[dynamic] W4 R010/120 | loss 1.0229 | NDCG@10 0.2327 HR 0.4066 (n=1547) | edges 4971 upd 350 ECR 0.1742 (+2.35) | delta_rel 9.23e-01 nbr_lift 1.54 | 4.26s
+[dynamic] W4 R020/120 | loss 1.0156 | NDCG@10 0.2386 HR 0.4163 (n=1547) | edges 5250 upd 360 ECR 0.1715 (+2.12) | delta_rel 1.19e+00 nbr_lift 1.54 | 4.87s
+[dynamic] W4 R030/120 | loss 1.0101 | NDCG@10 0.2449 HR 0.4260 (n=1547) | edges 5359 upd 370 ECR 0.1756 (+2.11) | delta_rel 1.29e+00 nbr_lift 1.56 | 5.00s
+[dynamic] W4 R040/120 | loss 1.0210 | NDCG@10 0.2486 HR 0.4350 (n=1547) | edges 5384 upd 380 ECR 0.1550 (+1.84) | delta_rel 1.34e+00 nbr_lift 1.66 | 5.08s
+[dynamic] W4 R050/120 | loss 1.0066 | NDCG@10 0.2541 HR 0.4441 (n=1547) | edges 5393 upd 390 ECR 0.1529 (+1.79) | delta_rel 1.38e+00 nbr_lift 1.68 | 4.92s
+[dynamic] W4 R060/120 | loss 0.9916 | NDCG@10 0.2578 HR 0.4467 (n=1547) | edges 5398 upd 400 ECR 0.1476 (+1.72) | delta_rel 1.44e+00 nbr_lift 1.75 | 5.21s
+[dynamic] W4 R070/120 | loss 1.0015 | NDCG@10 0.2612 HR 0.4512 (n=1547) | edges 5399 upd 410 ECR 0.1453 (+1.69) | delta_rel 1.48e+00 nbr_lift 1.78 | 5.13s
+[dynamic] W4 R080/120 | loss 1.0084 | NDCG@10 0.2605 HR 0.4518 (n=1547) | edges 5400 upd 420 ECR 0.1446 (+1.68) | delta_rel 1.52e+00 nbr_lift 1.82 | 4.95s
+[dynamic] W4 R090/120 | loss 0.9792 | NDCG@10 0.2656 HR 0.4596 (n=1547) | edges 5400 upd 430 ECR 0.1360 (+1.58) | delta_rel 1.54e+00 nbr_lift 1.84 | 5.15s
+[dynamic] W4 R100/120 | loss 0.9914 | NDCG@10 0.2679 HR 0.4602 (n=1547) | edges 5400 upd 440 ECR 0.1359 (+1.57) | delta_rel 1.58e+00 nbr_lift 1.89 | 5.08s
+[dynamic] W4 R110/120 | loss 0.9694 | NDCG@10 0.2711 HR 0.4622 (n=1547) | edges 5400 upd 450 ECR 0.1384 (+1.60) | delta_rel 1.62e+00 nbr_lift 1.92 | 5.06s
+[dynamic] W4 R120/120 | loss 0.9940 | NDCG@10 0.2721 HR 0.4622 (n=1547) | edges 5400 upd 460 ECR 0.1310 (+1.51) | delta_rel 1.64e+00 nbr_lift 1.99 | 4.91s
+[dynamic] W4 end | NDCG@10 0.2721 HR 0.4622 | rows=6160 probe=1024 | 847s
+
+[dynamic] Window 5/5 | eval_users=1738
+[dynamic] W5 R010/120 | loss 0.9966 | NDCG@10 0.2320 HR 0.4097 (n=1738) | edges 5826 upd 470 ECR 0.1492 (+1.85) | delta_rel 1.49e+00 nbr_lift 1.73 | 5.13s
+[dynamic] W5 R020/120 | loss 0.9847 | NDCG@10 0.2388 HR 0.4212 (n=1738) | edges 5964 upd 480 ECR 0.1442 (+1.72) | delta_rel 1.73e+00 nbr_lift 1.80 | 5.39s
+[dynamic] W5 R030/120 | loss 0.9953 | NDCG@10 0.2383 HR 0.4212 (n=1738) | edges 6009 upd 490 ECR 0.1378 (+1.60) | delta_rel 1.82e+00 nbr_lift 1.78 | 5.53s
+[dynamic] W5 R040/120 | loss 0.9901 | NDCG@10 0.2419 HR 0.4246 (n=1738) | edges 6031 upd 500 ECR 0.1420 (+1.65) | delta_rel 1.87e+00 nbr_lift 1.86 | 5.45s
+[dynamic] W5 R050/120 | loss 0.9853 | NDCG@10 0.2451 HR 0.4281 (n=1738) | edges 6037 upd 510 ECR 0.1370 (+1.59) | delta_rel 1.92e+00 nbr_lift 1.85 | 5.54s
+[dynamic] W5 R060/120 | loss 0.9845 | NDCG@10 0.2503 HR 0.4333 (n=1738) | edges 6039 upd 520 ECR 0.1265 (+1.46) | delta_rel 1.95e+00 nbr_lift 1.82 | 5.60s
+[dynamic] W5 R070/120 | loss 0.9795 | NDCG@10 0.2478 HR 0.4292 (n=1738) | edges 6040 upd 530 ECR 0.1275 (+1.46) | delta_rel 1.99e+00 nbr_lift 1.95 | 5.57s
+[dynamic] W5 R080/120 | loss 0.9764 | NDCG@10 0.2493 HR 0.4344 (n=1738) | edges 6040 upd 540 ECR 0.1266 (+1.45) | delta_rel 2.02e+00 nbr_lift 2.04 | 5.43s
+[dynamic] W5 R090/120 | loss 0.9751 | NDCG@10 0.2504 HR 0.4367 (n=1738) | edges 6040 upd 550 ECR 0.1253 (+1.44) | delta_rel 2.05e+00 nbr_lift 2.02 | 5.44s
+[dynamic] W5 R100/120 | loss 0.9713 | NDCG@10 0.2522 HR 0.4367 (n=1738) | edges 6040 upd 560 ECR 0.1243 (+1.42) | delta_rel 2.08e+00 nbr_lift 2.06 | 5.60s
+[dynamic] W5 R110/120 | loss 0.9762 | NDCG@10 0.2531 HR 0.4384 (n=1738) | edges 6040 upd 570 ECR 0.1213 (+1.39) | delta_rel 2.11e+00 nbr_lift 2.08 | 5.78s
+[dynamic] W5 R120/120 | loss 0.9702 | NDCG@10 0.2537 HR 0.4402 (n=1738) | edges 6040 upd 580 ECR 0.1225 (+1.40) | delta_rel 2.13e+00 nbr_lift 2.08 | 5.63s
+[dynamic] W5 end | NDCG@10 0.2537 HR 0.4402 | rows=7898 probe=1280 | 1206s
+
+[dynamic] seed2024 done in 1205.6s | avg_window_ndcg=0.2485 final=0.2537 | delta_rel=1.108e+00 nbr_lift=1.56 | edges=6040 updates=580
+
+Done: /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw/movielens-1m/dynamic/seed_2024
+
+==============================================================
+训练阶段结束：用时 173 分 28 秒（跳过已完成 0 次）
+
+=== 聚合 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated ===
+找到 9 次运行，3 个臂/变体：['dynamic', 'nograph', 'static']
+数据集：['movielens-1m']
+对照：['static_minus_nograph', 'dynamic_minus_static', 'dynamic_minus_nograph']
+Traceback (most recent call last):
+  File "/home/wl/exp_FedDIEG/val_DynamicGraph/dg_aggregate.py", line 1097, in <module>
+    main()
+  File "/home/wl/exp_FedDIEG/val_DynamicGraph/dg_aggregate.py", line 978, in main
+    "p_sign": sign_test_p(d),
+              ^^^^^^^^^^^^^^
+  File "/home/wl/exp_FedDIEG/val_DynamicGraph/dg_aggregate.py", line 98, in sign_test_p
+    tail = sum(math.comb(m, i) for i in range(k + 1)) / (2.0 ** m)
+                                                         ~~~~^^~~
+OverflowError: (34, 'Numerical result out of range')
+[warn] 聚合失败
+
+==============================================================
+结果位置：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/dg_report.md                                 <- 先看这个
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_verdict.csv                        <- ① ② ③ 三条结论
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts.csv                      <- 配对差值与显著性
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_hygiene.csv                        <- 严格性检查
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_movielens-1m.png         <- 三条臂的曲线
+
+接下来可以做的补充对照（各自独立目录，不会覆盖上面的结果）：
+  ARMS="nograph static dynamic periodic" bash val_DynamicGraph/dg_run_basic.sh
+      加「每窗口刷新一次」的慢刷新臂：区分「动态性有用」与「图建得太早」
+  GRAPH_MIX=5 bash val_DynamicGraph/dg_run_basic.sh
+      剂量反应：把图分支放大 5 倍，看 delta_rel 太小时是否才显出贡献
+  RHO=0.8 bash val_DynamicGraph/dg_run_basic.sh
+      只换动态臂的 EMA 系数（自动进 dynamic_rho0.8 目录并与 dynamic 配对）
+==============================================================

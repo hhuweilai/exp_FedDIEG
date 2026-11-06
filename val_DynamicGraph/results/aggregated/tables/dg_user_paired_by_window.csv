@@ -1,0 +1,16 @@
+﻿dataset,contrast,window,mean,median,size
+movielens-1m,dynamic_minus_nograph,1,0.00047703985848681534,0.0,4287
+movielens-1m,dynamic_minus_nograph,2,0.0028984974645936317,0.0,4263
+movielens-1m,dynamic_minus_nograph,3,0.00713607852570297,0.0,5289
+movielens-1m,dynamic_minus_nograph,4,0.020536937588531635,0.0,4641
+movielens-1m,dynamic_minus_nograph,5,0.02061020539188275,0.0,5214
+movielens-1m,dynamic_minus_static,1,-0.0012863614368972618,0.0,4287
+movielens-1m,dynamic_minus_static,2,0.003590605969499485,0.0,4263
+movielens-1m,dynamic_minus_static,3,0.01074767113295411,0.0,5289
+movielens-1m,dynamic_minus_static,4,0.024941677171026574,0.0,4641
+movielens-1m,dynamic_minus_static,5,0.024198383961685964,0.0,5214
+movielens-1m,static_minus_nograph,1,0.0017634012953840772,0.0,4287
+movielens-1m,static_minus_nograph,2,-0.0006921085049058528,0.0,4263
+movielens-1m,static_minus_nograph,3,-0.0036115926072511403,0.0,5289
+movielens-1m,static_minus_nograph,4,-0.004404739582494938,0.0,4641
+movielens-1m,static_minus_nograph,5,-0.0035881785698032125,0.0,5214
