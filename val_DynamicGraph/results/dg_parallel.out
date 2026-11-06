@@ -1,0 +1,115 @@
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : nograph static dynamic periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | nograph | seed 42 已完成
+[skip] movielens-1m | static | seed 42 已完成
+[skip] movielens-1m | dynamic | seed 42 已完成
+[skip] movielens-1m | nograph | seed 777 已完成
+[skip] movielens-1m | static | seed 777 已完成
+[skip] movielens-1m | dynamic | seed 777 已完成
+[skip] movielens-1m | nograph | seed 2024 已完成
+[skip] movielens-1m | static | seed 2024 已完成
+[skip] movielens-1m | dynamic | seed 2024 已完成
+
+待跑 3 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[11:50:00] 启动 GPU0 | movielens-1m | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/parallel_logs/movielens-1m_periodic_seed42.log
+[11:50:00] 启动 GPU1 | movielens-1m | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/parallel_logs/movielens-1m_periodic_seed777.log
+[11:50:00] 启动 GPU0 | movielens-1m | periodic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/parallel_logs/movielens-1m_periodic_seed2024.log
+
+全部进程结束，墙钟 25 分 59 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | periodic | seed 42
+  [ok  ] movielens-1m | periodic | seed 777
+  [ok  ] movielens-1m | periodic | seed 2024
+
+=== 聚合 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated ===
+找到 12 次运行，4 个臂/变体：['dynamic', 'nograph', 'periodic', 'static']
+数据集：['movielens-1m']
+对照：['static_minus_nograph', 'dynamic_minus_static', 'dynamic_minus_nograph', 'periodic_minus_nograph', 'dynamic_minus_periodic']
+
+==============================================================================
+三条臂（跨种子平均，窗口级 NDCG@10）
+==============================================================================
+     dataset  arm_dir  n_seeds  ndcg_win_mean  ndcg_win_last  delta_rel  neighbor_lift    ecr  n_edges
+movielens-1m  dynamic        3         0.2379         0.2479     1.1816         1.5622 0.1681     6040
+movielens-1m  nograph        3         0.2303         0.2376     0.0000            NaN 0.0000        0
+movielens-1m periodic        3         0.2354         0.2454     0.9682         1.3380 0.0000     5973
+movielens-1m   static        3         0.2291         0.2355     0.1899         0.7598 0.0000     1275
+
+==============================================================================
+配对差值（窗口级；正 = 前一个臂更好）
+==============================================================================
+     dataset               contrast  n_obs  delta_mean  ci95_lo  ci95_hi  win_rate  seeds_positive  seeds_total  p_paired  p_sign
+movielens-1m  dynamic_minus_nograph     15      0.0076   0.0041   0.0113    0.9333               3            3    0.0015  0.0010
+movielens-1m dynamic_minus_periodic     15      0.0025   0.0012   0.0039    0.7333               3            3    0.0043  0.1185
+movielens-1m   dynamic_minus_static     15      0.0088   0.0047   0.0131    0.8000               3            3    0.0018  0.0352
+movielens-1m periodic_minus_nograph     15      0.0051   0.0027   0.0076    1.0000               3            3    0.0019  0.0001
+movielens-1m   static_minus_nograph     15     -0.0012  -0.0022  -0.0003    0.3333               0            3    0.0264  0.3018
+
+==============================================================================
+结论
+==============================================================================
+[①] 图协同分支本身有没有贡献（StaticGraph − NoGraph）
+     Δ=-0.0012 [-0.0022, -0.0003]，n=15，正号比例 0.33，种子 0/3 为正，p_paired=0.0264，p_sign=0.302
+     -> |Δ| < 0.002（可忽略）；p<0.05
+[②] 动态更新有没有额外贡献（DynamicGraph − StaticGraph）
+     Δ=+0.0088 [+0.0047, +0.0131]，n=15，正号比例 0.80，种子 3/3 为正，p_paired=0.00181，p_sign=0.0352
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[③] 动态图的总贡献（DynamicGraph − NoGraph）
+     Δ=+0.0076 [+0.0041, +0.0113]，n=15，正号比例 0.93，种子 3/3 为正，p_paired=0.0015，p_sign=0.000977
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[④] 补充：慢刷新静态图是否已足够（PeriodicGraph − NoGraph）
+     Δ=+0.0051 [+0.0027, +0.0076]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=0.00191，p_sign=6.1e-05
+     -> |Δ| ∈ [0.002, 0.006)（小）；p<0.01
+[⑤] 补充：每轮 EMA 比慢刷新多给多少（DynamicGraph − PeriodicGraph）
+     Δ=+0.0025 [+0.0012, +0.0039]，n=15，正号比例 0.73，种子 3/3 为正，p_paired=0.00432，p_sign=0.118
+     -> |Δ| ∈ [0.002, 0.006)（小）；p<0.01
+[⑥] 图分支把最终用户表示挪动了多少（delta_rel = ‖Δ‖ / ‖seq_emb‖）
+     NoGraph=0.00e+00，StaticGraph=1.90e-01，DynamicGraph=1.18e+00
+     -> NoGraph 恒为 0（控制生效）；动态图臂约 1.18e+00（≥0.5），图分支与序列表示同量级甚至更大 —— 协同分支是主导项之一，「图分支被稀释」的假设不成立。
+[⑦] 图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦）
+     StaticGraph lift=0.760，DynamicGraph lift=1.562；有边用户数 StaticGraph=1275，DynamicGraph=6040
+     -> lift=1.56 > 1：Top-K 邻居确实比随机用户更像自己（图有区分度）；对照的静态臂 lift 只有 0.76，低于随机基线
+[⑧] 严格性检查（协议一致 / 空图 / 冻结 / 每轮更新 / 评测对齐）
+     全部通过
+     -> 可以信任上面的差值
+[⑨] 总体结论
+     **动态图有明确贡献，而且贡献来自「动态」本身**：冻结的静态图相对 NoGraph 没有可测收益（①=-0.0012，可忽略），但每轮更新的动态图明显更好（②=+0.0088，窗口正号 80%、种子 3/3 为正；③=+0.0076，窗口正号 93%、种子 3/3 为正）。换句话说：图的价值不在「有一张图」，而在「这张图跟着兴趣持续更新」。另外注意：静态臂的图只覆盖 1275/6040 个用户（21%）—— 它在预热结束那一轮就冻结了，之后新上传摘要的用户永远进不了图；所以 ① 为 0 也可能部分来自「覆盖不足」，而不只是「静态本身无用」。想排除这一点就跑 periodic 臂（每窗口刷新、覆盖能拉满）或 --freeze-round 120。
+     -> 这是本实验要回答的那句话
+
+==============================================================================
+输出
+==============================================================================
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts_window.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts_by_seed.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_arm_summary.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_arm_curve.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_user_paired.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_diagnostics.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_hygiene.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_movielens-1m.png
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/parallel_logs/
+==============================================================

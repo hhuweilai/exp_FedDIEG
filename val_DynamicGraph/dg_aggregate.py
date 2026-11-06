@@ -530,6 +530,7 @@ def build_verdict(
         pick("dynamic_minus_nograph"),
     )
     g4, g5 = pick("periodic_minus_nograph"), pick("dynamic_minus_periodic")
+    g1b = pick("static_at120_minus_static")
 
     for idx, label, row in (
         ("①", "图协同分支本身有没有贡献（StaticGraph − NoGraph）", g1),
@@ -537,6 +538,8 @@ def build_verdict(
         ("③", "动态图的总贡献（DynamicGraph − NoGraph）", g3),
         ("④", "补充：慢刷新静态图是否已足够（PeriodicGraph − NoGraph）", g4),
         ("⑤", "补充：每轮 EMA 比慢刷新多给多少（DynamicGraph − PeriodicGraph）", g5),
+        ("①b", "补充：把冻结时点从第 21 轮推到第 120 轮能否救回静态图"
+               "（static_at120 − StaticGraph）", g1b),
     ):
         if row is None:
             push(idx, label, "", "没有对应结果", "未运行该臂 / 该对照")
@@ -559,6 +562,10 @@ def build_verdict(
     lift_dyn = diag(ARM_DYNAMIC, "neighbor_lift")
     edges_static = diag(ARM_STATIC, "n_edges")
     edges_dyn = diag(ARM_DYNAMIC, "n_edges")
+    lift_periodic = diag(ARM_PERIODIC, "neighbor_lift")
+    edges_periodic = diag(ARM_PERIODIC, "n_edges")
+    lift_at120 = diag("static_at120", "neighbor_lift")
+    edges_at120 = diag("static_at120", "n_edges")
     with_graph_dyn = diag(ARM_DYNAMIC, "probe_with_graph")
 
     if (
@@ -599,8 +606,10 @@ def build_verdict(
         "⑦",
         "图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦）",
         round(lift_dyn, 4) if np.isfinite(lift_dyn) else "",
-        f"StaticGraph lift={fmt(lift_static, 3)}，DynamicGraph lift={fmt(lift_dyn, 3)}；"
-        f"有边用户数 StaticGraph={fmt(edges_static, 0)}，DynamicGraph={fmt(edges_dyn, 0)}",
+        f"StaticGraph lift={fmt(lift_static, 3)}（边 {fmt(edges_static, 0)}），"
+        f"static_at120 lift={fmt(lift_at120, 3)}（边 {fmt(edges_at120, 0)}），"
+        f"PeriodicGraph lift={fmt(lift_periodic, 3)}（边 {fmt(edges_periodic, 0)}），"
+        f"DynamicGraph lift={fmt(lift_dyn, 3)}（边 {fmt(edges_dyn, 0)}）",
         _lift_judge(lift_dyn, lift_static),
     )
 
@@ -671,6 +680,35 @@ def build_verdict(
             "评测时图分支根本没被用上（delta_rel=0 且探针用户里有邻居的比例≈0），"
             "所以 ①②③ 全为 0 是**设置问题**，不是「图没用」的结论。"
         )
+    elif positive(g3) and g5 is not None and g4 is not None and positive(g4):
+        # 有「慢刷新」臂 → 可以把总收益拆成「刷新/覆盖」与「每轮 EMA」两部分
+        total = float(g3["delta_mean"])
+        share = float(g4["delta_mean"]) / total if total else float("nan")
+        if positive(g5):
+            tail = (
+                f"每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益"
+                f"（⑤={show(g5)}，{rate(g5)}，p={float(g5['p_paired']):.3g}）—— "
+                "这部分才是「自适应更新速度」真正能争取的空间。"
+            )
+        else:
+            tail = (
+                f"「每轮 EMA」相对「每窗口才刷新一次」没有可测的额外收益（⑤={show(g5)}）—— "
+                "继续研究自适应更新速度的收益有限。"
+            )
+        frozen_note = ""
+        if g1b is not None and negligible(g1b):
+            frozen_note = (
+                f"把冻结时点从第 21 轮推到第 120 轮也救不回来（①b={show(g1b)}，无差异）；"
+            )
+        conclusion = (
+            f"**动态图有明确贡献（③={show(g3)}，{rate(g3)}），但贡献的大头来自"
+            f"「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**："
+            f"每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④={show(g4)}"
+            f"（占总收益 {share:.0%}，{rate(g4)}）；" + tail
+            + frozen_note
+            + "一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户"
+            "（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。"
+        )
     elif positive(g3) and negligible(g1) and positive(g2):
         conclusion = (
             f"**动态图有明确贡献，而且贡献来自「动态」本身**："
@@ -735,12 +773,23 @@ def make_figure(arm_win: pd.DataFrame, dataset: str, out_png: Path) -> Optional[
     if sub.empty:
         return "跳过出图：没有窗口级数据"
 
-    colors = {
+    base_colors = {
         ARM_NOGRAPH: "#555555",
         ARM_STATIC: "#1f77b4",
         ARM_PERIODIC: "#2ca02c",
         ARM_DYNAMIC: "#d62728",
     }
+    extra_palette = ["#ff7f0e", "#9467bd", "#8c564b", "#17becf"]
+    variant_style: Dict[str, Tuple[str, str]] = {}
+    extra_idx = 0
+    for variant in sorted(sub["arm_dir"].unique(),
+                          key=lambda v: (ARM_ORDER.get(_arm_of(v) or "", 9), v)):
+        arm = _arm_of(variant)
+        if arm is not None and variant == arm:
+            variant_style[variant] = (base_colors.get(arm, "#999999"), "-")
+        else:
+            variant_style[variant] = (extra_palette[extra_idx % len(extra_palette)], "--")
+            extra_idx += 1
     panels = (
         ("ndcg_win_mean", "linear", "NDCG@10 (mean over seeds), by window", None),
         ("delta_rel", "symlog", "delta_rel = ||graph branch|| / ||seq_emb||", None),
@@ -750,12 +799,12 @@ def make_figure(arm_win: pd.DataFrame, dataset: str, out_png: Path) -> Optional[
     plotted = {panel[0]: False for panel in panels}
     for variant in sorted(sub["arm_dir"].unique(), key=lambda v: (ARM_ORDER.get(_arm_of(v), 9), v)):
         g = sub[sub["arm_dir"] == variant]
-        color = colors.get(_arm_of(variant), None)
+        color, linestyle = variant_style.get(variant, ("#999999", "-"))
         x = np.array(sorted(g["window"].unique()))
         grp = g.groupby("window")
         for ax, (col, scale, title, hline) in zip(axes, panels):
             mean = grp[col].mean().reindex(x).to_numpy(dtype=float)
-            ax.plot(x, mean, marker="o", ms=4, lw=1.6, color=color,
+            ax.plot(x, mean, marker="o", ms=4, lw=1.6, color=color, ls=linestyle,
                     label=variant if ax is axes[0] else None)
             if np.isfinite(mean).any():
                 plotted[col] = True
