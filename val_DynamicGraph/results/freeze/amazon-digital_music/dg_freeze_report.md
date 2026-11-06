@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | ① | 四种配置下图到底冻没冻住（ρ=0.8） |  | pool+zero: frozen_share=0.020, turnover=0.967, ECR=0.1767, 新边=2.12；pool+warm: frozen_share=0.020, turnover=0.973, ECR=0.2388, 新边=3.06；topk+zero: frozen_share=0.194, turnover=0.476, ECR=0.0039, 新边=0.07；topk+warm: frozen_share=0.020, turnover=0.972, ECR=0.2342, 新边=3.01 | frozen_share 越接近 1、turnover 越接近 0 就越冻 |
 | ② | 冻结的根因：EMA / 新边初始化 / 状态保留规则 |  | pool+zero=不冻，pool+warm=不冻，topk+zero=冻，topk+warm=不冻 | 冻结**只出现在 topk + zero 这一个组合**：pool 的两格都不冻（ρ=0.8 也一样），topk+warm 也不冻。所以它既不是 EMA 强度单独造成的，也不是任一单独因素造成的，而是**「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应**：topk 状态会丢弃掉出 Top-K 的边历史，而 zero 初值让新边只能以 (1-ρ)Δe 起步（ρ=0.8 时仅 20%），根本挤不进 Top-K；挤不进 ⇒ EMA 永不累积 ⇒ 永久冻结。把任一项改掉（pool 或 warm）就都不冻。 |
-| ③ | 换 warm 初始化能不能解开冻结（topk 状态下） | -0.1742 | Δfrozen_share=-0.174 [-0.289, -0.078]，p=0.0084 | warm 初始化**不能**解开冻结 |
+| ③ | 换 warm 初始化能不能解开冻结（topk 状态下） | -0.1742 | Δfrozen_share=-0.174 [-0.289, -0.078]，p=0.0084 | warm 初始化**几乎完全解开**了冻结：topk+warm 的 frozen_share 只剩 0.020，已与 pool 两格同量级 |
 | ④ | 候选池下，warm 初始化让图转得快多少 | 0.0056 | Δturnover=+0.0056（p=0.0324）；Δ新边=+0.94（p=2.63e-17）；ΔNDCG=-0.0002（p=0.00177） | 初始化规则对适应速度几乎没有影响 |
 | ⑤ | ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么 | -0.0054 | Δturnover=-0.0054（p=0.0369）；ΔNDCG=+0.0001（p=0.0248） | ρ 对 turnover 没有明显影响 |
 | ⑥ | 各配置的推荐效果（窗口级 NDCG@10） |  | pool+zero ρ0.8: 0.0924；pool+warm ρ0.8: 0.0922；topk+zero ρ0.8: 0.0923；topk+warm ρ0.8: 0.0922；论文默认 pool+zero ρ0.2: 0.0923 | 冻结的图不仅不涨，还会因为邻居失真而略微拖低（见体检列） |

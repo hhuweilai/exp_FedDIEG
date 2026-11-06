@@ -481,7 +481,14 @@ def section_q1(b: Bundle) -> str:
     if static_bad:
         parts.append(f"一次性冻结的图在 {'、'.join(static_bad)} 上相对无图无可测收益")
     if static_ok:
-        parts.append(f"（注意 {'、'.join(static_ok)} 上静态图并非无效，需结合第三章解释）")
+        st_vals = []
+        for ds in DATASETS:
+            g1 = b.contrast(ds, "static_minus_nograph")
+            if g1 is not None and DS_LABEL.get(ds, ds) in static_ok:
+                st_vals.append(f"{float(g1['delta_mean']):+.4f}")
+        parts.append(f"但 {'、'.join(static_ok)} 上的静态图仍有正收益 {'、'.join(st_vals)}"
+                     f"（远小于动态图），且它的 neighbor_lift 已低于随机基线（见第二章 ⑦），"
+                     f"这部分收益不能归因于邻居质量")
 
     out.append("> **一句话**：" + "；".join(parts) + "。\n")
     return "\n".join(out)
@@ -720,10 +727,20 @@ def section_q3(b: Bundle) -> str:
         bullets.append(f"兴趣漂移与收益同向（漂移五分位跨度 {span_d:+.4f}）——"
                        f"这正好是「什么时候该更新关系」的直接抓手；")
     if q_rows:
-        bullets.append("两个数据集在无标签口径（邻居质量）下方向一致："
-                       + "；".join(f"{r['dataset']} 邻居质量 Q1→Q5 收益差 {r['lift_span']:+.4f}"
-                                   f"（平均收益 {r['mean_gain']:+.4f}）" for r in q_rows)
-                       + "——收益随邻居质量上升，但个体层面相关性都弱。")
+        spans = [r["lift_span"] for r in q_rows if np.isfinite(r["lift_span"])]
+        body = "；".join(f"{r['dataset']} 邻居质量 Q1→Q5 收益差 {r['lift_span']:+.4f}"
+                        f"（平均收益 {r['mean_gain']:+.4f}）" for r in q_rows)
+        if len(spans) >= 2 and all(s >= 0.005 for s in spans):
+            tail = "——两个数据集上收益都随邻居质量上升，但个体层面相关性都弱。"
+        elif len(spans) >= 2 and any(s >= 0.005 for s in spans) and any(s <= 0.0 for s in spans):
+            tail = ("——**这个梯度不能跨数据集复现**：在一个数据集上邻居质量越高的用户收益越大，"
+                    "在另一个数据集上则完全测不出梯度，而两边的平均收益都是正的。"
+                    "所以「邻居很像自己」解释不了「协同为什么有效」。")
+        elif spans and all(s <= 0.0 for s in spans):
+            tail = "——两个数据集上都没有测出梯度，个体层面相关性也弱。"
+        else:
+            tail = "——跨度都很小，个体层面相关性也弱。"
+        bullets.append("无标签口径（邻居质量）下的复核：" + body + tail)
 
     out.append("**「兴趣相似」不是协同有效的充分条件。**\n")
     for bx in bullets:
@@ -735,12 +752,15 @@ def section_q3(b: Bundle) -> str:
 def section_implications() -> str:
     return """## 五、对研究问题的含义
 
-1. **图是有效的，但价值不在"有图"而在"图跟得上"**。一次性静态图在联邦切片协议下覆盖不到后来才活跃的用户，
-   邻居质量也会随兴趣漂移掉到随机基线以下，因此几乎没有贡献；而每窗口刷新一次就能拿到六成以上的收益。
-   所以第二阶段的重点应当是**"什么时候刷新、覆盖谁"**，而不是精调平滑系数。
+1. **图是有效的，但价值不在"有图"而在"图跟得上"**。一次性冻结的静态图只能覆盖"冻结那一刻已经上传过摘要"
+   的用户（MovieLens-1M 1275 / 6040，Amazon-Digital-Music 2928 / 12381），邻居质量会随兴趣漂移掉下去：
+   它在 MovieLens-1M 上相对无图没有可测收益（-0.0012），在 Amazon 上虽有正收益（+0.0044）但只有动态图的 1/4；
+   而这个正收益也**不能**归因于邻居质量——那条臂的 neighbor_lift（0.87）甚至低于随机基线。
+   相比之下每窗口刷新一次就能拿到总收益的 60%~80%。所以第二阶段的重点应当是**"什么时候刷新、覆盖谁"**，
+   而不是精调平滑系数。
 
-2. **自适应更新速度的空间被量化了**。相对"每窗口刷新一次"这个简单基线，每轮 EMA 只多给约 1/4 到 1/3 的收益
-   （见问题一 ⑤）。任何自适应机制必须先超过这个基线才有意义。
+2. **自适应更新速度的空间被量化了**。相对"每窗口刷新一次"这个简单基线，每轮 EMA 只多给约 1/5 到 1/3 的收益
+   （见问题一 ⑤：Amazon 18%、MovieLens-1M 33%）。任何自适应机制必须先超过这个基线才有意义。
 
 3. **现行实现的冻结缺陷是组合式的**，改"状态保留规则"或"新边初值"任一项即可解除；但要注意
    **NDCG@10 对这个缺陷完全不敏感**，因此论文里论证图更新机制时，必须同时报告邻居质量/边变化率等结构指标。

@@ -339,16 +339,25 @@ def build_verdict(cells: pd.DataFrame, contrasts: pd.DataFrame) -> List[Dict[str
         judge = "冻结模式不规则（见 ①），需要逐个排查。"
     push("②", "冻结的根因：EMA / 新边初始化 / 状态保留规则", "", pattern, judge)
 
-    # ③ 新边初始化有没有解开冻结
+    # ③ 新边初始化有没有解开冻结（判据看「换过之后还剩多少冻结用户」，不只看差值）
     c = get("topk_warm − topk_zero", "frozen")
+    r_tw = cell_row("topk_warm_rho0.8")
+    fz_after = _num(r_tw, "frozen_share") if r_tw is not None else float("nan")
     if c is None:
         push("③", "换 warm 初始化能不能解开冻结（topk 状态下）", "", "没有数据", "")
     else:
         d = float(c["delta_mean"])
+        if np.isfinite(fz_after) and fz_after < 0.10:
+            verdict = (f"warm 初始化**几乎完全解开**了冻结：topk+warm 的 frozen_share 只剩 "
+                       f"{fz_after:.3f}，已与 pool 两格同量级")
+        elif d <= -0.2:
+            verdict = f"warm 初始化明显减轻了冻结，但仍有残余（frozen_share={fz_after:.3f}）"
+        else:
+            verdict = f"warm 初始化**不能**解开冻结（残余 frozen_share={fz_after:.3f}）"
         push("③", "换 warm 初始化能不能解开冻结（topk 状态下）", round(d, 4),
              f"Δfrozen_share={d:+.3f} [{float(c['ci95_lo']):+.3f}, {float(c['ci95_hi']):+.3f}]，"
              f"p={float(c['p_paired']):.3g}",
-             "warm 初始化**不能**解开冻结" if d > -0.2 else "warm 初始化明显减轻了冻结")
+             verdict)
 
     # ④ 初始化规则对「适应速度」的影响（pool 状态）
     c_t = get("pool_warm − pool_zero", "turnover")
@@ -364,17 +373,23 @@ def build_verdict(cells: pd.DataFrame, contrasts: pd.DataFrame) -> List[Dict[str
              "初始化规则影响的是**适应速度**" if float(c_t["delta_mean"]) > 0.01
              else "初始化规则对适应速度几乎没有影响")
 
-    # ⑤ EMA 强度本身的影响
+    # ⑤ EMA 强度本身的影响（参照格缺 turnover 列时退回 ECR）
     c_r = get("pool_zero(ρ0.8) − pool_zero(ρ0.2)", "turnover")
+    c_re = get("pool_zero(ρ0.8) − pool_zero(ρ0.2)", "ecr")
     c_rn = get("pool_zero(ρ0.8) − pool_zero(ρ0.2)", "ndcg_win_mean")
-    if c_r is not None:
-        push("⑤", "ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么", round(float(c_r["delta_mean"]), 4),
-             f"Δturnover={float(c_r['delta_mean']):+.4f}（p={float(c_r['p_paired']):.3g}）；"
-             + (f"ΔNDCG={float(c_rn['delta_mean']):+.4f}（p={float(c_rn['p_paired']):.3g}）"
+    use_ecr = c_r is None and c_re is not None
+    c_use = c_re if use_ecr else c_r
+    if c_use is not None:
+        dv = float(c_use["delta_mean"])
+        mname = "ECR" if use_ecr else "turnover"
+        slow = dv < (-0.02 if use_ecr else -0.01)
+        push("⑤", "ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么", round(dv, 4),
+             f"Δ{mname}={dv:+.4f}（p={float(c_use['p_paired']):.3g}）"
+             + ("（参照格 turnover 缺列，用 ECR 代替；ECR 越高=边换得越快）" if use_ecr else "")
+             + (f"；ΔNDCG={float(c_rn['delta_mean']):+.4f}（p={float(c_rn['p_paired']):.3g}）"
                 if c_rn is not None else ""),
-             "ρ 变慢的是**适应速度**，不是让图永久冻结（只要状态没被丢掉）"
-             if c_r is not None and float(c_r["delta_mean"]) < -0.01
-             else "ρ 对 turnover 没有明显影响")
+             "ρ 变大减慢的是**适应速度**，不是让图永久冻结（只要旧状态没被丢掉）" if slow
+             else f"ρ 对 {mname} 没有明显影响")
 
     # ⑥ 对推荐的影响
     rows_ndcg = []

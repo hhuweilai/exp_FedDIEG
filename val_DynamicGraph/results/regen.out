@@ -1,0 +1,136 @@
+== freeze movielens-1m ==
+
+==============================================================================
+各格子（movielens-1m，ρ=0.8；跨种子平均）
+==============================================================================
+                          cell  n_seeds  turnover_from_ref  frozen_share    ecr  added  n_edges  neighbor_lift  ndcg_win_mean
+paper_default_pool_zero_rho0.2        3                NaN           NaN 0.1681 2.0409     6040         1.5622         0.2379
+              pool_zero_rho0.8        3             0.9623          0.02 0.1061 1.1997     6040         1.5568         0.2378
+              pool_warm_rho0.8        3             0.9670          0.02 0.1324 1.5439     6040         1.5590         0.2378
+              topk_zero_rho0.8        3             0.1653          0.48 0.0008 0.0366     6040         1.3250         0.2377
+              topk_warm_rho0.8        3             0.9666          0.02 0.1401 1.6635     6040         1.5595         0.2378
+
+==============================================================================
+结论
+==============================================================================
+[①] 四种配置下图到底冻没冻住（ρ=0.8）
+     pool+zero: frozen_share=0.020, turnover=0.962, ECR=0.1061, 新边=1.20；pool+warm: frozen_share=0.020, turnover=0.967, ECR=0.1324, 新边=1.54；topk+zero: frozen_share=0.480, turnover=0.165, ECR=0.0008, 新边=0.04；topk+warm: frozen_share=0.020, turnover=0.967, ECR=0.1401, 新边=1.66
+     -> frozen_share 越接近 1、turnover 越接近 0 就越冻
+[②] 冻结的根因：EMA / 新边初始化 / 状态保留规则
+     pool+zero=不冻，pool+warm=不冻，topk+zero=冻，topk+warm=不冻
+     -> 冻结**只出现在 topk + zero 这一个组合**：pool 的两格都不冻（ρ=0.8 也一样），topk+warm 也不冻。所以它既不是 EMA 强度单独造成的，也不是任一单独因素造成的，而是**「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应**：topk 状态会丢弃掉出 Top-K 的边历史，而 zero 初值让新边只能以 (1-ρ)Δe 起步（ρ=0.8 时仅 20%），根本挤不进 Top-K；挤不进 ⇒ EMA 永不累积 ⇒ 永久冻结。把任一项改掉（pool 或 warm）就都不冻。
+[③] 换 warm 初始化能不能解开冻结（topk 状态下）
+     Δfrozen_share=-0.460 [-0.593, -0.328]，p=1.81e-05
+     -> warm 初始化**几乎完全解开**了冻结：topk+warm 的 frozen_share 只剩 0.020，已与 pool 两格同量级
+[④] 候选池下，warm 初始化让图转得快多少
+     Δturnover=+0.0047（p=0.0708）；Δ新边=+0.34（p=1.09e-07）；ΔNDCG=-0.0000（p=0.471）
+     -> 初始化规则对适应速度几乎没有影响
+[⑤] ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么
+     ΔECR=-0.0620（p=1.12e-14）（参照格 turnover 缺列，用 ECR 代替；ECR 越高=边换得越快）；ΔNDCG=-0.0001（p=0.345）
+     -> ρ 变大减慢的是**适应速度**，不是让图永久冻结（只要旧状态没被丢掉）
+[⑥] 各配置的推荐效果（窗口级 NDCG@10）
+     pool+zero ρ0.8: 0.2378；pool+warm ρ0.8: 0.2378；topk+zero ρ0.8: 0.2377；topk+warm ρ0.8: 0.2378；论文默认 pool+zero ρ0.2: 0.2379
+     -> 冻结的图不仅不涨，还会因为邻居失真而略微拖低（见体检列）
+[⑥b] 冻结的代价：邻居质量与推荐指标
+     neighbor_lift：pool+zero=1.557 → topk+zero=1.325（-0.232）；窗口级 NDCG@10：0.2378 → 0.2377（-0.0001）
+     -> 冻结把邻居质量明显拉低，但 NDCG@10 几乎没变 —— 说明这个指标对「图不再适应」不敏感，评测时不能只看 NDCG，必须同时看 neighbor_lift / ECR 这类结构指标
+[⑦] 一句话结论
+     冻结 = 「只存 Top-K」×「新边 0 初值」的联合效应，改任一项即可解除；topk 下改用 warm 初值可把冻结用户占比降 0.46（p=1.8e-05）；候选池下 warm 相对 zero 只多转 +0.005（几乎无差别）
+     -> 回答「更新机制是否合理」：现行实现的隐患是**旧状态规则 + 论文 0 初值的组合会让图永久冻结**；而冻结的代价主要落在邻居质量（lift 下降），NDCG@10 看不出来
+
+输出：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/dg_freeze_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/tables/dg_freeze_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/tables/dg_freeze_cells.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/tables/dg_freeze_contrasts.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/figures/dg_fig_freeze.png
+== freeze amazon-digital_music ==
+
+==============================================================================
+各格子（amazon-digital_music，ρ=0.8；跨种子平均）
+==============================================================================
+                          cell  n_seeds  turnover_from_ref  frozen_share    ecr  added  n_edges  neighbor_lift  ndcg_win_mean
+paper_default_pool_zero_rho0.2        3             0.9723        0.0200 0.2754 3.7020    12381         1.7897         0.0923
+              pool_zero_rho0.8        3             0.9669        0.0200 0.1767 2.1201    12381         1.8037         0.0924
+              pool_warm_rho0.8        3             0.9725        0.0200 0.2388 3.0556    12381         1.7782         0.0922
+              topk_zero_rho0.8        3             0.4759        0.1942 0.0039 0.0670    12381         1.4464         0.0923
+              topk_warm_rho0.8        3             0.9720        0.0200 0.2342 3.0103    12381         1.7861         0.0922
+
+==============================================================================
+结论
+==============================================================================
+[①] 四种配置下图到底冻没冻住（ρ=0.8）
+     pool+zero: frozen_share=0.020, turnover=0.967, ECR=0.1767, 新边=2.12；pool+warm: frozen_share=0.020, turnover=0.973, ECR=0.2388, 新边=3.06；topk+zero: frozen_share=0.194, turnover=0.476, ECR=0.0039, 新边=0.07；topk+warm: frozen_share=0.020, turnover=0.972, ECR=0.2342, 新边=3.01
+     -> frozen_share 越接近 1、turnover 越接近 0 就越冻
+[②] 冻结的根因：EMA / 新边初始化 / 状态保留规则
+     pool+zero=不冻，pool+warm=不冻，topk+zero=冻，topk+warm=不冻
+     -> 冻结**只出现在 topk + zero 这一个组合**：pool 的两格都不冻（ρ=0.8 也一样），topk+warm 也不冻。所以它既不是 EMA 强度单独造成的，也不是任一单独因素造成的，而是**「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应**：topk 状态会丢弃掉出 Top-K 的边历史，而 zero 初值让新边只能以 (1-ρ)Δe 起步（ρ=0.8 时仅 20%），根本挤不进 Top-K；挤不进 ⇒ EMA 永不累积 ⇒ 永久冻结。把任一项改掉（pool 或 warm）就都不冻。
+[③] 换 warm 初始化能不能解开冻结（topk 状态下）
+     Δfrozen_share=-0.174 [-0.289, -0.078]，p=0.0084
+     -> warm 初始化**几乎完全解开**了冻结：topk+warm 的 frozen_share 只剩 0.020，已与 pool 两格同量级
+[④] 候选池下，warm 初始化让图转得快多少
+     Δturnover=+0.0056（p=0.0324）；Δ新边=+0.94（p=2.63e-17）；ΔNDCG=-0.0002（p=0.00177）
+     -> 初始化规则对适应速度几乎没有影响
+[⑤] ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么
+     Δturnover=-0.0054（p=0.0369）；ΔNDCG=+0.0001（p=0.0248）
+     -> ρ 对 turnover 没有明显影响
+[⑥] 各配置的推荐效果（窗口级 NDCG@10）
+     pool+zero ρ0.8: 0.0924；pool+warm ρ0.8: 0.0922；topk+zero ρ0.8: 0.0923；topk+warm ρ0.8: 0.0922；论文默认 pool+zero ρ0.2: 0.0923
+     -> 冻结的图不仅不涨，还会因为邻居失真而略微拖低（见体检列）
+[⑥b] 冻结的代价：邻居质量与推荐指标
+     neighbor_lift：pool+zero=1.804 → topk+zero=1.446（-0.357）；窗口级 NDCG@10：0.0924 → 0.0923（-0.0002）
+     -> 冻结把邻居质量明显拉低，但 NDCG@10 几乎没变 —— 说明这个指标对「图不再适应」不敏感，评测时不能只看 NDCG，必须同时看 neighbor_lift / ECR 这类结构指标
+[⑦] 一句话结论
+     冻结 = 「只存 Top-K」×「新边 0 初值」的联合效应，改任一项即可解除；候选池下 warm 相对 zero 只多转 +0.006（几乎无差别）
+     -> 回答「更新机制是否合理」：现行实现的隐患是**旧状态规则 + 论文 0 初值的组合会让图永久冻结**；而冻结的代价主要落在邻居质量（lift 下降），NDCG@10 看不出来
+
+输出：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/dg_freeze_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/tables/dg_freeze_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/tables/dg_freeze_cells.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/tables/dg_freeze_contrasts.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/figures/dg_fig_freeze.png
+== report ==
+[ok] 报告已写出：/home/wl/exp_FedDIEG/val_DynamicGraph/实验验证报告_动态图_2026-11-06.md（586 行，36446 字节）
+     覆盖数据集：['movielens-1m', 'amazon-digital_music']
+== verify ==
+================ 1) 训练 run 数 ================
+  ML: 30 个 | Amazon: 24 个 | 合计 54
+  [PASS] MovieLens-1M 至少 30 个 run（4 臂 + 5 变体 + periodic + static_at120）
+  [PASS] Amazon 24 个 run 全部完成
+
+================ 2) 四类聚合产出 ================
+  [PASS] results/aggregated/tables/dg_verdict.csv
+  [PASS] results/aggregated/tables/dg_contrasts.csv
+  [PASS] results/aggregated/tables/dg_hygiene.csv
+  [PASS] results/freeze/movielens-1m/tables/dg_freeze_cells.csv
+  [PASS] results/freeze/amazon-digital_music/tables/dg_freeze_cells.csv
+  [PASS] results/genre/tables/dg_genre_verdict.csv
+  [PASS] results/quality/movielens-1m/tables/dg_quality_verdict.csv
+  [PASS] results/quality/amazon-digital_music/tables/dg_quality_verdict.csv
+
+================ 3) 严格性检查（两个数据集）================
+  [PASS] amazon-digital music: 9/9 项通过
+  [PASS] movielens-1m: 9/9 项通过
+
+================ 4) 报告完整性 ================
+  实验验证报告_动态图_2026-11-06.md：586 行 / 36446 字节
+  [PASS] 章节存在：## 一、实验设置与严格性
+  [PASS] 章节存在：## 二、问题一
+  [PASS] 章节存在：## 三、问题二
+  [PASS] 章节存在：## 四、问题三
+  [PASS] 章节存在：## 五、对研究问题的含义
+  [PASS] 章节存在：## 六、局限
+  [PASS] 章节存在：## 七、复现与产出清单
+  [PASS] 没有「（无数据）」占位符
+  [PASS] 跨数据集对比表有 2 行（ML + Amazon）
+  [PASS] 所有引用的图都存在
+  [PASS] 报告含问题一的核心对比句
+
+================ 5) 是否还有进程在跑 ================
+  在跑 dg_run.py: 0
+  [PASS] 训练已全部结束
+
+==============================================================
+验收汇总：PASS 22 / FAIL 0
+ALL CHECKS PASSED
