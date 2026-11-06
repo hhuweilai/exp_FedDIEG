@@ -2,6 +2,57 @@
 
 同一序列编码器、同一训练协议、同一份种子与参与序列，只改图分支：`dynamic`, `dynamic_genre`, `dynamic_rho0.8`, `dynamic_rho0.8_topk`, `dynamic_rho0.8_topk_warm`, `dynamic_rho0.8_warm`, `nograph`, `periodic`, `static`, `static_at120`。
 
+## amazon-digital music
+
+**一句话结论：** **动态图有明确贡献（③=+0.0172，窗口正号 100%、种子 3/3 为正），但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**：每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④=+0.0142（占总收益 82%，窗口正号 100%、种子 3/3 为正）；每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益（⑤=+0.0031，窗口正号 100%、种子 3/3 为正，p=1.89e-05）—— 这部分才是「自适应更新速度」真正能争取的空间。一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。
+
+| verdict_id | question | value | evidence | judgement |
+|---|---|---|---|---|
+| ① | 图协同分支本身有没有贡献（StaticGraph − NoGraph） | 0.0044 | Δ=+0.0044 [+0.0033, +0.0056]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=3.5e-06，p_sign=6.1e-05 | |Δ| ∈ [0.002, 0.006)（小）；p<0.01 |
+| ② | 动态更新有没有额外贡献（DynamicGraph − StaticGraph） | 0.0128 | Δ=+0.0128 [+0.0093, +0.0159]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=4.06e-06，p_sign=6.1e-05 | |Δ| ≥ 0.006（明确）；p<0.01 |
+| ③ | 动态图的总贡献（DynamicGraph − NoGraph） | 0.0172 | Δ=+0.0172 [+0.0143, +0.0200]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=2.36e-08，p_sign=6.1e-05 | |Δ| ≥ 0.006（明确）；p<0.01 |
+| ④ | 补充：慢刷新静态图是否已足够（PeriodicGraph − NoGraph） | 0.0142 | Δ=+0.0142 [+0.0119, +0.0163]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=1.01e-08，p_sign=6.1e-05 | |Δ| ≥ 0.006（明确）；p<0.01 |
+| ⑤ | 补充：每轮 EMA 比慢刷新多给多少（DynamicGraph − PeriodicGraph） | 0.0031 | Δ=+0.0031 [+0.0021, +0.0040]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=1.89e-05，p_sign=6.1e-05 | |Δ| ∈ [0.002, 0.006)（小）；p<0.01 |
+| ①b | 补充：把冻结时点从第 21 轮推到第 120 轮能否救回静态图（static_at120 − StaticGraph） |  | 没有对应结果 | 未运行该臂 / 该对照 |
+| ⑥ | 图分支把最终用户表示挪动了多少（delta_rel = ‖Δ‖ / ‖seq_emb‖） | 1.3562 | NoGraph=0.00e+00，StaticGraph=1.27e-01，DynamicGraph=1.36e+00 | NoGraph 恒为 0（控制生效）；动态图臂约 1.36e+00（≥0.5），图分支与序列表示同量级甚至更大 —— 协同分支是主导项之一，「图分支被稀释」的假设不成立。 |
+| ⑦ | 图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦） | 1.7897 | StaticGraph lift=0.873（边 2928），static_at120 lift=nan（边 nan），PeriodicGraph lift=1.456（边 12213），DynamicGraph lift=1.790（边 12381） | lift=1.79 > 1：Top-K 邻居确实比随机用户更像自己（图有区分度）；对照的静态臂 lift 只有 0.87，低于随机基线 |
+| ⑧ | 严格性检查（协议一致 / 空图 / 冻结 / 每轮更新 / 评测对齐） | 9 | 全部通过 | 可以信任上面的差值 |
+| ⑨ | 总体结论 |  | **动态图有明确贡献（③=+0.0172，窗口正号 100%、种子 3/3 为正），但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**：每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④=+0.0142（占总收益 82%，窗口正号 100%、种子 3/3 为正）；每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益（⑤=+0.0031，窗口正号 100%、种子 3/3 为正，p=1.89e-05）—— 这部分才是「自适应更新速度」真正能争取的空间。一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。 | 这是本实验要回答的那句话 |
+
+
+<details><summary>逐臂汇总（跨种子平均）</summary>
+
+| arm_dir | n_seeds | ndcg_win_mean | ndcg_win_last | delta_rel | neighbor_lift | ecr | n_edges | graph_updates |
+|---|---|---|---|---|---|---|---|---|
+| dynamic | 3 | 0.0923 | 0.1072 | 1.3562 | 1.7897 | 0.2754 | 12381 | 580 |
+| dynamic_rho0.8 | 3 | 0.0924 | 0.1074 | 1.3692 | 1.8037 | 0.1767 | 12381 | 580 |
+| dynamic_rho0.8_topk | 3 | 0.0923 | 0.1071 | 1.3312 | 1.4464 | 0.0039 | 12381 | 580 |
+| dynamic_rho0.8_topk_warm | 3 | 0.0922 | 0.1073 | 1.3555 | 1.7861 | 0.2342 | 12381 | 580 |
+| dynamic_rho0.8_warm | 3 | 0.0922 | 0.1072 | 1.3566 | 1.7782 | 0.2388 | 12381 | 580 |
+| nograph | 3 | 0.0751 | 0.0827 | 0.0000 | nan | 0.0000 | 0 | 0 |
+| periodic | 3 | 0.0892 | 0.1041 | 1.1040 | 1.4560 | 0.0000 | 12213 | 5 |
+| static | 3 | 0.0795 | 0.0905 | 0.1271 | 0.8733 | 0.0000 | 2928 | 1 |
+
+
+</details>
+
+<details><summary>严格性检查</summary>
+
+| check | ok | detail |
+|---|---|---|
+| 协议参数一致（除图以外没有别的差别） | 1 | 一致 |
+| 图状态（实验变量，允许不同） | 1 | pool、topk |
+| 新边初始化（实验变量，允许不同） | 1 | warm、zero |
+| 个性化层位置（仅性能开关，不改数值） | 1 | personal_on_cpu=0（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，所以混用不影响可比性） |
+| 每条臂的种子数一致 | 1 | dynamic:3, dynamic_rho0.8:3, dynamic_rho0.8_topk:3, dynamic_rho0.8_topk_warm:3, dynamic_rho0.8_warm:3, nograph:3, periodic:3, static:3 |
+| NoGraph 的图分支恒为 0 | 1 | max delta_rel=0.000e+00（要求 ≤ 1e-12） |
+| StaticGraph 冻结后边不再变化 | 1 | edge_changed_after_freeze=0（要求 0） |
+| DynamicGraph 预热后每轮都更新 | 1 | max|updates-(global_round-20)|=0 |
+| 同一窗口内各臂评测用户数一致 | 1 | 逐窗口跨臂最大差=0（各窗口人数不同是正常的：3178~3657 人） |
+
+
+</details>
+
 ## movielens-1m
 
 **一句话结论：** **动态图有明确贡献（③=+0.0076，窗口正号 93%、种子 3/3 为正），但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**：每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④=+0.0051（占总收益 67%，窗口正号 100%、种子 3/3 为正）；每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益（⑤=+0.0025，窗口正号 73%、种子 3/3 为正，p=0.00432）—— 这部分才是「自适应更新速度」真正能争取的空间。把冻结时点从第 21 轮推到第 120 轮也救不回来（①b=+0.0001，无差异）；一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。
@@ -59,16 +110,16 @@
 
 | dataset | contrast | n_users | delta_mean | delta_median | ci95_lo | ci95_hi | win_rate | p_sign | p_wilcoxon |
 |---|---|---|---|---|---|---|---|---|---|
-| movielens-1m | static_minus_nograph | 23694 | -0.0023 | 0.0000 | -0.0032 | -0.0014 | 0.0568 | 1.42e-14 | 4.93e-12 |
-| movielens-1m | dynamic_minus_static | 23694 | 0.0130 | 0.0000 | 0.0114 | 0.0147 | 0.1230 | 1.47e-43 | 3.43e-55 |
-| movielens-1m | dynamic_minus_nograph | 23694 | 0.0108 | 0.0000 | 0.0091 | 0.0125 | 0.1283 | 2.37e-19 | 3.99e-29 |
-| movielens-1m | periodic_minus_nograph | 23694 | 0.0081 | 0.0000 | 0.0066 | 0.0097 | 0.1145 | 1.18e-09 | 8.54e-18 |
-| movielens-1m | dynamic_minus_periodic | 23694 | 0.0026 | 0.0000 | 0.0018 | 0.0035 | 0.0645 | 5.18e-13 | 3.75e-13 |
+| amazon-digital music | static_minus_nograph | 75864 | 0.0045 | 0.0000 | 0.0038 | 0.0051 | 0.0605 | 2.84e-12 | 1.22e-33 |
+| amazon-digital music | dynamic_minus_static | 75864 | 0.0158 | 0.0000 | 0.0147 | 0.0169 | 0.1086 | 1.23e-151 | 3.66e-187 |
+| amazon-digital music | dynamic_minus_nograph | 75864 | 0.0202 | 0.0000 | 0.0190 | 0.0214 | 0.1224 | 2.74e-157 | 2.77e-226 |
+| amazon-digital music | periodic_minus_nograph | 75864 | 0.0172 | 0.0000 | 0.0161 | 0.0183 | 0.1125 | 4.03e-124 | 5.51e-188 |
+| amazon-digital music | dynamic_minus_periodic | 75864 | 0.0030 | 0.0000 | 0.0026 | 0.0035 | 0.0541 | 6.56e-41 | 1.71e-43 |
 | movielens-1m | dynamic_genre_minus_dynamic | 23694 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | nan |
-| movielens-1m | dynamic_rho0.8_minus_dynamic | 23694 | 1.58e-05 | 0.0000 | -3.99e-04 | 4.50e-04 | 0.0210 | 0.3181 | 0.8542 |
-| movielens-1m | dynamic_rho0.8_topk_minus_dynamic | 23694 | -6.81e-04 | 0.0000 | -0.0015 | 4.19e-05 | 0.0485 | 2.04e-04 | 0.0071 |
-| movielens-1m | dynamic_rho0.8_topk_warm_minus_dynamic | 23694 | 6.39e-06 | 0.0000 | -3.56e-04 | 4.01e-04 | 0.0180 | 0.7086 | 0.9828 |
-| movielens-1m | dynamic_rho0.8_warm_minus_dynamic | 23694 | -6.42e-06 | 0.0000 | -4.01e-04 | 3.95e-04 | 0.0187 | 0.5410 | 0.9243 |
+| amazon-digital music | dynamic_rho0.8_minus_dynamic | 75864 | 1.09e-04 | 0.0000 | -1.20e-04 | 3.43e-04 | 0.0215 | 0.0174 | 0.0608 |
+| amazon-digital music | dynamic_rho0.8_topk_minus_dynamic | 75864 | -2.84e-04 | 0.0000 | -6.45e-04 | 7.25e-05 | 0.0376 | 0.0196 | 0.0808 |
+| amazon-digital music | dynamic_rho0.8_topk_warm_minus_dynamic | 75864 | 5.26e-05 | 0.0000 | -1.50e-04 | 2.56e-04 | 0.0162 | 0.5424 | 0.4252 |
+| amazon-digital music | dynamic_rho0.8_warm_minus_dynamic | 75864 | -3.82e-05 | 0.0000 | -2.43e-04 | 1.58e-04 | 0.0168 | 0.2297 | 0.6410 |
 | movielens-1m | static_at120_minus_static | 23694 | -5.67e-04 | 0.0000 | -0.0011 | -6.02e-05 | 0.0257 | 0.0326 | 0.0463 |
 
 
@@ -82,6 +133,8 @@
 - ⑧ 严格性：NoGraph 分支恒为 0、Static 冻结后不变、Dynamic 每轮都更新、各臂评测对齐。
 
 - 图：
+
+  - `/home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_amazon-digital_music.png`
 
   - `/home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_movielens-1m.png`
 

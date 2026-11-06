@@ -1,4 +1,49 @@
 ﻿dataset,contrast,window,mean,median,size
+amazon-digital music,dynamic_minus_nograph,1,0.0225421734043255,0.0,9534
+amazon-digital music,dynamic_minus_nograph,2,0.03300563380831764,0.0,10605
+amazon-digital music,dynamic_minus_nograph,3,0.03201000072381237,0.0,10713
+amazon-digital music,dynamic_minus_nograph,4,0.014545953159138428,0.0,10971
+amazon-digital music,dynamic_minus_nograph,5,0.020356081344775557,0.0,10347
+amazon-digital music,dynamic_minus_periodic,1,0.003271686604419594,0.0,9534
+amazon-digital music,dynamic_minus_periodic,2,0.005656699634621246,0.0,10605
+amazon-digital music,dynamic_minus_periodic,3,0.004688559669100981,0.0,10713
+amazon-digital music,dynamic_minus_periodic,4,0.0016569107887727736,0.0,10971
+amazon-digital music,dynamic_minus_periodic,5,0.0005236087276749627,0.0,10347
+amazon-digital music,dynamic_minus_static,1,0.003271686604419594,0.0,9534
+amazon-digital music,dynamic_minus_static,2,0.02456185101113866,0.0,10605
+amazon-digital music,dynamic_minus_static,3,0.026443958530058372,0.0,10713
+amazon-digital music,dynamic_minus_static,4,0.012265856500615527,0.0,10971
+amazon-digital music,dynamic_minus_static,5,0.017120738703236552,0.0,10347
+amazon-digital music,dynamic_rho0.8_minus_dynamic,1,-0.0002293948272451405,0.0,9534
+amazon-digital music,dynamic_rho0.8_minus_dynamic,2,7.169580808061297e-05,0.0,10605
+amazon-digital music,dynamic_rho0.8_minus_dynamic,3,0.00023053845059111663,0.0,10713
+amazon-digital music,dynamic_rho0.8_minus_dynamic,4,0.00029247574879666556,0.0,10971
+amazon-digital music,dynamic_rho0.8_minus_dynamic,5,0.0003528703759116828,0.0,10347
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,1,-0.0002967065545230735,0.0,9534
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,2,-0.0005707231572864754,0.0,10605
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,3,-7.0190519820538865e-06,0.0,10713
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,4,9.01015207311338e-05,0.0,10971
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,5,0.00024497650712771704,0.0,10347
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,1,-0.0002926302570103349,0.0,9534
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,2,-0.00011453394449189944,0.0,10605
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,3,0.00015751027842813388,0.0,10713
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,4,0.00022533288487500537,0.0,10971
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,5,0.00035598717404527113,0.0,10347
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,1,-0.0005053673834327584,0.0,9534
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,2,-6.819327784731162e-06,0.0,10605
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,3,-9.452575318877641e-05,0.0,10713
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,4,9.117977750213348e-05,0.0,10971
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,5,0.00020848344383210253,0.0,10347
+amazon-digital music,periodic_minus_nograph,1,0.019270486799905905,0.0,9534
+amazon-digital music,periodic_minus_nograph,2,0.027348934173696392,0.0,10605
+amazon-digital music,periodic_minus_nograph,3,0.027321441054711387,0.0,10713
+amazon-digital music,periodic_minus_nograph,4,0.012889042370365655,0.0,10971
+amazon-digital music,periodic_minus_nograph,5,0.019832472617100597,0.0,10347
+amazon-digital music,static_minus_nograph,1,0.019270486799905905,0.0,9534
+amazon-digital music,static_minus_nograph,2,0.008443782797178981,0.0,10605
+amazon-digital music,static_minus_nograph,3,0.005566042193753996,0.0,10713
+amazon-digital music,static_minus_nograph,4,0.0022800966585229017,0.0,10971
+amazon-digital music,static_minus_nograph,5,0.0032353426415390055,0.0,10347
 movielens-1m,dynamic_genre_minus_dynamic,1,0.0,0.0,4287
 movielens-1m,dynamic_genre_minus_dynamic,2,0.0,0.0,4263
 movielens-1m,dynamic_genre_minus_dynamic,3,0.0,0.0,5289

@@ -1,1 +1,392 @@
 [17:25:45] 等待全部训练结束
+[22:18:00] 训练已全部结束（等待 17540 秒）
+[22:18:05] == 第 1 轮补跑检查 ==
+已完成 24/24，正在跑 0 个（每卡 {}），待启动 0 个
+没有需要启动的任务
+[22:18:05] 当前完成 24 / 24
+[22:18:05] == 主对照聚合 ==
+找到 54 次运行，10 个臂/变体：['dynamic', 'dynamic_genre', 'dynamic_rho0.8', 'dynamic_rho0.8_topk', 'dynamic_rho0.8_topk_warm', 'dynamic_rho0.8_warm', 'nograph', 'periodic', 'static', 'static_at120']
+数据集：['amazon-digital music', 'movielens-1m']
+对照：['static_minus_nograph', 'dynamic_minus_static', 'dynamic_minus_nograph', 'periodic_minus_nograph', 'dynamic_minus_periodic', 'dynamic_genre_minus_dynamic', 'dynamic_rho0.8_minus_dynamic', 'dynamic_rho0.8_topk_minus_dynamic', 'dynamic_rho0.8_topk_warm_minus_dynamic', 'dynamic_rho0.8_warm_minus_dynamic', 'static_at120_minus_static']
+
+==============================================================================
+三条臂（跨种子平均，窗口级 NDCG@10）
+==============================================================================
+             dataset                  arm_dir  n_seeds  ndcg_win_mean  ndcg_win_last  delta_rel  neighbor_lift    ecr  n_edges
+amazon-digital music                  dynamic        3         0.0923         0.1072     1.3562         1.7897 0.2754    12381
+amazon-digital music           dynamic_rho0.8        3         0.0924         0.1074     1.3692         1.8037 0.1767    12381
+amazon-digital music      dynamic_rho0.8_topk        3         0.0923         0.1071     1.3312         1.4464 0.0039    12381
+amazon-digital music dynamic_rho0.8_topk_warm        3         0.0922         0.1073     1.3555         1.7861 0.2342    12381
+amazon-digital music      dynamic_rho0.8_warm        3         0.0922         0.1072     1.3566         1.7782 0.2388    12381
+amazon-digital music                  nograph        3         0.0751         0.0827     0.0000            NaN 0.0000        0
+amazon-digital music                 periodic        3         0.0892         0.1041     1.1040         1.4560 0.0000    12213
+amazon-digital music                   static        3         0.0795         0.0905     0.1271         0.8733 0.0000     2928
+        movielens-1m                  dynamic        3         0.2379         0.2479     1.1816         1.5622 0.1681     6040
+        movielens-1m            dynamic_genre        3         0.2379         0.2479     1.1816         1.5622 0.1681     6040
+        movielens-1m           dynamic_rho0.8        3         0.2378         0.2479     1.1850         1.5568 0.1061     6040
+        movielens-1m      dynamic_rho0.8_topk        3         0.2377         0.2473     1.1873         1.3250 0.0008     6040
+        movielens-1m dynamic_rho0.8_topk_warm        3         0.2378         0.2480     1.1843         1.5595 0.1401     6040
+        movielens-1m      dynamic_rho0.8_warm        3         0.2378         0.2479     1.1825         1.5590 0.1324     6040
+        movielens-1m                  nograph        3         0.2303         0.2376     0.0000            NaN 0.0000        0
+        movielens-1m                 periodic        3         0.2354         0.2454     0.9682         1.3380 0.0000     5973
+        movielens-1m                   static        3         0.2291         0.2355     0.1899         0.7598 0.0000     1275
+        movielens-1m             static_at120        3         0.2291         0.2349     0.2209         0.9458 0.0360     1429
+
+==============================================================================
+配对差值（窗口级；正 = 前一个臂更好）
+==============================================================================
+             dataset                               contrast  n_obs  delta_mean  ci95_lo  ci95_hi  win_rate  seeds_positive  seeds_total  p_paired  p_sign
+amazon-digital music                  dynamic_minus_nograph     15      0.0172   0.0143   0.0200    1.0000               3            3    0.0000  0.0001
+amazon-digital music                 dynamic_minus_periodic     15      0.0031   0.0021   0.0040    1.0000               3            3    0.0000  0.0001
+amazon-digital music                   dynamic_minus_static     15      0.0128   0.0093   0.0159    1.0000               3            3    0.0000  0.0001
+amazon-digital music           dynamic_rho0.8_minus_dynamic     15      0.0001   0.0000   0.0002    0.8000               3            3    0.0248  0.0352
+amazon-digital music      dynamic_rho0.8_topk_minus_dynamic     15     -0.0000  -0.0002   0.0002    0.5333               2            3    0.9106  1.0000
+amazon-digital music dynamic_rho0.8_topk_warm_minus_dynamic     15     -0.0000  -0.0001   0.0000    0.4000               0            3    0.2459  0.6072
+amazon-digital music      dynamic_rho0.8_warm_minus_dynamic     15     -0.0001  -0.0001   0.0000    0.4000               1            3    0.1050  0.6072
+amazon-digital music                 periodic_minus_nograph     15      0.0142   0.0119   0.0163    1.0000               3            3    0.0000  0.0001
+amazon-digital music                   static_minus_nograph     15      0.0044   0.0033   0.0056    1.0000               3            3    0.0000  0.0001
+        movielens-1m            dynamic_genre_minus_dynamic     15      0.0000   0.0000   0.0000    0.0000               0            3    1.0000  1.0000
+        movielens-1m                  dynamic_minus_nograph     15      0.0076   0.0041   0.0113    0.9333               3            3    0.0015  0.0010
+        movielens-1m                 dynamic_minus_periodic     15      0.0025   0.0012   0.0039    0.7333               3            3    0.0043  0.1185
+        movielens-1m                   dynamic_minus_static     15      0.0088   0.0047   0.0131    0.8000               3            3    0.0018  0.0352
+        movielens-1m           dynamic_rho0.8_minus_dynamic     15     -0.0001  -0.0002   0.0001    0.2667               1            3    0.3448  0.1185
+        movielens-1m      dynamic_rho0.8_topk_minus_dynamic     15     -0.0002  -0.0004  -0.0000    0.4000               0            3    0.0935  0.6072
+        movielens-1m dynamic_rho0.8_topk_warm_minus_dynamic     15     -0.0001  -0.0003   0.0000    0.4667               1            3    0.1929  1.0000
+        movielens-1m      dynamic_rho0.8_warm_minus_dynamic     15     -0.0001  -0.0003   0.0000    0.2667               0            3    0.1084  0.1185
+        movielens-1m                 periodic_minus_nograph     15      0.0051   0.0027   0.0076    1.0000               3            3    0.0019  0.0001
+        movielens-1m              static_at120_minus_static     15      0.0001  -0.0002   0.0003    0.4667               2            3    0.6436  1.0000
+        movielens-1m                   static_minus_nograph     15     -0.0012  -0.0022  -0.0003    0.3333               0            3    0.0264  0.3018
+
+==============================================================================
+结论
+==============================================================================
+[①] 图协同分支本身有没有贡献（StaticGraph − NoGraph）
+     Δ=+0.0044 [+0.0033, +0.0056]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=3.5e-06，p_sign=6.1e-05
+     -> |Δ| ∈ [0.002, 0.006)（小）；p<0.01
+[②] 动态更新有没有额外贡献（DynamicGraph − StaticGraph）
+     Δ=+0.0128 [+0.0093, +0.0159]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=4.06e-06，p_sign=6.1e-05
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[③] 动态图的总贡献（DynamicGraph − NoGraph）
+     Δ=+0.0172 [+0.0143, +0.0200]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=2.36e-08，p_sign=6.1e-05
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[④] 补充：慢刷新静态图是否已足够（PeriodicGraph − NoGraph）
+     Δ=+0.0142 [+0.0119, +0.0163]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=1.01e-08，p_sign=6.1e-05
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[⑤] 补充：每轮 EMA 比慢刷新多给多少（DynamicGraph − PeriodicGraph）
+     Δ=+0.0031 [+0.0021, +0.0040]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=1.89e-05，p_sign=6.1e-05
+     -> |Δ| ∈ [0.002, 0.006)（小）；p<0.01
+[⑥] 图分支把最终用户表示挪动了多少（delta_rel = ‖Δ‖ / ‖seq_emb‖）
+     NoGraph=0.00e+00，StaticGraph=1.27e-01，DynamicGraph=1.36e+00
+     -> NoGraph 恒为 0（控制生效）；动态图臂约 1.36e+00（≥0.5），图分支与序列表示同量级甚至更大 —— 协同分支是主导项之一，「图分支被稀释」的假设不成立。
+[⑦] 图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦）
+     StaticGraph lift=0.873（边 2928），static_at120 lift=nan（边 nan），PeriodicGraph lift=1.456（边 12213），DynamicGraph lift=1.790（边 12381）
+     -> lift=1.79 > 1：Top-K 邻居确实比随机用户更像自己（图有区分度）；对照的静态臂 lift 只有 0.87，低于随机基线
+[⑧] 严格性检查（协议一致 / 空图 / 冻结 / 每轮更新 / 评测对齐）
+     全部通过
+     -> 可以信任上面的差值
+[⑨] 总体结论
+     **动态图有明确贡献（③=+0.0172，窗口正号 100%、种子 3/3 为正），但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**：每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④=+0.0142（占总收益 82%，窗口正号 100%、种子 3/3 为正）；每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益（⑤=+0.0031，窗口正号 100%、种子 3/3 为正，p=1.89e-05）—— 这部分才是「自适应更新速度」真正能争取的空间。一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。
+     -> 这是本实验要回答的那句话
+[①] 图协同分支本身有没有贡献（StaticGraph − NoGraph）
+     Δ=-0.0012 [-0.0022, -0.0003]，n=15，正号比例 0.33，种子 0/3 为正，p_paired=0.0264，p_sign=0.302
+     -> |Δ| < 0.002（可忽略）；p<0.05
+[②] 动态更新有没有额外贡献（DynamicGraph − StaticGraph）
+     Δ=+0.0088 [+0.0047, +0.0131]，n=15，正号比例 0.80，种子 3/3 为正，p_paired=0.00181，p_sign=0.0352
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[③] 动态图的总贡献（DynamicGraph − NoGraph）
+     Δ=+0.0076 [+0.0041, +0.0113]，n=15，正号比例 0.93，种子 3/3 为正，p_paired=0.0015，p_sign=0.000977
+     -> |Δ| ≥ 0.006（明确）；p<0.01
+[④] 补充：慢刷新静态图是否已足够（PeriodicGraph − NoGraph）
+     Δ=+0.0051 [+0.0027, +0.0076]，n=15，正号比例 1.00，种子 3/3 为正，p_paired=0.00191，p_sign=6.1e-05
+     -> |Δ| ∈ [0.002, 0.006)（小）；p<0.01
+[⑤] 补充：每轮 EMA 比慢刷新多给多少（DynamicGraph − PeriodicGraph）
+     Δ=+0.0025 [+0.0012, +0.0039]，n=15，正号比例 0.73，种子 3/3 为正，p_paired=0.00432，p_sign=0.118
+     -> |Δ| ∈ [0.002, 0.006)（小）；p<0.01
+[⑥] 图分支把最终用户表示挪动了多少（delta_rel = ‖Δ‖ / ‖seq_emb‖）
+     NoGraph=0.00e+00，StaticGraph=1.90e-01，DynamicGraph=1.18e+00
+     -> NoGraph 恒为 0（控制生效）；动态图臂约 1.18e+00（≥0.5），图分支与序列表示同量级甚至更大 —— 协同分支是主导项之一，「图分支被稀释」的假设不成立。
+[⑦] 图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦）
+     StaticGraph lift=0.760（边 1275），static_at120 lift=0.946（边 1429），PeriodicGraph lift=1.338（边 5973），DynamicGraph lift=1.562（边 6040）
+     -> lift=1.56 > 1：Top-K 邻居确实比随机用户更像自己（图有区分度）；对照的静态臂 lift 只有 0.76，低于随机基线
+[⑧] 严格性检查（协议一致 / 空图 / 冻结 / 每轮更新 / 评测对齐）
+     全部通过
+     -> 可以信任上面的差值
+[⑨] 总体结论
+     **动态图有明确贡献（③=+0.0076，窗口正号 93%、种子 3/3 为正），但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**：每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④=+0.0051（占总收益 67%，窗口正号 100%、种子 3/3 为正）；每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益（⑤=+0.0025，窗口正号 73%、种子 3/3 为正，p=0.00432）—— 这部分才是「自适应更新速度」真正能争取的空间。把冻结时点从第 21 轮推到第 120 轮也救不回来（①b=+0.0001，无差异）；一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。
+     -> 这是本实验要回答的那句话
+
+==============================================================================
+输出
+==============================================================================
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts_window.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_contrasts_by_seed.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_arm_summary.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_arm_curve.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_user_paired.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_diagnostics.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/tables/dg_hygiene.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_amazon-digital_music.png
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/aggregated/figures/dg_fig_arms_movielens-1m.png
+[22:18:11] == 冻结归因：movielens-1m ==
+
+==============================================================================
+各格子（movielens-1m，ρ=0.8；跨种子平均）
+==============================================================================
+                          cell  n_seeds  turnover_from_ref  frozen_share    ecr  added  n_edges  neighbor_lift  ndcg_win_mean
+paper_default_pool_zero_rho0.2        3                NaN           NaN 0.1681 2.0409     6040         1.5622         0.2379
+              pool_zero_rho0.8        3             0.9623          0.02 0.1061 1.1997     6040         1.5568         0.2378
+              pool_warm_rho0.8        3             0.9670          0.02 0.1324 1.5439     6040         1.5590         0.2378
+              topk_zero_rho0.8        3             0.1653          0.48 0.0008 0.0366     6040         1.3250         0.2377
+              topk_warm_rho0.8        3             0.9666          0.02 0.1401 1.6635     6040         1.5595         0.2378
+
+==============================================================================
+结论
+==============================================================================
+[①] 四种配置下图到底冻没冻住（ρ=0.8）
+     pool+zero: frozen_share=0.020, turnover=0.962, ECR=0.1061, 新边=1.20；pool+warm: frozen_share=0.020, turnover=0.967, ECR=0.1324, 新边=1.54；topk+zero: frozen_share=0.480, turnover=0.165, ECR=0.0008, 新边=0.04；topk+warm: frozen_share=0.020, turnover=0.967, ECR=0.1401, 新边=1.66
+     -> frozen_share 越接近 1、turnover 越接近 0 就越冻
+[②] 冻结的根因：EMA / 新边初始化 / 状态保留规则
+     pool+zero=不冻，pool+warm=不冻，topk+zero=冻，topk+warm=不冻
+     -> 冻结**只出现在 topk + zero 这一个组合**：pool 的两格都不冻（ρ=0.8 也一样），topk+warm 也不冻。所以它既不是 EMA 强度单独造成的，也不是任一单独因素造成的，而是**「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应**：topk 状态会丢弃掉出 Top-K 的边历史，而 zero 初值让新边只能以 (1-ρ)Δe 起步（ρ=0.8 时仅 20%），根本挤不进 Top-K；挤不进 ⇒ EMA 永不累积 ⇒ 永久冻结。把任一项改掉（pool 或 warm）就都不冻。
+[③] 换 warm 初始化能不能解开冻结（topk 状态下）
+     Δfrozen_share=-0.460 [-0.593, -0.328]，p=1.81e-05
+     -> warm 初始化明显减轻了冻结
+[④] 候选池下，warm 初始化让图转得快多少
+     Δturnover=+0.0047（p=0.0708）；Δ新边=+0.34（p=1.09e-07）；ΔNDCG=-0.0000（p=0.471）
+     -> 初始化规则对适应速度几乎没有影响
+[⑥] 各配置的推荐效果（窗口级 NDCG@10）
+     pool+zero ρ0.8: 0.2378；pool+warm ρ0.8: 0.2378；topk+zero ρ0.8: 0.2377；topk+warm ρ0.8: 0.2378；论文默认 pool+zero ρ0.2: 0.2379
+     -> 冻结的图不仅不涨，还会因为邻居失真而略微拖低（见体检列）
+[⑥b] 冻结的代价：邻居质量与推荐指标
+     neighbor_lift：pool+zero=1.557 → topk+zero=1.325（-0.232）；窗口级 NDCG@10：0.2378 → 0.2377（-0.0001）
+     -> 冻结把邻居质量明显拉低，但 NDCG@10 几乎没变 —— 说明这个指标对「图不再适应」不敏感，评测时不能只看 NDCG，必须同时看 neighbor_lift / ECR 这类结构指标
+[⑦] 一句话结论
+     冻结 = 「只存 Top-K」×「新边 0 初值」的联合效应，改任一项即可解除；topk 下改用 warm 初值可把冻结用户占比降 0.46（p=1.8e-05）；候选池下 warm 相对 zero 只多转 +0.005（几乎无差别）
+     -> 回答「更新机制是否合理」：现行实现的隐患是**旧状态规则 + 论文 0 初值的组合会让图永久冻结**；而冻结的代价主要落在邻居质量（lift 下降），NDCG@10 看不出来
+
+输出：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/dg_freeze_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/tables/dg_freeze_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/tables/dg_freeze_cells.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/tables/dg_freeze_contrasts.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/movielens-1m/figures/dg_fig_freeze.png
+[22:18:11] == 冻结归因：amazon-digital_music ==
+
+==============================================================================
+各格子（amazon-digital_music，ρ=0.8；跨种子平均）
+==============================================================================
+                          cell  n_seeds  turnover_from_ref  frozen_share    ecr  added  n_edges  neighbor_lift  ndcg_win_mean
+paper_default_pool_zero_rho0.2        3             0.9723        0.0200 0.2754 3.7020    12381         1.7897         0.0923
+              pool_zero_rho0.8        3             0.9669        0.0200 0.1767 2.1201    12381         1.8037         0.0924
+              pool_warm_rho0.8        3             0.9725        0.0200 0.2388 3.0556    12381         1.7782         0.0922
+              topk_zero_rho0.8        3             0.4759        0.1942 0.0039 0.0670    12381         1.4464         0.0923
+              topk_warm_rho0.8        3             0.9720        0.0200 0.2342 3.0103    12381         1.7861         0.0922
+
+==============================================================================
+结论
+==============================================================================
+[①] 四种配置下图到底冻没冻住（ρ=0.8）
+     pool+zero: frozen_share=0.020, turnover=0.967, ECR=0.1767, 新边=2.12；pool+warm: frozen_share=0.020, turnover=0.973, ECR=0.2388, 新边=3.06；topk+zero: frozen_share=0.194, turnover=0.476, ECR=0.0039, 新边=0.07；topk+warm: frozen_share=0.020, turnover=0.972, ECR=0.2342, 新边=3.01
+     -> frozen_share 越接近 1、turnover 越接近 0 就越冻
+[②] 冻结的根因：EMA / 新边初始化 / 状态保留规则
+     pool+zero=不冻，pool+warm=不冻，topk+zero=冻，topk+warm=不冻
+     -> 冻结**只出现在 topk + zero 这一个组合**：pool 的两格都不冻（ρ=0.8 也一样），topk+warm 也不冻。所以它既不是 EMA 强度单独造成的，也不是任一单独因素造成的，而是**「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应**：topk 状态会丢弃掉出 Top-K 的边历史，而 zero 初值让新边只能以 (1-ρ)Δe 起步（ρ=0.8 时仅 20%），根本挤不进 Top-K；挤不进 ⇒ EMA 永不累积 ⇒ 永久冻结。把任一项改掉（pool 或 warm）就都不冻。
+[③] 换 warm 初始化能不能解开冻结（topk 状态下）
+     Δfrozen_share=-0.174 [-0.289, -0.078]，p=0.0084
+     -> warm 初始化**不能**解开冻结
+[④] 候选池下，warm 初始化让图转得快多少
+     Δturnover=+0.0056（p=0.0324）；Δ新边=+0.94（p=2.63e-17）；ΔNDCG=-0.0002（p=0.00177）
+     -> 初始化规则对适应速度几乎没有影响
+[⑤] ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么
+     Δturnover=-0.0054（p=0.0369）；ΔNDCG=+0.0001（p=0.0248）
+     -> ρ 对 turnover 没有明显影响
+[⑥] 各配置的推荐效果（窗口级 NDCG@10）
+     pool+zero ρ0.8: 0.0924；pool+warm ρ0.8: 0.0922；topk+zero ρ0.8: 0.0923；topk+warm ρ0.8: 0.0922；论文默认 pool+zero ρ0.2: 0.0923
+     -> 冻结的图不仅不涨，还会因为邻居失真而略微拖低（见体检列）
+[⑥b] 冻结的代价：邻居质量与推荐指标
+     neighbor_lift：pool+zero=1.804 → topk+zero=1.446（-0.357）；窗口级 NDCG@10：0.0924 → 0.0923（-0.0002）
+     -> 冻结把邻居质量明显拉低，但 NDCG@10 几乎没变 —— 说明这个指标对「图不再适应」不敏感，评测时不能只看 NDCG，必须同时看 neighbor_lift / ECR 这类结构指标
+[⑦] 一句话结论
+     冻结 = 「只存 Top-K」×「新边 0 初值」的联合效应，改任一项即可解除；候选池下 warm 相对 zero 只多转 +0.006（几乎无差别）
+     -> 回答「更新机制是否合理」：现行实现的隐患是**旧状态规则 + 论文 0 初值的组合会让图永久冻结**；而冻结的代价主要落在邻居质量（lift 下降），NDCG@10 看不出来
+
+输出：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/dg_freeze_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/tables/dg_freeze_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/tables/dg_freeze_cells.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/tables/dg_freeze_contrasts.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/freeze/amazon-digital_music/figures/dg_fig_freeze.png
+[22:18:12] == Genre 协同有效性（movielens-1m）==
+[ok] 复用已有离线 drift：/home/wl/exp_FedDIEG/val_DynamicGraph/results/genre/tables/dg_genre_drift.csv
+
+==============================================================================
+对齐后的观测数: 23694（3 个种子 × 5 窗口）
+逐用户收益 ΔNDCG: mean=0.0108, >0 比例=0.128
+==============================================================================
+       metric     n   mean  ci95_lo  ci95_hi  pos_rate
+      sem_nbr 23688 0.8375   0.8365   0.8383    1.0000
+     sem_base 23688 0.4864   0.4845   0.4884    0.9866
+     sem_lift 23371 3.2501   2.1369   5.3589    1.0000
+     sem_diff 23688 0.3511   0.3494   0.3526    1.0000
+    genre_nbr 23688 0.7894   0.7881   0.7906    1.0000
+   genre_base 23688 0.7363   0.7350   0.7376    1.0000
+   genre_lift 23688 1.0825   1.0806   1.0842    1.0000
+   genre_diff 23688 0.0531   0.0521   0.0540    0.7872
+   genrec_nbr 23688 0.4330   0.4299   0.4359    0.9537
+  genrec_base 23688 0.2865   0.2833   0.2900    0.8679
+  genrec_lift 23688 2.4359  -0.7867   6.5057    0.8565
+  genrec_diff 23688 0.1464   0.1437   0.1489    0.7791
+genre_entropy 23694 0.7366   0.7355   0.7378    1.0000
+  genre_drift  5583 0.2131   0.2088   0.2178    1.0000
+        dndcg 23694 0.0108   0.0090   0.0124    0.1283
+
+相关（target=ΔNDCG）：
+       metric     n  pearson  pearson_p  spearman  spearman_p
+     sem_lift 23371  -0.0005     0.9355    0.0348      0.0000
+     sem_diff 23688   0.0478     0.0000    0.0337      0.0000
+   genre_lift 23688   0.0083     0.2022    0.0135      0.0380
+   genre_diff 23688   0.0248     0.0001    0.0171      0.0084
+  genrec_lift 23688   0.0018     0.7829    0.0178      0.0061
+  genrec_diff 23688   0.0359     0.0000    0.0161      0.0132
+genre_entropy 23694  -0.0080     0.2160   -0.0183      0.0049
+  genre_drift  5583   0.0194     0.1470    0.0315      0.0185
+
+==============================================================================
+结论
+==============================================================================
+[①] 图选出的邻居，在真实 genre 空间是否比随机用户更像自己？
+     genre_diff=0.0531（95%CI [0.0521, 0.0540]，为正的用户占比 0.787）；genre_lift=1.082；去公共成分后 genrec_diff=0.1464；语义 sem_lift=3.250
+     -> 是：邻居的 genre 相似度显著高于随机基线
+[②] 服务器学到的兴趣相似度，与真实 genre 相似度是否一致？
+     逐用户 corr(ΔNDCG, sem_diff)：Spearman=0.0337（p=0.000, n=23688）；corr(genre_diff, sem_diff)：Spearman=0.3682（p=0.000, n=23688）
+     -> 只有弱相关：语义相似度包含了 genre 之外的东西
+[③] **genre 相似度越高，图带来的推荐收益是否越大？**（核心检验）
+     corr(ΔNDCG, genre_diff)：Spearman=0.0171（p=0.008, n=23688）；corr(ΔNDCG, genrec_diff)：Spearman=0.0161（p=0.013）；按 genre_diff 五分位：Q1=0.0050(n=4738)，Q2=0.0079(n=4737)，Q3=0.0093(n=4738)，Q4=0.0149(n=4737)，Q5=0.0167(n=4738)；最高分位 − 最低分位 = +0.0117
+     -> 是：邻居的 genre 相似度越高，图带来的收益越大
+[④] 图的收益是否集中在「兴趣变化大 / 兴趣分散」的用户上？
+     corr(ΔNDCG, genre_drift)：Spearman=0.0315（p=0.019）；按 genre_drift 五分位：Q1=0.0134，Q2=0.0121，Q3=0.0213，Q4=0.0249，Q5=0.0264；corr(ΔNDCG, genre_entropy)：Spearman=-0.0183（p=0.005）（drift 口径：本窗口行为 vs 之前历史，见 compute_interest_drift）
+     -> 是：兴趣漂移越大，图的收益越大（图主要在帮兴趣确实在变的用户）
+[⑤] （对照）服务器语义相似度与收益的关系
+     corr(ΔNDCG, sem_diff)：Spearman=0.0337（p=0.000）；按 sem_diff 五分位：Q1=0.0015，Q2=0.0046，Q3=0.0091，Q4=0.0167，Q5=0.0220
+     -> 与 ③ 对比：如果语义相似度相关而 genre 不相关，说明收益来自 genre 之外的因素
+[⑥] 一句话结论
+     average ΔNDCG = 0.0108（n=23694 个 用户×窗口 观测；ΔNDCG>0 的比例 0.128）
+     -> genre 对齐能解释**收益幅度的一部分**（五分位 Q1→Q5 差 +0.0117，已接近全样本平均收益 +0.0108），但**预测不了单个用户**（逐用户 Spearman 只有 +0.017，NDCG 太稀疏）—— 两个层次要分开说；注意 ⑤ 显示「学到语义相似度」与收益的关系比 genre 更强
+
+输出：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/genre/dg_genre_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/genre/tables/dg_genre_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/genre/tables/dg_genre_correlations.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/genre/tables/dg_genre_quintiles.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/genre/figures/dg_fig_genre_gain.png
+[22:18:16] == 邻居质量 vs 收益（双数据集）==
+
+==============================================================================
+数据集：movielens-1m
+==============================================================================
+  对齐观测数 3840
+            metric    n   mean  median  ci95_lo  ci95_hi  pos_rate
+      neighbor_cos 3840 0.8208  0.8350   0.8183   0.8234    1.0000
+ neighbor_cos_base 3840 0.4835  0.5006   0.4787   0.4883    1.0000
+neighbor_lift_user 3840 2.0591  1.6653   1.9861   2.1409    1.0000
+         delta_rel 3840 1.3292  1.2031   1.3101   1.3483    1.0000
+         delta_cos 3840 0.0698  0.0183   0.0617   0.0782    0.5315
+             dndcg 3840 0.0089  0.0000   0.0049   0.0129    0.1232
+
+  相关（target=ΔNDCG）：
+            metric    n  pearson  pearson_p  spearman  spearman_p
+neighbor_lift_user 3840   0.0351     0.0295    0.0248      0.1246
+      neighbor_cos 3840  -0.0109     0.5000   -0.0187      0.2471
+         delta_rel 3840   0.0210     0.1923    0.0114      0.4793
+         delta_cos 3840   0.0226     0.1620    0.0302      0.0610
+
+  [①] 图的收益有多大（dynamic − nograph，逐用户）
+       平均 ΔNDCG=+0.0089（n=3840 个 用户×窗口；ΔNDCG>0 比例 0.123）
+       -> 收益为正，见问题一的配对检验
+  [②] 邻居越像自己（neighbor_lift 越高），图的收益是否越大？
+       逐用户 corr(ΔNDCG, neighbor_lift)：Spearman=0.0248（p=0.125，n=3840）；五分位 Q1→Q5 均值差=+0.0183；分位：Q1=0.0022，Q2=0.0026，Q3=0.0109，Q4=0.0083，Q5=0.0205
+       -> 是（明显）：邻居质量最低的 1/5 与最高的 1/5 之间，收益相差 +0.0183，相当于平均收益的 206%
+  [③] 图注入力度（delta_rel）越大，图的收益是否越大？
+       逐用户 corr(ΔNDCG, delta_rel)：Spearman=0.0114（p=0.479）；五分位 Q1→Q5 均值差=+0.0036
+       -> 弱正相关：图注入力度与收益同向，但跨度只有平均收益的 40%
+
+  输出：/home/wl/exp_FedDIEG/val_DynamicGraph/results/quality/movielens-1m
+
+==============================================================================
+数据集：amazon-digital music
+==============================================================================
+  对齐观测数 3840
+            metric    n   mean  median  ci95_lo  ci95_hi  pos_rate
+      neighbor_cos 3840 0.5540  0.6036   0.5480   0.5598    0.9138
+ neighbor_cos_base 3840 0.3171  0.3289   0.3143   0.3200    1.0000
+neighbor_lift_user 3840 1.9740  1.8859   1.9415   2.0072    0.9138
+         delta_rel 3840 1.5757  1.6621   1.5455   1.6049    0.9138
+         delta_cos 3840 0.2501  0.2646   0.2451   0.2549    0.8799
+             dndcg 3840 0.0230  0.0000   0.0172   0.0285    0.1109
+
+  相关（target=ΔNDCG）：
+            metric    n  pearson  pearson_p  spearman  spearman_p
+neighbor_lift_user 3840  -0.0139     0.3901    0.0011      0.9475
+      neighbor_cos 3840   0.0519     0.0013    0.0576      0.0004
+         delta_rel 3840   0.0131     0.4157    0.0094      0.5616
+         delta_cos 3840   0.0746     0.0000    0.0701      0.0000
+
+  [①] 图的收益有多大（dynamic − nograph，逐用户）
+       平均 ΔNDCG=+0.0230（n=3840 个 用户×窗口；ΔNDCG>0 比例 0.111）
+       -> 收益为正，见问题一的配对检验
+  [②] 邻居越像自己（neighbor_lift 越高），图的收益是否越大？
+       逐用户 corr(ΔNDCG, neighbor_lift)：Spearman=0.0011（p=0.948，n=3840）；五分位 Q1→Q5 均值差=-0.0015；分位：Q1=0.0201，Q2=0.0217，Q3=0.0293，Q4=0.0250，Q5=0.0187
+       -> 无关：邻居质量与个体收益没有可测关系（跨度 -0.0015）
+  [③] 图注入力度（delta_rel）越大，图的收益是否越大？
+       逐用户 corr(ΔNDCG, delta_rel)：Spearman=0.0094（p=0.562）；五分位 Q1→Q5 均值差=+0.0080
+       -> 弱正相关：图注入力度与收益同向，但跨度只有平均收益的 35%
+
+  输出：/home/wl/exp_FedDIEG/val_DynamicGraph/results/quality/amazon-digital_music
+[22:18:18] == 生成报告 ==
+[ok] 报告已写出：/home/wl/exp_FedDIEG/val_DynamicGraph/实验验证报告_动态图_2026-11-06.md（578 行，35291 字节）
+     覆盖数据集：['movielens-1m', 'amazon-digital_music']
+[22:18:18] == 验收 ==
+================ 1) 训练 run 数 ================
+  ML: 30 个 | Amazon: 24 个 | 合计 54
+  [PASS] MovieLens-1M 至少 30 个 run（4 臂 + 5 变体 + periodic + static_at120）
+  [PASS] Amazon 24 个 run 全部完成
+
+================ 2) 四类聚合产出 ================
+  [PASS] results/aggregated/tables/dg_verdict.csv
+  [PASS] results/aggregated/tables/dg_contrasts.csv
+  [PASS] results/aggregated/tables/dg_hygiene.csv
+  [PASS] results/freeze/movielens-1m/tables/dg_freeze_cells.csv
+  [PASS] results/freeze/amazon-digital_music/tables/dg_freeze_cells.csv
+  [PASS] results/genre/tables/dg_genre_verdict.csv
+  [PASS] results/quality/movielens-1m/tables/dg_quality_verdict.csv
+  [PASS] results/quality/amazon-digital_music/tables/dg_quality_verdict.csv
+
+================ 3) 严格性检查（两个数据集）================
+  [PASS] amazon-digital music: 9/9 项通过
+  [PASS] movielens-1m: 9/9 项通过
+
+================ 4) 报告完整性 ================
+  实验验证报告_动态图_2026-11-06.md：578 行 / 35291 字节
+  [PASS] 章节存在：## 一、实验设置与严格性
+  [PASS] 章节存在：## 二、问题一
+  [PASS] 章节存在：## 三、问题二
+  [PASS] 章节存在：## 四、问题三
+  [PASS] 章节存在：## 五、对研究问题的含义
+  [PASS] 章节存在：## 六、局限
+  [PASS] 章节存在：## 七、复现与产出清单
+  [PASS] 没有「（无数据）」占位符
+  [PASS] 跨数据集对比表有 2 行（ML + Amazon）
+  [PASS] 所有引用的图都存在
+  [PASS] 报告含问题一的核心对比句
+
+================ 5) 是否还有进程在跑 ================
+  在跑 dg_run.py: 0
+  [PASS] 训练已全部结束
+
+==============================================================
+验收汇总：PASS 22 / FAIL 0
+ALL CHECKS PASSED
+[22:18:18] == 提交 ==

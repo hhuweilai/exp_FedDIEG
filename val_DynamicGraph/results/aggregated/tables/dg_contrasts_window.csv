@@ -1,4 +1,19 @@
 ﻿dataset,seed,window,metric,contrast,a_dir,b_dir,a,b,delta
+amazon-digital music,42,1,hr_win_mean,static_minus_nograph,static,nograph,0.15035661841829243,0.138163415145794,0.012193203272498426
+amazon-digital music,42,2,hr_win_mean,static_minus_nograph,static,nograph,0.16063177746346066,0.1524752475247525,0.008156529938708162
+amazon-digital music,42,3,hr_win_mean,static_minus_nograph,static,nograph,0.14470736488378608,0.1412302809670494,0.0034770839167366785
+amazon-digital music,42,4,hr_win_mean,static_minus_nograph,static,nograph,0.13408075836295688,0.1315969373803664,0.002483820982590479
+amazon-digital music,42,5,hr_win_mean,static_minus_nograph,static,nograph,0.13008601527012661,0.12694500821494153,0.00314100705518508
+amazon-digital music,777,1,hr_win_mean,static_minus_nograph,static,nograph,0.16506712817285504,0.1547619047619048,0.010305223410950248
+amazon-digital music,777,2,hr_win_mean,static_minus_nograph,static,nograph,0.1770862800565771,0.1704384724186704,0.0066478076379066775
+amazon-digital music,777,3,hr_win_mean,static_minus_nograph,static,nograph,0.14928124708298326,0.1414869784374125,0.007794268645570757
+amazon-digital music,777,4,hr_win_mean,static_minus_nograph,static,nograph,0.13216662109196972,0.13469601677148849,-0.0025293956795187644
+amazon-digital music,777,5,hr_win_mean,static_minus_nograph,static,nograph,0.1345559099255823,0.13165651879771914,0.0028993911278631657
+amazon-digital music,2024,1,hr_win_mean,static_minus_nograph,static,nograph,0.15069750367107196,0.13900251730648208,0.011694986364589877
+amazon-digital music,2024,2,hr_win_mean,static_minus_nograph,static,nograph,0.16784535596416786,0.1611975483262612,0.00664780763790665
+amazon-digital music,2024,3,hr_win_mean,static_minus_nograph,static,nograph,0.14664426397834407,0.1427237935218893,0.003920470456454772
+amazon-digital music,2024,4,hr_win_mean,static_minus_nograph,static,nograph,0.1323489198796828,0.1305487193510163,0.0018002005286665013
+amazon-digital music,2024,5,hr_win_mean,static_minus_nograph,static,nograph,0.1396056828066106,0.13375857736541996,0.005847105441190631
 movielens-1m,42,1,hr_win_mean,static_minus_nograph,static,nograph,0.41748308840681125,0.41503382318637744,0.002449265220433816
 movielens-1m,42,2,hr_win_mean,static_minus_nograph,static,nograph,0.42047853624208303,0.42364532019704443,-0.003166783954961394
 movielens-1m,42,3,hr_win_mean,static_minus_nograph,static,nograph,0.41784836453015695,0.4229060313858953,-0.00505766685573833
@@ -14,6 +29,21 @@ movielens-1m,2024,2,hr_win_mean,static_minus_nograph,static,nograph,0.4266361717
 movielens-1m,2024,3,hr_win_mean,static_minus_nograph,static,nograph,0.4145868784269238,0.4150122896577803,-0.00042541123085648724
 movielens-1m,2024,4,hr_win_mean,static_minus_nograph,static,nograph,0.4216763628528335,0.4274402068519716,-0.005763843999138096
 movielens-1m,2024,5,hr_win_mean,static_minus_nograph,static,nograph,0.4120636747219025,0.4144131185270426,-0.002349443805140128
+amazon-digital music,42,1,hr_win_mean,dynamic_minus_static,dynamic,static,0.15198237885462554,0.15035661841829243,0.0016257604363331124
+amazon-digital music,42,2,hr_win_mean,dynamic_minus_static,dynamic,static,0.17553041018387552,0.16063177746346066,0.014898632720414862
+amazon-digital music,42,3,hr_win_mean,dynamic_minus_static,dynamic,static,0.17448427144590684,0.14470736488378608,0.02977690656212076
+amazon-digital music,42,4,hr_win_mean,dynamic_minus_static,dynamic,static,0.1403472791905934,0.13408075836295688,0.0062665208276365125
+amazon-digital music,42,5,hr_win_mean,dynamic_minus_static,dynamic,static,0.15238716536194066,0.13008601527012661,0.022301150091814048
+amazon-digital music,777,1,hr_win_mean,dynamic_minus_static,dynamic,static,0.1680039857352633,0.16506712817285504,0.002936857562408246
+amazon-digital music,777,2,hr_win_mean,dynamic_minus_static,dynamic,static,0.2017916077322018,0.1770862800565771,0.024705327675624722
+amazon-digital music,777,3,hr_win_mean,dynamic_minus_static,dynamic,static,0.17786801082796602,0.14928124708298326,0.028586763744982757
+amazon-digital music,777,4,hr_win_mean,dynamic_minus_static,dynamic,static,0.15021420107556285,0.13216662109196972,0.01804757998359313
+amazon-digital music,777,5,hr_win_mean,dynamic_minus_static,dynamic,static,0.1661834348120228,0.1345559099255823,0.031627524886440495
+amazon-digital music,2024,1,hr_win_mean,dynamic_minus_static,dynamic,static,0.1525592615900986,0.15069750367107196,0.001861757919026652
+amazon-digital music,2024,2,hr_win_mean,dynamic_minus_static,dynamic,static,0.1880952380952381,0.16784535596416786,0.020249882131070235
+amazon-digital music,2024,3,hr_win_mean,dynamic_minus_static,dynamic,static,0.1811817418090171,0.14664426397834407,0.03453747783067304
+amazon-digital music,2024,4,hr_win_mean,dynamic_minus_static,dynamic,static,0.14593017956430587,0.1323489198796828,0.013581259684623065
+amazon-digital music,2024,5,hr_win_mean,dynamic_minus_static,dynamic,static,0.1521697110273509,0.1396056828066106,0.01256402822074032
 movielens-1m,42,1,hr_win_mean,dynamic_minus_static,dynamic,static,0.417308140891066,0.41748308840681125,-0.00017494751574526068
 movielens-1m,42,2,hr_win_mean,dynamic_minus_static,dynamic,static,0.4243490499648135,0.42047853624208303,0.003870513722730451
 movielens-1m,42,3,hr_win_mean,dynamic_minus_static,dynamic,static,0.4314142560030252,0.41784836453015695,0.013565891472868241
@@ -29,6 +59,21 @@ movielens-1m,2024,2,hr_win_mean,dynamic_minus_static,dynamic,static,0.4298615998
 movielens-1m,2024,3,hr_win_mean,dynamic_minus_static,dynamic,static,0.42002268859897907,0.4145868784269238,0.005435810172055244
 movielens-1m,2024,4,hr_win_mean,dynamic_minus_static,dynamic,static,0.4434927817280759,0.4216763628528335,0.021816418875242383
 movielens-1m,2024,5,hr_win_mean,dynamic_minus_static,dynamic,static,0.4294687380130418,0.4120636747219025,0.017405063291139333
+amazon-digital music,42,1,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.15198237885462554,0.138163415145794,0.013818963708831539
+amazon-digital music,42,2,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.17553041018387552,0.1524752475247525,0.023055162659123024
+amazon-digital music,42,3,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.17448427144590684,0.1412302809670494,0.03325399047885744
+amazon-digital music,42,4,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1403472791905934,0.1315969373803664,0.008750341810226991
+amazon-digital music,42,5,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.15238716536194066,0.12694500821494153,0.025442157146999128
+amazon-digital music,777,1,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1680039857352633,0.1547619047619048,0.013242080973358494
+amazon-digital music,777,2,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.2017916077322018,0.1704384724186704,0.0313531353135314
+amazon-digital music,777,3,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.17786801082796602,0.1414869784374125,0.036381032390553514
+amazon-digital music,777,4,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.15021420107556285,0.13469601677148849,0.015518184304074367
+amazon-digital music,777,5,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1661834348120228,0.13165651879771914,0.03452691601430366
+amazon-digital music,2024,1,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1525592615900986,0.13900251730648208,0.013556744283616529
+amazon-digital music,2024,2,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1880952380952381,0.1611975483262612,0.026897689768976885
+amazon-digital music,2024,3,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1811817418090171,0.1427237935218893,0.03845794828712781
+amazon-digital music,2024,4,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.14593017956430587,0.1305487193510163,0.015381460213289566
+amazon-digital music,2024,5,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1521697110273509,0.13375857736541996,0.01841113366193095
 movielens-1m,42,1,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.417308140891066,0.41503382318637744,0.0022743177046885554
 movielens-1m,42,2,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.4243490499648135,0.42364532019704443,0.0007037297677690568
 movielens-1m,42,3,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.4314142560030252,0.4229060313858953,0.008508224617129911
@@ -44,6 +89,21 @@ movielens-1m,2024,2,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.42986159
 movielens-1m,2024,3,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.42002268859897907,0.4150122896577803,0.005010398941198757
 movielens-1m,2024,4,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.4434927817280759,0.4274402068519716,0.016052574876104286
 movielens-1m,2024,5,hr_win_mean,dynamic_minus_nograph,dynamic,nograph,0.4294687380130418,0.4144131185270426,0.015055619485999205
+amazon-digital music,42,1,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.15035661841829243,0.138163415145794,0.012193203272498426
+amazon-digital music,42,2,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.16937765205091937,0.1524752475247525,0.01690240452616687
+amazon-digital music,42,3,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.1665266498646504,0.1412302809670494,0.025296368897601007
+amazon-digital music,42,4,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.14210190502233158,0.1315969373803664,0.01050496764196518
+amazon-digital music,42,5,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.15105827776167005,0.12694500821494153,0.024113269546728516
+amazon-digital music,777,1,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.16506712817285504,0.1547619047619048,0.010305223410950248
+amazon-digital music,777,2,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.19471947194719472,0.1704384724186704,0.024280999528524305
+amazon-digital music,777,3,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.1689302716325959,0.1414869784374125,0.027443293195183405
+amazon-digital music,777,4,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.14798104092607783,0.13469601677148849,0.013285024154589348
+amazon-digital music,777,5,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.16202764086208563,0.13165651879771914,0.030371122064366485
+amazon-digital music,2024,1,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.15069750367107196,0.13900251730648208,0.011694986364589877
+amazon-digital music,2024,2,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.17937293729372938,0.1611975483262612,0.018175388967468176
+amazon-digital music,2024,3,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.17401754877251938,0.1427237935218893,0.03129375525063008
+amazon-digital music,2024,4,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.14262601403700667,0.1305487193510163,0.012077294685990364
+amazon-digital music,2024,5,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.15168647917270706,0.13375857736541996,0.017927901807287094
 movielens-1m,42,1,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.41748308840681125,0.41503382318637744,0.002449265220433816
 movielens-1m,42,2,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.42364532019704443,0.42364532019704443,0.0
 movielens-1m,42,3,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.42867271695972775,0.4229060313858953,0.005766685573832475
@@ -59,6 +119,21 @@ movielens-1m,2024,2,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.429685
 movielens-1m,2024,3,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.41680847041028546,0.4150122896577803,0.0017961807525051499
 movielens-1m,2024,4,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.43341952165481584,0.4274402068519716,0.005979314802844249
 movielens-1m,2024,5,hr_win_mean,periodic_minus_nograph,periodic,nograph,0.4230916762562332,0.4144131185270426,0.008678557729190572
+amazon-digital music,42,1,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.15198237885462554,0.15035661841829243,0.0016257604363331124
+amazon-digital music,42,2,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.17553041018387552,0.16937765205091937,0.006152758132956154
+amazon-digital music,42,3,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.17448427144590684,0.1665266498646504,0.00795762158125643
+amazon-digital music,42,4,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1403472791905934,0.14210190502233158,-0.001754625831738188
+amazon-digital music,42,5,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.15238716536194066,0.15105827776167005,0.0013288876002706118
+amazon-digital music,777,1,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1680039857352633,0.16506712817285504,0.002936857562408246
+amazon-digital music,777,2,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.2017916077322018,0.19471947194719472,0.007072135785007094
+amazon-digital music,777,3,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.17786801082796602,0.1689302716325959,0.008937739195370109
+amazon-digital music,777,4,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.15021420107556285,0.14798104092607783,0.0022331601494850195
+amazon-digital music,777,5,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1661834348120228,0.16202764086208563,0.0041557939499371754
+amazon-digital music,2024,1,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1525592615900986,0.15069750367107196,0.001861757919026652
+amazon-digital music,2024,2,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1880952380952381,0.17937293729372938,0.008722300801508709
+amazon-digital music,2024,3,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1811817418090171,0.17401754877251938,0.007164193036497735
+amazon-digital music,2024,4,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.14593017956430587,0.14262601403700667,0.003304165527299202
+amazon-digital music,2024,5,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1521697110273509,0.15168647917270706,0.0004832318546438563
 movielens-1m,42,1,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.417308140891066,0.41748308840681125,-0.00017494751574526068
 movielens-1m,42,2,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.4243490499648135,0.42364532019704443,0.0007037297677690568
 movielens-1m,42,3,hr_win_mean,dynamic_minus_periodic,dynamic,periodic,0.4314142560030252,0.42867271695972775,0.0027415390432974363
@@ -89,6 +164,21 @@ movielens-1m,2024,2,hr_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynami
 movielens-1m,2024,3,hr_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.42002268859897907,0.42002268859897907,0.0
 movielens-1m,2024,4,hr_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.4434927817280759,0.4434927817280759,0.0
 movielens-1m,2024,5,hr_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.4294687380130418,0.4294687380130418,0.0
+amazon-digital music,42,1,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.15248059576253406,0.15198237885462554,0.0004982169079085219
+amazon-digital music,42,2,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.17583686940122586,0.17553041018387552,0.0003064592173503411
+amazon-digital music,42,3,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.17483431345094747,0.17448427144590684,0.00035004200504062943
+amazon-digital music,42,4,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1410536869929815,0.1403472791905934,0.0007064078023880926
+amazon-digital music,42,5,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1523388421764763,0.15238716536194066,-4.83231854643551e-05
+amazon-digital music,777,1,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.16732221522970417,0.1680039857352633,-0.0006817705055591206
+amazon-digital music,777,2,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.20273455917020275,0.2017916077322018,0.0009429514380009385
+amazon-digital music,777,3,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.17751796882292545,0.17786801082796602,-0.0003500420050405739
+amazon-digital music,777,4,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1510801203171999,0.15021420107556285,0.0008659192416370365
+amazon-digital music,777,5,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.16678747463032761,0.1661834348120228,0.0006040398183048135
+amazon-digital music,2024,1,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.15187749108453955,0.1525592615900986,-0.000681770505559065
+amazon-digital music,2024,2,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1875294672324375,0.1880952380952381,-0.000565770862800602
+amazon-digital music,2024,3,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.18206851488845324,0.1811817418090171,0.0008867730794361317
+amazon-digital music,2024,4,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.14620362774587548,0.14593017956430587,0.00027344818156960216
+amazon-digital music,2024,5,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.15200057987822557,0.1521697110273509,-0.00016913114912534
 movielens-1m,42,1,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.4171331933753207,0.417308140891066,-0.0001749475157453162
 movielens-1m,42,2,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.4235866760497302,0.4243490499648135,-0.0007623739150832698
 movielens-1m,42,3,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.43179239931934205,0.4314142560030252,0.00037814331631685905
@@ -104,6 +194,21 @@ movielens-1m,2024,2,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dyna
 movielens-1m,2024,3,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.42087351106069204,0.42002268859897907,0.0008508224617129745
 movielens-1m,2024,4,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.44279250161603106,0.4434927817280759,-0.0007002801120448154
 movielens-1m,2024,5,hr_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.42966052934407367,0.4294687380130418,0.0001917913310318653
+amazon-digital music,42,1,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.15213971050975456,0.15198237885462554,0.00015733165512901715
+amazon-digital music,42,2,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.17656765676567657,0.17553041018387552,0.0010372465818010435
+amazon-digital music,42,3,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.1747876411836087,0.17448427144590684,0.0003033697377018696
+amazon-digital music,42,4,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.14150943396226415,0.1403472791905934,0.0011621547716707537
+amazon-digital music,42,5,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.15287039721658455,0.15238716536194066,0.0004832318546438841
+amazon-digital music,777,1,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.16737465911474722,0.1680039857352633,-0.0006293266205160686
+amazon-digital music,777,2,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.20200377180575202,0.2017916077322018,0.0002121640735502084
+amazon-digital music,777,3,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.17754130495659481,0.17786801082796602,-0.0003267058713712079
+amazon-digital music,777,4,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.1504420745602042,0.15021420107556285,0.00022787348464134438
+amazon-digital music,777,5,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.1671740601140427,0.1661834348120228,0.000990625302019904
+amazon-digital music,2024,1,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.15166771554436753,0.1525592615900986,-0.0008915460457310787
+amazon-digital music,2024,2,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.18628005657708627,0.1880952380952381,-0.001815181518151826
+amazon-digital music,2024,3,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.18139176701204143,0.1811817418090171,0.00021002520302432215
+amazon-digital music,2024,4,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.14385653085406983,0.14593017956430587,-0.002073648710236048
+amazon-digital music,2024,5,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.15074417705615153,0.1521697110273509,-0.0014255339711993775
 movielens-1m,42,1,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.41748308840681125,0.417308140891066,0.00017494751574526068
 movielens-1m,42,2,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.4235280319024161,0.4243490499648135,-0.0008210180623973717
 movielens-1m,42,3,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.43127245225940625,0.4314142560030252,-0.0001418037436189401
@@ -119,6 +224,21 @@ movielens-1m,2024,2,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8
 movielens-1m,2024,3,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.4195500094535829,0.42002268859897907,-0.00047267914539617095
 movielens-1m,2024,4,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.4417151475975006,0.4434927817280759,-0.0017776341305753007
 movielens-1m,2024,5,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.4297564250095896,0.4294687380130418,0.00028768699654779795
+amazon-digital music,42,1,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.15221837633731905,0.15198237885462554,0.00023599748269351184
+amazon-digital music,42,2,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.17562470532767563,0.17553041018387552,9.429514380010495e-05
+amazon-digital music,42,3,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.1743442546438906,0.17448427144590684,-0.00014001680201622402
+amazon-digital music,42,4,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.1402105550998086,0.1403472791905934,-0.00013672409078480108
+amazon-digital music,42,5,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.15229051899101187,0.15238716536194066,-9.664637092879347e-05
+amazon-digital music,777,1,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.16792531990769877,0.1680039857352633,-7.866582756452245e-05
+amazon-digital music,777,2,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.20176803394625178,0.2017916077322018,-2.3573785950026238e-05
+amazon-digital music,777,3,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.17681788481284422,0.17786801082796602,-0.001050126015121805
+amazon-digital music,777,4,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.15041928721174005,0.15021420107556285,0.00020508613617720162
+amazon-digital music,777,5,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.16606262684836184,0.1661834348120228,-0.00012080796366095714
+amazon-digital music,2024,1,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.1526379274176631,0.1525592615900986,7.86658275644947e-05
+amazon-digital music,2024,2,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.18698727015558703,0.1880952380952381,-0.0011079679396510667
+amazon-digital music,2024,3,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.18118174180901706,0.1811817418090171,-5.551115123125783e-17
+amazon-digital music,2024,4,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.14618084039741133,0.14593017956430587,0.0002506608331054594
+amazon-digital music,2024,5,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.15224219580554751,0.1521697110273509,7.248477819660204e-05
 movielens-1m,42,1,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.4175997200839748,0.417308140891066,0.0002915791929087863
 movielens-1m,42,2,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.4237626084916726,0.4243490499648135,-0.0005864414731409084
 movielens-1m,42,3,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.43179239931934205,0.4314142560030252,0.00037814331631685905
@@ -134,6 +254,21 @@ movielens-1m,2024,2,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_r
 movielens-1m,2024,3,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.41955000945358295,0.42002268859897907,-0.00047267914539611544
 movielens-1m,2024,4,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.44338504632622283,0.4434927817280759,-0.00010773540185304853
 movielens-1m,2024,5,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.42942079018028384,0.4294687380130418,-4.7947832757966324e-05
+amazon-digital music,42,1,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1520610446821901,0.15198237885462554,7.86658275645502e-05
+amazon-digital music,42,2,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.17545968882602547,0.17553041018387552,-7.072135785005096e-05
+amazon-digital music,42,3,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1747876411836087,0.17448427144590684,0.0003033697377018696
+amazon-digital music,42,4,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.14023334244827274,0.1403472791905934,-0.00011393674232065831
+amazon-digital music,42,5,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.15250797332560162,0.15238716536194066,0.00012080796366095714
+amazon-digital music,777,1,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.16776798825256978,0.1680039857352633,-0.00023599748269351184
+amazon-digital music,777,2,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.20148514851485147,0.2017916077322018,-0.0003064592173503411
+amazon-digital music,777,3,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1770279100158686,0.17786801082796602,-0.0008401008120974274
+amazon-digital music,777,4,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.15025977577249114,0.15021420107556285,4.557469692828553e-05
+amazon-digital music,777,5,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1658210109210399,0.1661834348120228,-0.0003624238909828992
+amazon-digital music,2024,1,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.15255926159009858,0.1525592615900986,-2.7755575615628914e-17
+amazon-digital music,2024,2,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.18698727015558694,0.1880952380952381,-0.00110796793965115
+amazon-digital music,2024,3,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.18157845608139644,0.1811817418090171,0.00039671427237933377
+amazon-digital music,2024,4,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1457250934281287,0.14593017956430587,-0.00020508613617717386
+amazon-digital music,2024,5,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.15200057987822557,0.1521697110273509,-0.00016913114912534
 movielens-1m,42,1,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.41730814089106594,0.417308140891066,-5.551115123125783e-17
 movielens-1m,42,2,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.4234693877551021,0.4243490499648135,-0.0008796622097113627
 movielens-1m,42,3,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.4310833806012478,0.4314142560030252,-0.0003308754017773974
@@ -164,6 +299,21 @@ movielens-1m,2024,2,hr_win_mean,static_at120_minus_static,static_at120,static,0.
 movielens-1m,2024,3,hr_win_mean,static_at120_minus_static,static_at120,static,0.4145868784269238,0.4145868784269238,0.0
 movielens-1m,2024,4,hr_win_mean,static_at120_minus_static,static_at120,static,0.4215147597500539,0.4216763628528335,-0.0001616031027795728
 movielens-1m,2024,5,hr_win_mean,static_at120_minus_static,static_at120,static,0.40957038741848867,0.4120636747219025,-0.0024932873034138048
+amazon-digital music,42,1,ndcg_win_last,static_minus_nograph,static,nograph,0.10217683982218939,0.08393871013363477,0.018238129688554622
+amazon-digital music,42,2,ndcg_win_last,static_minus_nograph,static,nograph,0.10518429701702599,0.09761685369881411,0.0075674433182118805
+amazon-digital music,42,3,ndcg_win_last,static_minus_nograph,static,nograph,0.08209351449578925,0.07703413659703061,0.005059377898758641
+amazon-digital music,42,4,ndcg_win_last,static_minus_nograph,static,nograph,0.07158100769628682,0.06895689301585968,0.002624114680427142
+amazon-digital music,42,5,ndcg_win_last,static_minus_nograph,static,nograph,0.06901882065659366,0.06631006681943293,0.002708753837160738
+amazon-digital music,777,1,ndcg_win_last,static_minus_nograph,static,nograph,0.12363220982914679,0.10393712905460067,0.01969508077454611
+amazon-digital music,777,2,ndcg_win_last,static_minus_nograph,static,nograph,0.11775409068380083,0.1106680156149318,0.007086075068869033
+amazon-digital music,777,3,ndcg_win_last,static_minus_nograph,static,nograph,0.08835213419203329,0.0811760946503209,0.007176039541712392
+amazon-digital music,777,4,ndcg_win_last,static_minus_nograph,static,nograph,0.07539126355204062,0.07403623592439557,0.0013550276276450557
+amazon-digital music,777,5,ndcg_win_last,static_minus_nograph,static,nograph,0.07062135221613218,0.06781487108555764,0.002806481130574537
+amazon-digital music,2024,1,ndcg_win_last,static_minus_nograph,static,nograph,0.1091510249410807,0.08927277500446372,0.01987824993661698
+amazon-digital music,2024,2,ndcg_win_last,static_minus_nograph,static,nograph,0.11129763376763382,0.1006198037631778,0.010677830004456018
+amazon-digital music,2024,3,ndcg_win_last,static_minus_nograph,static,nograph,0.08601379362817774,0.0815510844873868,0.004462709140790944
+amazon-digital music,2024,4,ndcg_win_last,static_minus_nograph,static,nograph,0.07053276344762985,0.06767161578013332,0.0028611476674965247
+amazon-digital music,2024,5,ndcg_win_last,static_minus_nograph,static,nograph,0.0746786164767364,0.07048782351985466,0.004190792956881739
 movielens-1m,42,1,ndcg_win_last,static_minus_nograph,static,nograph,0.24143015810707552,0.239042871769197,0.002387286337878519
 movielens-1m,42,2,ndcg_win_last,static_minus_nograph,static,nograph,0.23168043346576167,0.23420674749699216,-0.002526314031230492
 movielens-1m,42,3,ndcg_win_last,static_minus_nograph,static,nograph,0.2326305157003657,0.2363454010327026,-0.003714885332336909
@@ -179,6 +329,21 @@ movielens-1m,2024,2,ndcg_win_last,static_minus_nograph,static,nograph,0.23846191
 movielens-1m,2024,3,ndcg_win_last,static_minus_nograph,static,nograph,0.2318380194601523,0.2353790533589965,-0.0035410338988441925
 movielens-1m,2024,4,ndcg_win_last,static_minus_nograph,static,nograph,0.24690839168558448,0.25002921814292806,-0.003120826457343573
 movielens-1m,2024,5,ndcg_win_last,static_minus_nograph,static,nograph,0.22886312290837493,0.23125008227018548,-0.002386959361810548
+amazon-digital music,42,1,ndcg_win_last,dynamic_minus_static,dynamic,static,0.10548812222225701,0.10217683982218939,0.0033112824000676166
+amazon-digital music,42,2,ndcg_win_last,dynamic_minus_static,dynamic,static,0.1286513929994305,0.10518429701702599,0.023467095982404526
+amazon-digital music,42,3,ndcg_win_last,dynamic_minus_static,dynamic,static,0.11090404507960969,0.08209351449578925,0.028810530583820437
+amazon-digital music,42,4,ndcg_win_last,dynamic_minus_static,dynamic,static,0.08269713430708472,0.07158100769628682,0.011116126610797902
+amazon-digital music,42,5,ndcg_win_last,dynamic_minus_static,dynamic,static,0.08794181143487492,0.06901882065659366,0.01892299077828126
+amazon-digital music,777,1,ndcg_win_last,dynamic_minus_static,dynamic,static,0.12640331476420408,0.12363220982914679,0.002771104935057292
+amazon-digital music,777,2,ndcg_win_last,dynamic_minus_static,dynamic,static,0.14335063298824316,0.11775409068380083,0.025596542304442332
+amazon-digital music,777,3,ndcg_win_last,dynamic_minus_static,dynamic,static,0.11263145234731024,0.08835213419203329,0.024279318155276952
+amazon-digital music,777,4,ndcg_win_last,dynamic_minus_static,dynamic,static,0.08921572994690369,0.07539126355204062,0.013824466394863066
+amazon-digital music,777,5,ndcg_win_last,dynamic_minus_static,dynamic,static,0.08900294969412996,0.07062135221613218,0.01838159747799778
+amazon-digital music,2024,1,ndcg_win_last,dynamic_minus_static,dynamic,static,0.11288369741921458,0.1091510249410807,0.003732672478133886
+amazon-digital music,2024,2,ndcg_win_last,dynamic_minus_static,dynamic,static,0.13591954851420293,0.11129763376763382,0.024621914746569107
+amazon-digital music,2024,3,ndcg_win_last,dynamic_minus_static,dynamic,static,0.11225582047925547,0.08601379362817774,0.026242026851077738
+amazon-digital music,2024,4,ndcg_win_last,dynamic_minus_static,dynamic,static,0.08238973994381545,0.07053276344762985,0.011856976496185598
+amazon-digital music,2024,5,ndcg_win_last,dynamic_minus_static,dynamic,static,0.08873624433016701,0.0746786164767364,0.014057627853430607
 movielens-1m,42,1,ndcg_win_last,dynamic_minus_static,dynamic,static,0.24061908133385312,0.24143015810707552,-0.0008110767732223967
 movielens-1m,42,2,ndcg_win_last,dynamic_minus_static,dynamic,static,0.2386961961866348,0.23168043346576167,0.00701576272087312
 movielens-1m,42,3,ndcg_win_last,dynamic_minus_static,dynamic,static,0.24464392902089735,0.2326305157003657,0.012013413320531657
@@ -194,6 +359,21 @@ movielens-1m,2024,2,ndcg_win_last,dynamic_minus_static,dynamic,static,0.23984526
 movielens-1m,2024,3,ndcg_win_last,dynamic_minus_static,dynamic,static,0.24342869354863095,0.2318380194601523,0.011590674088478636
 movielens-1m,2024,4,ndcg_win_last,dynamic_minus_static,dynamic,static,0.27206979943385184,0.24690839168558448,0.02516140774826736
 movielens-1m,2024,5,ndcg_win_last,dynamic_minus_static,dynamic,static,0.25368456460184,0.22886312290837493,0.02482144169346509
+amazon-digital music,42,1,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.10548812222225701,0.08393871013363477,0.02154941208862224
+amazon-digital music,42,2,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.1286513929994305,0.09761685369881411,0.031034539300616407
+amazon-digital music,42,3,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.11090404507960969,0.07703413659703061,0.03386990848257908
+amazon-digital music,42,4,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.08269713430708472,0.06895689301585968,0.013740241291225044
+amazon-digital music,42,5,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.08794181143487492,0.06631006681943293,0.021631744615441997
+amazon-digital music,777,1,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.12640331476420408,0.10393712905460067,0.022466185709603403
+amazon-digital music,777,2,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.14335063298824316,0.1106680156149318,0.032682617373311365
+amazon-digital music,777,3,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.11263145234731024,0.0811760946503209,0.031455357696989344
+amazon-digital music,777,4,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.08921572994690369,0.07403623592439557,0.015179494022508122
+amazon-digital music,777,5,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.08900294969412996,0.06781487108555764,0.021188078608572317
+amazon-digital music,2024,1,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.11288369741921458,0.08927277500446372,0.023610922414750865
+amazon-digital music,2024,2,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.13591954851420293,0.1006198037631778,0.035299744751025125
+amazon-digital music,2024,3,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.11225582047925547,0.0815510844873868,0.03070473599186868
+amazon-digital music,2024,4,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.08238973994381545,0.06767161578013332,0.014718124163682123
+amazon-digital music,2024,5,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.08873624433016701,0.07048782351985466,0.018248420810312346
 movielens-1m,42,1,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.24061908133385312,0.239042871769197,0.0015762095646561225
 movielens-1m,42,2,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.2386961961866348,0.23420674749699216,0.004489448689642628
 movielens-1m,42,3,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.24464392902089735,0.2363454010327026,0.008298527988194748
@@ -209,6 +389,21 @@ movielens-1m,2024,2,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.239845
 movielens-1m,2024,3,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.24342869354863095,0.2353790533589965,0.008049640189634444
 movielens-1m,2024,4,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.27206979943385184,0.25002921814292806,0.02204058129092379
 movielens-1m,2024,5,ndcg_win_last,dynamic_minus_nograph,dynamic,nograph,0.25368456460184,0.23125008227018548,0.022434482331654543
+amazon-digital music,42,1,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.10217683982218939,0.08393871013363477,0.018238129688554622
+amazon-digital music,42,2,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.1216481504969752,0.09761685369881411,0.024031296798161086
+amazon-digital music,42,3,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.1064488031689909,0.07703413659703061,0.02941466657196029
+amazon-digital music,42,4,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.08146737049373734,0.06895689301585968,0.01251047747787766
+amazon-digital music,42,5,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.08809636488759923,0.06631006681943293,0.0217862980681663
+amazon-digital music,777,1,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.12363220982914679,0.10393712905460067,0.01969508077454611
+amazon-digital music,777,2,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.1397914617705716,0.1106680156149318,0.029123446155639818
+amazon-digital music,777,3,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.10745962075544853,0.0811760946503209,0.02628352610512763
+amazon-digital music,777,4,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.08758066037589812,0.07403623592439557,0.013544424451502557
+amazon-digital music,777,5,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.08762636702107014,0.06781487108555764,0.0198114959355125
+amazon-digital music,2024,1,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.1091510249410807,0.08927277500446372,0.01987824993661698
+amazon-digital music,2024,2,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.12951186333046608,0.1006198037631778,0.02889205956728827
+amazon-digital music,2024,3,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.10781721497443303,0.0815510844873868,0.026266130487046235
+amazon-digital music,2024,4,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.08028384096185008,0.06767161578013332,0.012612225181716757
+amazon-digital music,2024,5,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.08838744736747764,0.07048782351985466,0.017899623847622975
 movielens-1m,42,1,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.24143015810707552,0.239042871769197,0.002387286337878519
 movielens-1m,42,2,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.23931941996150918,0.23420674749699216,0.005112672464517021
 movielens-1m,42,3,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.2436051841358265,0.2363454010327026,0.00725978310312389
@@ -224,6 +419,21 @@ movielens-1m,2024,2,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.2417
 movielens-1m,2024,3,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.23970796919247675,0.2353790533589965,0.004328915833480246
 movielens-1m,2024,4,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.263830802096963,0.25002921814292806,0.013801583954034968
 movielens-1m,2024,5,ndcg_win_last,periodic_minus_nograph,periodic,nograph,0.24729378557452125,0.23125008227018548,0.01604370330433577
+amazon-digital music,42,1,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.10548812222225701,0.10217683982218939,0.0033112824000676166
+amazon-digital music,42,2,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.1286513929994305,0.1216481504969752,0.00700324250245532
+amazon-digital music,42,3,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.11090404507960969,0.1064488031689909,0.004455241910618787
+amazon-digital music,42,4,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.08269713430708472,0.08146737049373734,0.0012297638133473843
+amazon-digital music,42,5,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.08794181143487492,0.08809636488759923,-0.0001545534527243042
+amazon-digital music,777,1,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.12640331476420408,0.12363220982914679,0.002771104935057292
+amazon-digital music,777,2,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.14335063298824316,0.1397914617705716,0.0035591712176715473
+amazon-digital music,777,3,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.11263145234731024,0.10745962075544853,0.005171831591861714
+amazon-digital music,777,4,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.08921572994690369,0.08758066037589812,0.0016350695710055652
+amazon-digital music,777,5,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.08900294969412996,0.08762636702107014,0.0013765826730598174
+amazon-digital music,2024,1,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.11288369741921458,0.1091510249410807,0.003732672478133886
+amazon-digital music,2024,2,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.13591954851420293,0.12951186333046608,0.006407685183736855
+amazon-digital music,2024,3,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.11225582047925547,0.10781721497443303,0.004438605504822446
+amazon-digital music,2024,4,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.08238973994381545,0.08028384096185008,0.002105898981965365
+amazon-digital music,2024,5,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.08873624433016701,0.08838744736747764,0.0003487969626893711
 movielens-1m,42,1,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.24061908133385312,0.24143015810707552,-0.0008110767732223967
 movielens-1m,42,2,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.2386961961866348,0.23931941996150918,-0.000623223774874393
 movielens-1m,42,3,ndcg_win_last,dynamic_minus_periodic,dynamic,periodic,0.24464392902089735,0.2436051841358265,0.001038744885070858
@@ -254,6 +464,21 @@ movielens-1m,2024,2,ndcg_win_last,dynamic_genre_minus_dynamic,dynamic_genre,dyna
 movielens-1m,2024,3,ndcg_win_last,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.24342869354863095,0.24342869354863095,0.0
 movielens-1m,2024,4,ndcg_win_last,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.27206979943385184,0.27206979943385184,0.0
 movielens-1m,2024,5,ndcg_win_last,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.25368456460184,0.25368456460184,0.0
+amazon-digital music,42,1,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.10527393425351197,0.10548812222225701,-0.0002141879687450332
+amazon-digital music,42,2,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.12946604375623408,0.1286513929994305,0.0008146507568035644
+amazon-digital music,42,3,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.11087168098430746,0.11090404507960969,-3.236409530223139e-05
+amazon-digital music,42,4,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08322494493536131,0.08269713430708472,0.0005278106282765871
+amazon-digital music,42,5,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.0893529905775866,0.08794181143487492,0.0014111791427116743
+amazon-digital music,777,1,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.12614893110538145,0.12640331476420408,-0.00025438365882263225
+amazon-digital music,777,2,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1435563433372654,0.14335063298824316,0.00020571034902225338
+amazon-digital music,777,3,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.11242970212505365,0.11263145234731024,-0.00020175022225658867
+amazon-digital music,777,4,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08931584501807599,0.08921572994690369,0.000100115071172302
+amazon-digital music,777,5,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08920955684745648,0.08900294969412996,0.0002066071533265157
+amazon-digital music,2024,1,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.11266408456504683,0.11288369741921458,-0.00021961285416775833
+amazon-digital music,2024,2,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.13511427483261895,0.13591954851420293,-0.0008052736815839789
+amazon-digital music,2024,3,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.11318155014858763,0.11225582047925547,0.0009257296693321593
+amazon-digital music,2024,4,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08263924149075655,0.08238973994381545,0.0002495015469411027
+amazon-digital music,2024,5,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08817706916186387,0.08873624433016701,-0.0005591751683031443
 movielens-1m,42,1,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.23996621697744847,0.24061908133385312,-0.0006528643564046588
 movielens-1m,42,2,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.23792445395380404,0.2386961961866348,-0.0007717422328307466
 movielens-1m,42,3,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.2450200818305792,0.24464392902089735,0.00037615280968184006
@@ -269,6 +494,21 @@ movielens-1m,2024,2,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dy
 movielens-1m,2024,3,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.24433787820424402,0.24342869354863095,0.0009091846556130712
 movielens-1m,2024,4,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.27089161027533515,0.27206979943385184,-0.001178189158516696
 movielens-1m,2024,5,ndcg_win_last,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.2553526517025209,0.25368456460184,0.0016680871006808928
+amazon-digital music,42,1,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.10452876000414861,0.10548812222225701,-0.0009593622181083977
+amazon-digital music,42,2,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.12844215136606252,0.1286513929994305,-0.00020924163336799584
+amazon-digital music,42,3,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.11053871560150152,0.11090404507960969,-0.00036532947810816174
+amazon-digital music,42,4,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08343025427520487,0.08269713430708472,0.0007331199681201439
+amazon-digital music,42,5,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08918990467416614,0.08794181143487492,0.0012480932392912175
+amazon-digital music,777,1,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.12687242892907805,0.12640331476420408,0.0004691141648739683
+amazon-digital music,777,2,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.14342623960853804,0.14335063298824316,7.560662029487686e-05
+amazon-digital music,777,3,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.11266288803892956,0.11263145234731024,3.14356916193137e-05
+amazon-digital music,777,4,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08942958764733921,0.08921572994690369,0.00021385770043552688
+amazon-digital music,777,5,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08895125068350439,0.08900294969412996,-5.169901062557214e-05
+amazon-digital music,2024,1,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.11248382580887979,0.11288369741921458,-0.0003998716103347927
+amazon-digital music,2024,2,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.13434101405541665,0.13591954851420293,-0.0015785344587862793
+amazon-digital music,2024,3,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.11256865710979816,0.11225582047925547,0.0003128366305426844
+amazon-digital music,2024,4,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08171306683745318,0.08238973994381545,-0.0006766731063622689
+amazon-digital music,2024,5,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08827477962288452,0.08873624433016701,-0.0004614647072824912
 movielens-1m,42,1,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.2407669767664395,0.24061908133385312,0.00014789543258636462
 movielens-1m,42,2,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.23979780528849065,0.2386961961866348,0.0011016091018558605
 movielens-1m,42,3,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.2446397162099082,0.24464392902089735,-4.212810989140392e-06
@@ -284,6 +524,21 @@ movielens-1m,2024,2,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0
 movielens-1m,2024,3,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.2409775239361056,0.24342869354863095,-0.002451169612525339
 movielens-1m,2024,4,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.26750898854379584,0.27206979943385184,-0.004560810890056
 movielens-1m,2024,5,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.25255755037583744,0.25368456460184,-0.0011270142260025873
+amazon-digital music,42,1,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.10513958984797221,0.10548812222225701,-0.0003485323742847962
+amazon-digital music,42,2,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.12871705696640123,0.1286513929994305,6.56639669707193e-05
+amazon-digital music,42,3,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.11071924273121828,0.11090404507960969,-0.00018480234839141074
+amazon-digital music,42,4,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.0830108289236836,0.08269713430708472,0.00031369461659887243
+amazon-digital music,42,5,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08845269639411156,0.08794181143487492,0.0005108849592366377
+amazon-digital music,777,1,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.12643027625382508,0.12640331476420408,2.696148962100242e-05
+amazon-digital music,777,2,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.14371186855658782,0.14335063298824316,0.0003612355683446644
+amazon-digital music,777,3,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.11282219054050655,0.11263145234731024,0.00019073819319630203
+amazon-digital music,777,4,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08930476315040421,0.08921572994690369,8.903320350052424e-05
+amazon-digital music,777,5,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08918453861437317,0.08900294969412996,0.00018158892024321138
+amazon-digital music,2024,1,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.11232737753284736,0.11288369741921458,-0.0005563198863672292
+amazon-digital music,2024,2,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.13514904714541184,0.13591954851420293,-0.0007705013687910878
+amazon-digital music,2024,3,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.11272241546973498,0.11225582047925547,0.0004665949904795047
+amazon-digital music,2024,4,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08266301077834107,0.08238973994381545,0.0002732708345256213
+amazon-digital music,2024,5,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08911173197282297,0.08873624433016701,0.0003754876426559639
 movielens-1m,42,1,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.24016549670254125,0.24061908133385312,-0.00045358463131187077
 movielens-1m,42,2,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.2385508396481226,0.2386961961866348,-0.00014535653851219243
 movielens-1m,42,3,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.24369337757541182,0.24464392902089735,-0.0009505514454855313
@@ -299,6 +554,21 @@ movielens-1m,2024,2,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic
 movielens-1m,2024,3,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.24292041130587924,0.24342869354863095,-0.0005082822427517064
 movielens-1m,2024,4,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.2704898564755416,0.27206979943385184,-0.0015799429583102653
 movielens-1m,2024,5,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.25413655209321834,0.25368456460184,0.00045198749137831395
+amazon-digital music,42,1,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.10471588481027724,0.10548812222225701,-0.0007722374119797648
+amazon-digital music,42,2,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.12884201871117912,0.1286513929994305,0.00019062571174860432
+amazon-digital music,42,3,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.11017182458518633,0.11090404507960969,-0.0007322204944233551
+amazon-digital music,42,4,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08262217925779475,0.08269713430708472,-7.495504928997643e-05
+amazon-digital music,42,5,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08842748566861428,0.08794181143487492,0.0004856742337393527
+amazon-digital music,777,1,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1262900327608374,0.12640331476420408,-0.00011328200336668814
+amazon-digital music,777,2,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.14342798475160287,0.14335063298824316,7.735176335971206e-05
+amazon-digital music,777,3,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.11272752877544936,0.11263145234731024,9.607642813912187e-05
+amazon-digital music,777,4,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08949983568996037,0.08921572994690369,0.00028410574305667846
+amazon-digital music,777,5,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08887835701986409,0.08900294969412996,-0.00012459267426587206
+amazon-digital music,2024,1,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.11225311468426276,0.11288369741921458,-0.0006305827349518262
+amazon-digital music,2024,2,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.1356311130557404,0.13591954851420293,-0.0002884354584625215
+amazon-digital music,2024,3,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.11260838728597337,0.11225582047925547,0.0003525668067178994
+amazon-digital music,2024,4,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08245412858255516,0.08238973994381545,6.438863873971246e-05
+amazon-digital music,2024,5,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08900061310218983,0.08873624433016701,0.0002643687720228216
 movielens-1m,42,1,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.240382338337668,0.24061908133385312,-0.00023674299618511863
 movielens-1m,42,2,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.2374860099677382,0.2386961961866348,-0.0012101862188965973
 movielens-1m,42,3,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.24483043680594038,0.24464392902089735,0.000186507785043033
@@ -329,6 +599,21 @@ movielens-1m,2024,2,ndcg_win_last,static_at120_minus_static,static_at120,static,
 movielens-1m,2024,3,ndcg_win_last,static_at120_minus_static,static_at120,static,0.23022771752225493,0.2318380194601523,-0.0016103019378973793
 movielens-1m,2024,4,ndcg_win_last,static_at120_minus_static,static_at120,static,0.24680297593956388,0.24690839168558448,-0.000105415746020604
 movielens-1m,2024,5,ndcg_win_last,static_at120_minus_static,static_at120,static,0.22909739908469698,0.22886312290837493,0.00023427617632204578
+amazon-digital music,42,1,ndcg_win_mean,static_minus_nograph,static,nograph,0.0734848292977812,0.06689448463659205,0.006590344661189157
+amazon-digital music,42,2,ndcg_win_mean,static_minus_nograph,static,nograph,0.0905026247630924,0.08433517031108136,0.0061674544520110425
+amazon-digital music,42,3,ndcg_win_mean,static_minus_nograph,static,nograph,0.07860004950499407,0.07448261172208066,0.004117437782913402
+amazon-digital music,42,4,ndcg_win_mean,static_minus_nograph,static,nograph,0.07082616806195978,0.06827423261654605,0.002551935445413725
+amazon-digital music,42,5,ndcg_win_mean,static_minus_nograph,static,nograph,0.06825613676767206,0.06574643568980174,0.0025097010778703244
+amazon-digital music,777,1,ndcg_win_mean,static_minus_nograph,static,nograph,0.08871344247419101,0.08041704112622057,0.008296401347970439
+amazon-digital music,777,2,ndcg_win_mean,static_minus_nograph,static,nograph,0.10017625859173218,0.0956767244216183,0.004499534170113881
+amazon-digital music,777,3,ndcg_win_mean,static_minus_nograph,static,nograph,0.08358624482590488,0.0780166523710337,0.005569592454871181
+amazon-digital music,777,4,ndcg_win_mean,static_minus_nograph,static,nograph,0.07276168085988528,0.07159647006867806,0.0011652107912072246
+amazon-digital music,777,5,ndcg_win_mean,static_minus_nograph,static,nograph,0.07046723064649758,0.0685427226821063,0.001924507964391281
+amazon-digital music,2024,1,ndcg_win_mean,static_minus_nograph,static,nograph,0.07784836041053961,0.06958625757590464,0.008262102834634966
+amazon-digital music,2024,2,ndcg_win_mean,static_minus_nograph,static,nograph,0.09140515738306941,0.08566289506378404,0.005742262319285374
+amazon-digital music,2024,3,ndcg_win_mean,static_minus_nograph,static,nograph,0.0818802414036516,0.07830446352230272,0.003575777881348885
+amazon-digital music,2024,4,ndcg_win_mean,static_minus_nograph,static,nograph,0.06930636083560356,0.06792203240927129,0.0013843284263322653
+amazon-digital music,2024,5,ndcg_win_mean,static_minus_nograph,static,nograph,0.07455280666116518,0.07079700192841078,0.0037558047327544003
 movielens-1m,42,1,ndcg_win_mean,static_minus_nograph,static,nograph,0.23104824952334554,0.22961023162962646,0.0014380178937190846
 movielens-1m,42,2,ndcg_win_mean,static_minus_nograph,static,nograph,0.2271673676607868,0.2284807041007785,-0.001313336439991708
 movielens-1m,42,3,ndcg_win_mean,static_minus_nograph,static,nograph,0.2283303344924771,0.22925238955908947,-0.0009220550666123595
@@ -344,6 +629,21 @@ movielens-1m,2024,2,ndcg_win_mean,static_minus_nograph,static,nograph,0.23183291
 movielens-1m,2024,3,ndcg_win_mean,static_minus_nograph,static,nograph,0.22631147989993017,0.22636265147073795,-5.117157080777868e-05
 movielens-1m,2024,4,ndcg_win_mean,static_minus_nograph,static,nograph,0.23885447222099712,0.2402595362159051,-0.0014050639949079735
 movielens-1m,2024,5,ndcg_win_mean,static_minus_nograph,static,nograph,0.22518275946515887,0.22683604890541367,-0.001653289440254807
+amazon-digital music,42,1,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.07492160854401243,0.0734848292977812,0.001436779246231229
+amazon-digital music,42,2,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.10444403418402577,0.0905026247630924,0.013941409420933373
+amazon-digital music,42,3,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.09942617668448338,0.07860004950499407,0.020826127179489312
+amazon-digital music,42,4,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.08034594574398703,0.07082616806195978,0.009519777682027247
+amazon-digital music,42,5,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.08662772008280967,0.06825613676767206,0.018371583315137607
+amazon-digital music,777,1,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.09045020679298353,0.08871344247419101,0.001736764318792522
+amazon-digital music,777,2,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.1192159596814799,0.10017625859173218,0.019039701089747715
+amazon-digital music,777,3,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.10127688030421338,0.08358624482590488,0.0176906354783085
+amazon-digital music,777,4,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.0842183116423096,0.07276168085988528,0.011456630782424315
+amazon-digital music,777,5,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.0878628841107613,0.07046723064649758,0.01739565346426372
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.07885734878131896,0.07784836041053961,0.001008988370779354
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.10825115196241741,0.09140515738306941,0.016845994579348003
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.10140897803203981,0.0818802414036516,0.019528736628388207
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.08011917112456797,0.06930636083560356,0.010812810288964414
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.08690694221263463,0.07455280666116518,0.012354135551469456
 movielens-1m,42,1,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.23087386560483167,0.23104824952334554,-0.00017438391851387625
 movielens-1m,42,2,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.23066487678536615,0.2271673676607868,0.0034975091245793566
 movielens-1m,42,3,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.2339195250298446,0.2283303344924771,0.005589190537367478
@@ -359,6 +659,21 @@ movielens-1m,2024,2,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.23200941
 movielens-1m,2024,3,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.23037946630620762,0.22631147989993017,0.004067986406277452
 movielens-1m,2024,4,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.25625071336652305,0.23885447222099712,0.01739624114552593
 movielens-1m,2024,5,ndcg_win_mean,dynamic_minus_static,dynamic,static,0.24608132729716212,0.22518275946515887,0.02089856783200325
+amazon-digital music,42,1,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.07492160854401243,0.06689448463659205,0.008027123907420386
+amazon-digital music,42,2,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.10444403418402577,0.08433517031108136,0.020108863872944416
+amazon-digital music,42,3,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.09942617668448338,0.07448261172208066,0.024943564962402714
+amazon-digital music,42,4,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.08034594574398703,0.06827423261654605,0.012071713127440972
+amazon-digital music,42,5,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.08662772008280967,0.06574643568980174,0.02088128439300793
+amazon-digital music,777,1,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.09045020679298353,0.08041704112622057,0.010033165666762961
+amazon-digital music,777,2,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.1192159596814799,0.0956767244216183,0.023539235259861596
+amazon-digital music,777,3,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.10127688030421338,0.0780166523710337,0.02326022793317968
+amazon-digital music,777,4,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.0842183116423096,0.07159647006867806,0.01262184157363154
+amazon-digital music,777,5,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.0878628841107613,0.0685427226821063,0.019320161428655003
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.07885734878131896,0.06958625757590464,0.00927109120541432
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.10825115196241741,0.08566289506378404,0.022588256898633377
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.10140897803203981,0.07830446352230272,0.023104514509737092
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.08011917112456797,0.06792203240927129,0.01219713871529668
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.08690694221263463,0.07079700192841078,0.016109940284223856
 movielens-1m,42,1,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.23087386560483167,0.22961023162962646,0.0012636339752052084
 movielens-1m,42,2,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.23066487678536615,0.2284807041007785,0.0021841726845876486
 movielens-1m,42,3,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.2339195250298446,0.22925238955908947,0.004667135470755118
@@ -374,6 +689,21 @@ movielens-1m,2024,2,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.232009
 movielens-1m,2024,3,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.23037946630620762,0.22636265147073795,0.004016814835469673
 movielens-1m,2024,4,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.25625071336652305,0.2402595362159051,0.015991177150617958
 movielens-1m,2024,5,ndcg_win_mean,dynamic_minus_nograph,dynamic,nograph,0.24608132729716212,0.22683604890541367,0.019245278391748444
+amazon-digital music,42,1,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.0734848292977812,0.06689448463659205,0.006590344661189157
+amazon-digital music,42,2,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.09900195461042306,0.08433517031108136,0.014666784299341706
+amazon-digital music,42,3,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.09415637667045801,0.07448261172208066,0.019673764948377345
+amazon-digital music,42,4,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.07921346097304452,0.06827423261654605,0.010939228356498465
+amazon-digital music,42,5,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.08503846633638219,0.06574643568980174,0.019292030646580458
+amazon-digital music,777,1,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.08871344247419101,0.08041704112622057,0.008296401347970439
+amazon-digital music,777,2,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.11397626450507498,0.0956767244216183,0.018299540083456675
+amazon-digital music,777,3,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.09658809193852212,0.0780166523710337,0.018571439567488426
+amazon-digital music,777,4,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.08234525064524105,0.07159647006867806,0.010748780576562991
+amazon-digital music,777,5,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.08537061588797833,0.0685427226821063,0.016827893205872024
+amazon-digital music,2024,1,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.07784836041053961,0.06958625757590464,0.008262102834634966
+amazon-digital music,2024,2,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.10222067692295556,0.08566289506378404,0.01655778185917152
+amazon-digital music,2024,3,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.09704423117031741,0.07830446352230272,0.018739767648014688
+amazon-digital music,2024,4,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.07772364805853797,0.06792203240927129,0.009801615649266682
+amazon-digital music,2024,5,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.08581406311982148,0.07079700192841078,0.015017061191410705
 movielens-1m,42,1,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.23104824952334554,0.22961023162962646,0.0014380178937190846
 movielens-1m,42,2,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.22987461661945732,0.2284807041007785,0.0013939125186788193
 movielens-1m,42,3,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.23286990774733785,0.22925238955908947,0.0036175181882483753
@@ -389,6 +719,21 @@ movielens-1m,2024,2,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.2323
 movielens-1m,2024,3,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.22816478167878004,0.22636265147073795,0.0018021302080420964
 movielens-1m,2024,4,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.2494217081092165,0.2402595362159051,0.009162171893311394
 movielens-1m,2024,5,ndcg_win_mean,periodic_minus_nograph,periodic,nograph,0.24117987195696464,0.22683604890541367,0.014343823051550963
+amazon-digital music,42,1,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.07492160854401243,0.0734848292977812,0.001436779246231229
+amazon-digital music,42,2,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.10444403418402577,0.09900195461042306,0.0054420795736027094
+amazon-digital music,42,3,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.09942617668448338,0.09415637667045801,0.005269800014025369
+amazon-digital music,42,4,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.08034594574398703,0.07921346097304452,0.0011324847709425073
+amazon-digital music,42,5,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.08662772008280967,0.08503846633638219,0.0015892537464274742
+amazon-digital music,777,1,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.09045020679298353,0.08871344247419101,0.001736764318792522
+amazon-digital music,777,2,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.1192159596814799,0.11397626450507498,0.005239695176404921
+amazon-digital music,777,3,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.10127688030421338,0.09658809193852212,0.004688788365691254
+amazon-digital music,777,4,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.0842183116423096,0.08234525064524105,0.0018730609970685486
+amazon-digital music,777,5,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.0878628841107613,0.08537061588797833,0.0024922682227829784
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.07885734878131896,0.07784836041053961,0.001008988370779354
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.10825115196241741,0.10222067692295556,0.006030475039461858
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.10140897803203981,0.09704423117031741,0.0043647468617224044
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.08011917112456797,0.07772364805853797,0.0023955230660299975
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.08690694221263463,0.08581406311982148,0.001092879092813151
 movielens-1m,42,1,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.23087386560483167,0.23104824952334554,-0.00017438391851387625
 movielens-1m,42,2,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.23066487678536615,0.22987461661945732,0.0007902601659088293
 movielens-1m,42,3,ndcg_win_mean,dynamic_minus_periodic,dynamic,periodic,0.2339195250298446,0.23286990774733785,0.001049617282506743
@@ -419,6 +764,21 @@ movielens-1m,2024,2,ndcg_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dyna
 movielens-1m,2024,3,ndcg_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.23037946630620762,0.23037946630620762,0.0
 movielens-1m,2024,4,ndcg_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.25625071336652305,0.25625071336652305,0.0
 movielens-1m,2024,5,ndcg_win_mean,dynamic_genre_minus_dynamic,dynamic_genre,dynamic,0.24608132729716212,0.24608132729716212,0.0
+amazon-digital music,42,1,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.0750981745731538,0.07492160854401243,0.00017656602914137287
+amazon-digital music,42,2,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.10437901012392214,0.10444403418402577,-6.502406010362727e-05
+amazon-digital music,42,3,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.09971971609568403,0.09942617668448338,0.0002935394112006523
+amazon-digital music,42,4,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08058739354199497,0.08034594574398703,0.00024144779800794325
+amazon-digital music,42,5,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.0867674856473596,0.08662772008280967,0.0001397655645499346
+amazon-digital music,777,1,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.09018964252198469,0.09045020679298353,-0.0002605642709988393
+amazon-digital music,777,2,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.11966926548796854,0.1192159596814799,0.00045330580648864083
+amazon-digital music,777,3,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.10128859433263866,0.10127688030421338,1.1714028425285905e-05
+amazon-digital music,777,4,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08459686610765199,0.0842183116423096,0.0003785544653423928
+amazon-digital music,777,5,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08810857281764256,0.0878628841107613,0.00024568870688125577
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.07887328035843455,0.07885734878131896,1.5931577115588236e-05
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1083848796437114,0.10825115196241741,0.00013372768129397972
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.1018617146498158,0.10140897803203981,0.0004527366177759923
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08020473276837543,0.08011917112456797,8.556164380746356e-05
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.08670632576247143,0.08690694221263463,-0.00020061645016319907
 movielens-1m,42,1,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.23081314624057994,0.23087386560483167,-6.071936425172675e-05
 movielens-1m,42,2,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.23025011794334446,0.23066487678536615,-0.00041475884202168967
 movielens-1m,42,3,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.23381480465574964,0.2339195250298446,-0.00010472037409495205
@@ -434,6 +794,21 @@ movielens-1m,2024,2,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dy
 movielens-1m,2024,3,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.23056313758661398,0.23037946630620762,0.00018367128040636116
 movielens-1m,2024,4,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.2561837013741039,0.25625071336652305,-6.701199241915257e-05
 movielens-1m,2024,5,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,dynamic_rho0.8,dynamic,0.2467138738577559,0.24608132729716212,0.0006325465605937775
+amazon-digital music,42,1,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.07467842361969294,0.07492160854401243,-0.00024318492431948946
+amazon-digital music,42,2,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.10440925690347663,0.10444403418402577,-3.47772805491392e-05
+amazon-digital music,42,3,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.09937012234116253,0.09942617668448338,-5.60543433208438e-05
+amazon-digital music,42,4,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08077369959572152,0.08034594574398703,0.00042775385173449143
+amazon-digital music,42,5,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08690558607879324,0.08662772008280967,0.00027786599598357553
+amazon-digital music,777,1,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.09043477188685617,0.09045020679298353,-1.5434906127362313e-05
+amazon-digital music,777,2,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.11941236819806722,0.1192159596814799,0.0001964085165873236
+amazon-digital music,777,3,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.10139981648155948,0.10127688030421338,0.00012293617734610018
+amazon-digital music,777,4,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08440349013069663,0.0842183116423096,0.00018517848838703332
+amazon-digital music,777,5,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08819174616549617,0.0878628841107613,0.0003288620547348686
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.07911405170257046,0.07885734878131896,0.0002567029212515032
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.10781175261157011,0.10825115196241741,-0.00043939935084730264
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.10173822819288066,0.10140897803203981,0.0003292501608408438
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.07928848040659701,0.08011917112456797,-0.0008306907179709555
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.08623286190989905,0.08690694221263463,-0.0006740803027355802
 movielens-1m,42,1,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.23084818032347076,0.23087386560483167,-2.568528136090431e-05
 movielens-1m,42,2,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.2305511648498201,0.23066487678536615,-0.00011371193554604586
 movielens-1m,42,3,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.23342068231349225,0.2339195250298446,-0.0004988427163523379
@@ -449,6 +824,21 @@ movielens-1m,2024,2,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0
 movielens-1m,2024,3,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.22999805776625282,0.23037946630620762,-0.00038140853995480284
 movielens-1m,2024,4,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.2563061719405911,0.25625071336652305,5.545857406802357e-05
 movielens-1m,2024,5,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,dynamic_rho0.8_topk,dynamic,0.24631766399342211,0.24608132729716212,0.00023633669625999776
+amazon-digital music,42,1,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.07502003436631094,0.07492160854401243,9.842582229850627e-05
+amazon-digital music,42,2,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.10424227111396335,0.10444403418402577,-0.00020176307006242178
+amazon-digital music,42,3,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.0993658962721174,0.09942617668448338,-6.028041236598447e-05
+amazon-digital music,42,4,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08030810307230209,0.08034594574398703,-3.7842671684940044e-05
+amazon-digital music,42,5,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08661925005439837,0.08662772008280967,-8.470028411297625e-06
+amazon-digital music,777,1,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.09039010814751923,0.09045020679298353,-6.009864546430155e-05
+amazon-digital music,777,2,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.11932772684004554,0.1192159596814799,0.00011176715856564545
+amazon-digital music,777,3,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.10107897945540543,0.10127688030421338,-0.00019790084880794145
+amazon-digital music,777,4,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08423452982384444,0.0842183116423096,1.6218181534841114e-05
+amazon-digital music,777,5,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.0878591512114665,0.0878628841107613,-3.7328992948115758e-06
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.07892939189688475,0.07885734878131896,7.204311556578691e-05
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.10781971020329849,0.10825115196241741,-0.00043144175911892513
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.10147900389493329,0.10140897803203981,7.002586289348023e-05
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08014280786774304,0.08011917112456797,2.3636743175070585e-05
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.08685131182722551,0.08690694221263463,-5.563038540912224e-05
 movielens-1m,42,1,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.23096228769804625,0.23087386560483167,8.842209321457961e-05
 movielens-1m,42,2,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.2304106096818138,0.23066487678536615,-0.0002542671035523636
 movielens-1m,42,3,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.23363450829817997,0.2339195250298446,-0.00028501673166461683
@@ -464,6 +854,21 @@ movielens-1m,2024,2,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic
 movielens-1m,2024,3,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.23015091008134994,0.23037946630620762,-0.0002285562248576789
 movielens-1m,2024,4,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.25608129816061975,0.25625071336652305,-0.0001694152059033005
 movielens-1m,2024,5,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,dynamic_rho0.8_topk_warm,dynamic,0.24640557657902976,0.24608132729716212,0.000324249281867639
+amazon-digital music,42,1,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.07491126960213389,0.07492160854401243,-1.0338941878546004e-05
+amazon-digital music,42,2,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.10422380077127914,0.10444403418402577,-0.00022023341274662878
+amazon-digital music,42,3,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.09954663115501138,0.09942617668448338,0.00012045447052799751
+amazon-digital music,42,4,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08042093365365831,0.08034594574398703,7.498790967128133e-05
+amazon-digital music,42,5,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08666435952945599,0.08662772008280967,3.663944664632213e-05
+amazon-digital music,777,1,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.09035449861723693,0.09045020679298353,-9.570817574659773e-05
+amazon-digital music,777,2,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.11914730561631066,0.1192159596814799,-6.865406516923245e-05
+amazon-digital music,777,3,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.10105459951368534,0.10127688030421338,-0.00022228079052803718
+amazon-digital music,777,4,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.0842730824792899,0.0842183116423096,5.4770836980300164e-05
+amazon-digital music,777,5,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.0876924697242406,0.0878628841107613,-0.00017041438652071195
+amazon-digital music,2024,1,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.07897745284152426,0.07885734878131896,0.00012010406020529496
+amazon-digital music,2024,2,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.10786543771982869,0.10825115196241741,-0.0003857142425887222
+amazon-digital music,2024,3,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.10146262169282085,0.10140897803203981,5.364366078103311e-05
+amazon-digital music,2024,4,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08000235434337362,0.08011917112456797,-0.00011681678119435102
+amazon-digital music,2024,5,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.08674387999524862,0.08690694221263463,-0.00016306221738601745
 movielens-1m,42,1,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.2308260151277424,0.23087386560483167,-4.7850477089272925e-05
 movielens-1m,42,2,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.23041717999457698,0.23066487678536615,-0.00024769679078917584
 movielens-1m,42,3,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,dynamic_rho0.8_warm,dynamic,0.2338694533191256,0.2339195250298446,-5.00717107189963e-05
