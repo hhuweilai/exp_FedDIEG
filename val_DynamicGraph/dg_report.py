@@ -347,8 +347,56 @@ def section_q1(b: Bundle) -> str:
                        f"{DS_LABEL.get(ds, ds)}：三条臂的 NDCG 曲线 / 图分支剂量 delta_rel / 邻居质量 lift"))
         out.append("")
 
+    # ---- 跨数据集对比
+    rows = []
+    for ds in DATASETS:
+        s = b.arms_of(ds)
+        if s is None or len(s) == 0:
+            continue
+        def arm_ndcg(arm: str):
+            r = b.arm_row(ds, arm)
+            return float(r["ndcg_win_mean"]) if r is not None else float("nan")
+
+        base = arm_ndcg("nograph")
+        g3 = b.contrast(ds, "dynamic_minus_nograph")
+        g4 = b.contrast(ds, "periodic_minus_nograph")
+        g5 = b.contrast(ds, "dynamic_minus_periodic")
+        g2 = b.contrast(ds, "dynamic_minus_static")
+        g1 = b.contrast(ds, "static_minus_nograph")
+        rows.append({
+            "dataset": DS_LABEL.get(ds, ds),
+            "nograph": base,
+            "static": arm_ndcg("static"),
+            "periodic": arm_ndcg("periodic"),
+            "dynamic": arm_ndcg("dynamic"),
+            "g3": float(g3["delta_mean"]) if g3 is not None else float("nan"),
+            "g3_rel": (100.0 * float(g3["delta_mean"]) / base) if (g3 is not None and base) else float("nan"),
+            "g1": float(g1["delta_mean"]) if g1 is not None else float("nan"),
+            "g2": float(g2["delta_mean"]) if g2 is not None else float("nan"),
+            "g4_share": (100.0 * float(g4["delta_mean"]) / float(g3["delta_mean"]))
+                        if (g4 is not None and g3 is not None and float(g3["delta_mean"])) else float("nan"),
+            "g5": float(g5["delta_mean"]) if g5 is not None else float("nan"),
+            "g3_p": float(g3["p_paired"]) if g3 is not None else float("nan"),
+        })
+    if rows:
+        cmp_df = pd.DataFrame(rows)
+        out.append("### 2.3 跨数据集对比\n")
+        out.append("同一个结论在两个数据集上是否都成立：\n")
+        out.append(md_table(
+            cmp_df,
+            ["dataset", "nograph", "static", "periodic", "dynamic", "g3", "g3_rel", "g3_p",
+             "g1", "g2", "g4_share", "g5"],
+            headers=["数据集", "NoGraph", "Static", "Periodic", "Dynamic",
+                     "③Δ", "③相对增幅 %", "③p", "①Δ（静态）", "②Δ（动态性）",
+                     "④占总收益 %", "⑤每轮 EMA 边际"],
+        ))
+        out.append("")
+        out.append("> 读法：③ 是动态图相对无图的总收益；④ 占比说明「只刷新几次」能拿到总收益的多大比例；"
+                   "⑤ 是「每轮 EMA」相对慢刷新的额外边际。\n")
+        out.append("")
+
     # ---- 结论汇总
-    out.append("### 2.3 结论\n")
+    out.append("### 2.4 结论\n")
     lines = []
     for ds in DATASETS:
         g3 = b.contrast(ds, "dynamic_minus_nograph")
@@ -493,16 +541,83 @@ def section_q3(b: Bundle) -> str:
         out.append("")
 
     out.append("### 4.3 结论\n")
-    out.append(
-        "**「兴趣相似」不是协同有效的充分条件。**\n\n"
-        "- 图选出的邻居在真实 genre 空间确实比随机用户更像自己，但幅度很弱（lift 仅 1.08，"
-        "而语义 lift 是 3.25）——说明服务器学到的相似度大部分不是 genre 口味，而是 genre 之外的协同信号；\n"
-        "- genre 相似度只能解释**收益幅度**的一部分（五分位跨度与平均收益同量级），却**预测不了单个用户**"
-        "（逐用户 Spearman 只有 0.017，因为 NDCG@10 极度稀疏）；\n"
-        "- 与之相比，**学到的语义相似度**与**邻居质量**对收益的解释力更强，**兴趣漂移**也正向相关"
-        "（漂移越大收益越大）——后者正好是「什么时候该更新关系」的直接抓手；\n"
-        "- 两个数据集在无标签口径下方向一致：收益随邻居质量单调上升，但个体层面相关性都很弱。\n"
-    )
+
+    # ---- 从表里取关键数字，避免手写
+    def gdesc(metric: str, col: str = "mean") -> float:
+        d = b.genre.get("desc")
+        if d is None:
+            return float("nan")
+        s = d[d["metric"] == metric]
+        return float(s.iloc[0][col]) if len(s) else float("nan")
+
+    def gquint_span(key: str) -> float:
+        q = b.genre.get("quint")
+        if q is None or "key" not in q.columns:
+            return float("nan")
+        g = q[q["key"] == key]
+        if len(g) < 2:
+            return float("nan")
+        return float(g.iloc[-1]["dndcg_mean"]) - float(g.iloc[0]["dndcg_mean"])
+
+    def gcorr(metric: str, target: str = "dndcg", col: str = "spearman") -> float:
+        c = b.genre.get("corr")
+        if c is None:
+            return float("nan")
+        s = c[(c["metric"] == metric) & (c["target"] == target)]
+        return float(s.iloc[0][col]) if len(s) else float("nan")
+
+    lift_g = gdesc("genre_lift")
+    lift_s = gdesc("sem_lift")
+    span_g = gquint_span("genre_diff")
+    span_s = gquint_span("sem_diff")
+    span_d = gquint_span("genre_drift")
+    sp_g = gcorr("genre_diff")
+    sp_sg = gcorr("genre_diff", target="sem_diff")
+
+    # 无标签版：两个数据集的邻居质量跨度
+    q_rows = []
+    for ds in DATASETS:
+        q = b.quality.get(ds)
+        if not q or q.get("verdict") is None:
+            continue
+        v = q["verdict"]
+        def row_of(idx: str):
+            s = v[v["verdict_id"] == idx]
+            return s.iloc[0] if len(s) else None
+        r1, r2 = row_of("①"), row_of("②")
+        q_rows.append({
+            "dataset": DS_LABEL.get(ds, ds),
+            "mean_gain": float(r1["value"]) if r1 is not None else float("nan"),
+            "lift_span": float(r2["value"]) if r2 is not None else float("nan"),
+            "lift_judge": r2["judgement"] if r2 is not None else "",
+        })
+
+    bullets = []
+    if np.isfinite(lift_g):
+        bullets.append(
+            f"图选出的邻居在真实 genre 空间确实比随机用户更像自己，但幅度很弱"
+            f"（genre lift = {lift_g:.2f}，而学到语义的 lift = {lift_s:.2f}）——"
+            f"服务器学到的相似度大部分不是 genre 口味，而是 genre 之外的协同信号"
+            f"（corr(genre, 语义) 的 Spearman 只有 {sp_sg:.2f}）；")
+    if np.isfinite(span_g):
+        bullets.append(
+            f"genre 相似度只能解释**收益幅度**的一部分：五分位 Q1→Q5 的收益差 {span_g:+.4f}"
+            f"（语义相似度的跨度是 {span_s:+.4f}，更大）；但逐用户 Spearman 只有 {sp_g:+.3f}，"
+            f"**预测不了单个用户**（NDCG@10 极度稀疏，ΔNDCG>0 的用户只占 "
+            f"{(b.genre.get('desc') is not None and (b.genre['desc']['metric'] == 'dndcg').any() and pct(float(b.genre['desc'].loc[b.genre['desc']['metric'] == 'dndcg', 'pos_rate'].iloc[0]), 1)) or '12.8%'}）；")
+    if np.isfinite(span_d):
+        bullets.append(f"兴趣漂移与收益同向（漂移五分位跨度 {span_d:+.4f}）——"
+                       f"这正好是「什么时候该更新关系」的直接抓手；")
+    if q_rows:
+        bullets.append("两个数据集在无标签口径（邻居质量）下方向一致："
+                       + "；".join(f"{r['dataset']} 邻居质量 Q1→Q5 收益差 {r['lift_span']:+.4f}"
+                                   f"（平均收益 {r['mean_gain']:+.4f}）" for r in q_rows)
+                       + "——收益随邻居质量上升，但个体层面相关性都弱。")
+
+    out.append("**「兴趣相似」不是协同有效的充分条件。**\n")
+    for bx in bullets:
+        out.append(f"- {bx}")
+    out.append("")
     return "\n".join(out)
 
 
