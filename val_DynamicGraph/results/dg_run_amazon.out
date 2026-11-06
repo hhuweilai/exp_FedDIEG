@@ -13,3 +13,10 @@ Amazon 动态图验证实验（训练）
 [15:36:41] 启动 GPU1 | dynamic | seed 777
 [15:36:44] 启动 GPU0 | dynamic | seed 2024
 [15:36:47] 启动 GPU1 | dynamic_rho0.8 | seed 42
+[16:31:26] 启动 GPU0 | dynamic_rho0.8 | seed 777
+[16:31:29] 启动 GPU1 | dynamic_rho0.8 | seed 2024
+[16:32:48] 启动 GPU0 | dynamic_rho0.8_warm | seed 42
+dg_run_amazon.sh: line 97: 284348 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$DATASET" --seed "$SEED" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --personal-on-gpu --device cuda --out-root "$RAW" $EXTRA > "$LOGF" 2>&1
+[16:32:56] 启动 GPU1 | dynamic_rho0.8_warm | seed 777
+[16:34:34] 启动 GPU0 | dynamic_rho0.8_warm | seed 2024
+[16:34:47] 启动 GPU1 | dynamic_rho0.8_topk_warm | seed 42

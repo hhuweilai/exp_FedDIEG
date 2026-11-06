@@ -762,6 +762,10 @@ def section_limits() -> str:
    因此逐用户检验只作方向性证据，主证据仍是窗口级配对。
 5. **periodic 的周期**只取 120 轮（1 个窗口），未扫描更短/更长的刷新间隔，
    "六成收益来自刷新"这个比例依赖于该周期。
+6. **跑批稳定性**：Amazon 的 24 个 run 中有 2 个在启动/早期阶段出现**环境级 torch 崩溃**
+   （`ValueError: too many values to unpack` 于 `nn.Module._named_members`，以及 `core dumped`），
+   与图设计无关（同配置的其它种子正常完成），由流水线自动补跑完成。
+   早期在 MovieLens 上也出现过 1 次同类 `SystemError`。多进程 CUDA 下建议保留补跑机制。
 """
 
 
