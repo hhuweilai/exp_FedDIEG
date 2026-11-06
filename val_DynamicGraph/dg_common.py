@@ -297,6 +297,7 @@ def arm_dir_name(
     cfg: FedDIEGConfig,
     freeze_round: Optional[int] = None,
     period: Optional[int] = None,
+    run_tag: str = "",
 ) -> str:
     """运行目录名 = 臂名 + 与默认值不同的配置后缀。
 
@@ -320,6 +321,13 @@ def arm_dir_name(
         pd = default_period if period is None else int(period)
         if pd != default_period:
             name += f"_p{pd}"
+    # 图状态 / 新边初始化规则（冻结归因的 2x2 网格靠这两个后缀区分，否则会互相覆盖）
+    if str(cfg.graph_state) != "pool":
+        name += f"_{cfg.graph_state}"
+    if str(cfg.graph_new_edge) != "zero":
+        name += f"_{cfg.graph_new_edge}"
+    if run_tag:
+        name += f"_{run_tag}"
     return name
 
 
@@ -595,6 +603,191 @@ def pick_random_base(summary_active: torch.Tensor, size: int, seed: int) -> Opti
     gen = torch.Generator().manual_seed(int(seed) + 29)
     idx = torch.randperm(active.numel(), generator=gen)[:k]
     return active[idx]
+
+
+
+
+# ======================================================================================
+# 真实 Genre 画像与「邻居的 genre 相似度」（Genre 协同有效性）
+# ======================================================================================
+def load_genre_matrix(path) -> Tuple[np.ndarray, list]:
+    """读取 item_genres_ml1m.npz -> (num_items, num_genres) float32 矩阵 + genre 名称。"""
+    data = np.load(Path(path))
+    mat = np.asarray(data["genres"], dtype=np.float64)
+    names = [str(x) for x in data["genre_names"]] if "genre_names" in data.files else []
+    return mat, names
+
+
+def build_user_genre_profiles(window, genre_mat: np.ndarray) -> np.ndarray:
+    """按「该窗口可见的历史」构建每个用户的 genre 画像（L2 归一化，无未来信息）。
+
+    `ClientWindow.history[u]` 存的是 ``itemId + 1``（见 `feddieg_core/data.py`），
+    这里减 1 换回 0 基的内部 itemId 再去查 genre 矩阵。
+    画像 = 历史物品的 genre 多热向量之和（多标签已按 1/|genres| 加权），再 L2 归一化。
+    """
+    num_users = int(window.num_users)
+    num_items, num_genres = genre_mat.shape
+    prof = np.zeros((num_users, num_genres), dtype=np.float64)
+    lengths = np.array([int(h.size) for h in window.history], dtype=np.int64)
+    if lengths.sum() == 0:
+        return prof
+    items = np.concatenate([np.asarray(h, dtype=np.int64) - 1 for h in window.history])
+    rows = np.repeat(np.arange(num_users, dtype=np.int64), lengths)
+    valid = (items >= 0) & (items < num_items) & (lengths[rows] > 0)
+    if valid.any():
+        np.add.at(prof, rows[valid], genre_mat[items[valid]])
+    norm = np.linalg.norm(prof, axis=1, keepdims=True)
+    return prof / np.maximum(norm, 1e-12)
+
+
+def center_profiles(prof: np.ndarray) -> np.ndarray:
+    """减掉全体均值后再归一化：去掉「Drama/Comedy 这种人人都看」的公共成分，
+    让相似度真正反映「口味差异」而不是「都看了热门类型」。"""
+    if prof.size == 0:
+        return prof
+    mean = prof.mean(axis=0, keepdims=True)
+    out = prof - mean
+    norm = np.linalg.norm(out, axis=1, keepdims=True)
+    return out / np.maximum(norm, 1e-12)
+
+
+def _weighted_neighbor_mean(values: np.ndarray, weights: np.ndarray) -> np.ndarray:
+    wsum = weights.sum(axis=1)
+    return (values * weights).sum(axis=1) / np.maximum(wsum, 1e-12)
+
+
+@torch.no_grad()
+def genre_metrics_for_users(
+    profile: np.ndarray,
+    centered: np.ndarray,
+    profile_prev: Optional[np.ndarray],
+    summary_bank: torch.Tensor,
+    graph,
+    users: torch.Tensor,
+    random_base: Optional[torch.Tensor],
+) -> Dict[str, np.ndarray]:
+    """对一批用户算「邻居 vs 随机用户」的 genre / 语义相似度。
+
+    返回的每个数组长度都等于 ``users.numel()``：
+      sem_nbr / sem_base / sem_lift          语义（服务器缓存的兴趣摘要）相似度
+      genre_nbr / genre_base / genre_lift    原始 genre 余弦相似度
+      genrec_nbr / genrec_base / genrec_lift 去掉公共成分后的 genre 相似度
+      genre_entropy                          用户 genre 画像的归一化熵（兴趣分散程度）
+      genre_drift                            与上一窗口画像的 1−cos（兴趣变化幅度）
+    """
+    n = int(users.numel())
+    out = {k: np.full(n, np.nan) for k in (
+        "sem_nbr", "sem_base", "sem_lift", "sem_diff",
+        "genre_nbr", "genre_base", "genre_lift", "genre_diff",
+        "genrec_nbr", "genrec_base", "genrec_lift", "genrec_diff",
+        "genre_entropy", "genre_drift",
+    )}
+    if n == 0:
+        return out
+
+    dev = graph.ids.device
+    u = users.to(dev)
+    ids = graph.ids[u]
+    slot = ids >= 0
+    w = graph.weights[u] * slot.to(torch.float32)
+    valid_user = graph.mask[u] & slot.any(dim=1)
+    nbr_idx = ids.clamp_min(0).detach().cpu().numpy()
+    w_np = w.detach().cpu().numpy()
+    u_np = users.detach().cpu().numpy()
+
+    # ---- 语义相似度（兴趣摘要）
+    sb = summary_bank.detach().cpu().numpy()
+    unit_sb = sb / np.maximum(np.linalg.norm(sb, axis=1, keepdims=True), 1e-12)
+    sem_nbr = _weighted_neighbor_mean(
+        (unit_sb[nbr_idx] * unit_sb[u_np][:, None, :]).sum(-1), w_np
+    )
+    if random_base is not None and int(random_base.numel()) > 0:
+        base_idx = random_base.detach().cpu().numpy()
+        sem_base = (unit_sb[u_np] @ unit_sb[base_idx].T).mean(axis=1)
+    else:
+        sem_base = np.full(n, np.nan)
+
+    # ---- genre 相似度（原始 / 去公共成分）
+    def _genre_pair(mat: np.ndarray):
+        nbr = _weighted_neighbor_mean(
+            (mat[nbr_idx] * mat[u_np][:, None, :]).sum(-1), w_np
+        )
+        if random_base is not None and int(random_base.numel()) > 0:
+            base = (mat[u_np] @ mat[base_idx].T).mean(axis=1)
+        else:
+            base = np.full(n, np.nan)
+        return nbr, base
+
+    g_nbr, g_base = _genre_pair(profile)
+    c_nbr, c_base = _genre_pair(centered)
+
+    # ---- 兴趣分散程度 / 漂移
+    raw = np.clip(profile[u_np], 0.0, None)
+    total = raw.sum(axis=1, keepdims=True)
+    p_norm = raw / np.maximum(total, 1e-12)
+    ent = -(np.where(p_norm > 0, p_norm * np.log(np.maximum(p_norm, 1e-12)), 0.0)).sum(axis=1)
+    ent = ent / np.log(max(profile.shape[1], 2))
+    if profile_prev is not None:
+        # 上一窗口画像为空（用户当时还没交互）时不能算成 drift=1，
+        # 那会把「新用户」误当成「兴趣完全变了」；这种情况记 NaN。
+        prev_norm = np.linalg.norm(profile_prev[u_np], axis=1)
+        cos_prev = (profile[u_np] * profile_prev[u_np]).sum(axis=1)
+        drift = np.where(prev_norm > 1e-9, 1.0 - cos_prev, np.nan)
+    else:
+        drift = np.full(n, np.nan)
+
+    ok = valid_user.detach().cpu().numpy()
+    out.update({
+        "sem_nbr": sem_nbr, "sem_base": sem_base,
+        "sem_lift": sem_nbr / np.where(sem_base > 1e-9, sem_base, np.nan),
+        "genre_nbr": g_nbr, "genre_base": g_base,
+        "genre_lift": g_nbr / np.where(g_base > 1e-9, g_base, np.nan),
+        "genrec_nbr": c_nbr, "genrec_base": c_base,
+        "genrec_lift": c_nbr / np.where(np.abs(c_base) > 1e-9, c_base, np.nan),
+        "sem_diff": sem_nbr - sem_base,
+        "genre_diff": g_nbr - g_base,
+        "genrec_diff": c_nbr - c_base,
+        "genre_entropy": ent, "genre_drift": drift,
+    })
+    for key in ("sem_nbr", "sem_base", "sem_lift", "sem_diff",
+                "genre_nbr", "genre_base", "genre_lift", "genre_diff",
+                "genrec_nbr", "genrec_base", "genrec_lift", "genrec_diff"):
+        out[key] = np.where(ok, out[key], np.nan)
+    return out
+
+
+# ======================================================================================
+# 冻结诊断（相对「预热后第一次评测」的邻居快照）
+# ======================================================================================
+@torch.no_grad()
+def turnover_vs_ref(graph, ref_ids: torch.Tensor, ref_valid: torch.Tensor) -> Dict[str, float]:
+    """当前 Top-K 邻居集合相对快照的 Jaccard 距离，以及「完全没变」的用户占比。
+
+    这是判断「图冻结」最直接的量：turnover ≈ 0 且 frozen_share ≈ 1 就是冻住了。
+    """
+    cur = graph.ids
+    cur_valid = graph.mask & (cur >= 0).any(dim=1)
+    both = ref_valid & cur_valid
+    n_both = int(both.sum().item())
+    if n_both == 0:
+        return {
+            "freeze_ref_n": 0.0, "turnover_from_ref": float("nan"),
+            "frozen_share": float("nan"), "coverage_gain": 0.0,
+        }
+    r = ref_ids[both]
+    c = cur[both]
+    eq = (r.unsqueeze(2) == c.unsqueeze(1)) & (r.unsqueeze(2) >= 0) & (c.unsqueeze(1) >= 0)
+    inter = eq.any(dim=2).sum(dim=1).to(torch.float32)
+    n_r = (r >= 0).sum(dim=1).to(torch.float32)
+    n_c = (c >= 0).sum(dim=1).to(torch.float32)
+    union = (n_r + n_c - inter).clamp_min(1e-8)
+    turnover = 1.0 - inter / union
+    return {
+        "freeze_ref_n": float(n_both),
+        "turnover_from_ref": float(turnover.mean().item()),
+        "frozen_share": float((turnover < 0.01).to(torch.float32).mean().item()),
+        "coverage_gain": float(int((cur_valid & ~ref_valid).sum().item())),
+    }
 
 
 # ======================================================================================

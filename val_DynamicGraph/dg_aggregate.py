@@ -352,7 +352,7 @@ CONFIG_KEYS = (
     "num_windows", "rounds_per_window", "eval_every", "clients_per_round",
     "participation_rate", "local_epochs", "lr", "server_lr_init", "server_lr_final",
     "fedavg_weighting", "personalization", "lambda_temp", "lambda_struct",
-    "top_k", "candidate_count", "graph_state", "graph_new_edge", "graph_update_scope",
+    "top_k", "candidate_count", "graph_update_scope",
     "graph_warmup_rounds", "probe_size",
 )
 
@@ -377,6 +377,13 @@ def hygiene_checks(sums: pd.DataFrame, rounds: pd.DataFrame) -> pd.DataFrame:
             not bad,
             "一致" if not bad else "不一致：" + "; ".join(bad),
         )
+
+        # graph_state / graph_new_edge 现在是刻意变动的实验维度（冻结归因 2x2），
+        # 所以只作为信息展示，不参与「协议参数一致」的失败判定。
+        for key, label in (("graph_state", "图状态"), ("graph_new_edge", "新边初始化")):
+            if key in part.columns and part[key].notna().any():
+                vals = sorted({str(v) for v in part[key].dropna().unique()})
+                add(dataset, f"{label}（实验变量，允许不同）", True, "、".join(vals))
 
         if "personal_on_cpu" in part.columns and part["personal_on_cpu"].notna().any():
             vals = sorted({str(int(v)) for v in part["personal_on_cpu"].dropna()})

@@ -70,12 +70,17 @@ from dg_common import (  # noqa: E402  (dg_common 会先把 ROOT 塞进 sys.path
     add_dg_args,
     arm_dir_name,
     build_graph,
+    build_user_genre_profiles,
+    center_profiles,
     edge_signature,
+    genre_metrics_for_users,
     graph_is_empty,
+    load_genre_matrix,
     n_users_with_edges,
     pick_probe_rows,
     pick_random_base,
     probe_diagnostics,
+    turnover_vs_ref,
 )
 
 from feddieg_core import __version__ as CORE_VERSION
@@ -98,6 +103,8 @@ ROUND_FIELDS = [
     # ---- 图状态 ----
     "graph_updates", "graph_n_edges", "graph_edge_sig", "graph_edge_changed_after_freeze",
     "ecr_all", "added_mean", "pool_fill",
+    # ---- 冻结诊断（相对预热后第一次评测的邻居快照）----
+    "freeze_ref_n", "turnover_from_ref", "frozen_share", "coverage_gain",
     # ---- 图协同分支的数值诊断 ----
     "probe_n", "probe_with_graph",
     "delta_rel_mean", "delta_rel_median", "delta_rel_max", "delta_cos_mean",
@@ -109,6 +116,15 @@ ROUND_FIELDS = [
 
 USER_FIELDS = ["dataset", "arm", "arm_dir", "seed", "window", "user", "ndcg", "hr"]
 
+#: Genre 分析用：逐用户「邻居 vs 随机」的 genre / 语义一致度（只在 --genre-npz 时产出）
+GENRE_FIELDS = [
+    "dataset", "arm", "arm_dir", "seed", "window", "user", "ndcg",
+    "sem_nbr", "sem_base", "sem_lift", "sem_diff",
+    "genre_nbr", "genre_base", "genre_lift", "genre_diff",
+    "genrec_nbr", "genrec_base", "genrec_lift", "genrec_diff",
+    "genre_entropy", "genre_drift",
+]
+
 PROBE_FIELDS = [
     "dataset", "arm", "arm_dir", "seed", "window", "user",
     "delta_rel", "delta_cos", "neighbor_cos", "neighbor_cos_base", "has_edge",
@@ -118,6 +134,8 @@ SUMMARY_FIELDS = [
     "dataset", "arm", "arm_dir", "seed",
     "final_window_ndcg", "avg_window_ndcg", "final_window_hr", "avg_window_hr",
     "mean_delta_rel", "mean_delta_rel_median", "mean_neighbor_lift", "mean_probe_with_graph",
+    "mean_frozen_share", "mean_turnover_from_ref", "final_frozen_share", "run_tag",
+    "genre_rows",
     "avg_ecr", "avg_added", "final_n_edges", "graph_updates_total",
     "edge_changed_after_freeze", "n_eval_users",
     # ---- 会直接影响可比性的配置（聚合时用来核对「确实只差图」）----
@@ -155,8 +173,17 @@ def run_single(
     eval_model = build_eval_model(trainer, cfg)
     rng = np.random.default_rng(cfg.seed)
 
-    arm_dir = arm_dir_name(args.arm, cfg, args.freeze_round, args.refresh_rounds)
+    arm_dir = arm_dir_name(
+        args.arm, cfg, args.freeze_round, args.refresh_rounds, getattr(args, "run_tag", "")
+    )
     tag = f"[{args.arm}]"
+
+    genre_mat = None
+    if getattr(args, "genre_npz", None) is not None:
+        genre_mat, _genre_names = load_genre_matrix(args.genre_npz)
+        print(
+            f"{tag} genre 诊断已启用：{genre_mat.shape[0]} 个物品 x {genre_mat.shape[1]} 个真实类型"
+        )
     print(f"{tag} {ARM_LABELS[args.arm]}")
     print(f"{tag} 图设置：{json.dumps(graph.describe(), ensure_ascii=False)}")
     print(
@@ -193,6 +220,12 @@ def run_single(
     start_time = time.time()
     global_round = 0
     final_n_edges = 0
+    genre_rows: List[Dict[str, object]] = []
+    profile_prev: Optional[np.ndarray] = None
+    frozen_points: List[float] = []
+    turnover_points: List[float] = []
+    ref_ids: Optional[torch.Tensor] = None
+    ref_valid: Optional[torch.Tensor] = None
 
     for window_idx, window in enumerate(windows, start=1):
         print(
@@ -203,6 +236,11 @@ def run_single(
             print(f"{tag} [warn] 本窗口没有可评测用户，跳过")
             continue
         probe_users, probe_seqs, _ = probe
+        profile = None
+        centered = None
+        if genre_mat is not None:
+            profile = build_user_genre_profiles(window, genre_mat)
+            centered = center_profiles(profile)
 
         last_ndcg = 0.0
         last_hr = 0.0
@@ -289,6 +327,25 @@ def run_single(
                     "graph_warmup_rounds / graph_state / min_sim / 参与率。"
                 )
 
+            # ---------------- 冻结诊断（相对预热后第一次评测的邻居快照）
+            if (
+                args.arm != ARM_NOGRAPH
+                and ref_ids is None
+                and global_round > int(cfg.graph_warmup_rounds)
+            ):
+                ref_ids = graph.ids.detach().clone()
+                ref_valid = graph.mask.detach().clone() & (ref_ids >= 0).any(dim=1)
+            if ref_ids is not None and ref_valid is not None:
+                fz = turnover_vs_ref(graph, ref_ids, ref_valid)
+            else:
+                fz = {
+                    "freeze_ref_n": 0.0, "turnover_from_ref": float("nan"),
+                    "frozen_share": float("nan"), "coverage_gain": 0.0,
+                }
+            if np.isfinite(fz["frozen_share"]):
+                frozen_points.append(float(fz["frozen_share"]))
+                turnover_points.append(float(fz["turnover_from_ref"]))
+
             ecr_all = float(gstats.ecr.mean()) if (gstats is not None and len(gstats) > 0) else 0.0
             added_mean = (
                 float(gstats.n_added.mean()) if (gstats is not None and len(gstats) > 0) else 0.0
@@ -305,6 +362,10 @@ def run_single(
                     "graph_n_edges": n_edges, "graph_edge_sig": sig,
                     "graph_edge_changed_after_freeze": changed,
                     "ecr_all": ecr_all, "added_mean": added_mean, "pool_fill": pool_fill,
+                    "freeze_ref_n": fz["freeze_ref_n"],
+                    "turnover_from_ref": fz["turnover_from_ref"],
+                    "frozen_share": fz["frozen_share"],
+                    "coverage_gain": fz["coverage_gain"],
                     "probe_n": diag["probe_n"], "probe_with_graph": diag["probe_with_graph"],
                     "delta_rel_mean": diag["delta_rel_mean"],
                     "delta_rel_median": diag["delta_rel_median"],
@@ -347,6 +408,35 @@ def run_single(
                                 "user": int(user), "ndcg": float(ndcg_v), "hr": float(hr_v),
                             }
                         )
+                if genre_mat is not None and profile is not None:
+                    uids_t = torch.as_tensor(uids, dtype=torch.long, device=device)
+                    gm = genre_metrics_for_users(
+                        profile, centered, profile_prev, trainer.summary_bank,
+                        graph, uids_t, random_base,
+                    )
+                    for i, user in enumerate(uids.tolist()):
+                        genre_rows.append(
+                            {
+                                "dataset": cfg.dataset, "arm": args.arm, "arm_dir": arm_dir,
+                                "seed": cfg.seed, "window": window_idx, "user": int(user),
+                                "ndcg": float(ndcgs[i]),
+                                "sem_nbr": float(gm["sem_nbr"][i]),
+                                "sem_base": float(gm["sem_base"][i]),
+                                "sem_lift": float(gm["sem_lift"][i]),
+                                "sem_diff": float(gm["sem_diff"][i]),
+                                "genre_nbr": float(gm["genre_nbr"][i]),
+                                "genre_base": float(gm["genre_base"][i]),
+                                "genre_lift": float(gm["genre_lift"][i]),
+                                "genre_diff": float(gm["genre_diff"][i]),
+                                "genrec_nbr": float(gm["genrec_nbr"][i]),
+                                "genrec_base": float(gm["genrec_base"][i]),
+                                "genrec_lift": float(gm["genrec_lift"][i]),
+                                "genrec_diff": float(gm["genrec_diff"][i]),
+                                "genre_entropy": float(gm["genre_entropy"][i]),
+                                "genre_drift": float(gm["genre_drift"][i]),
+                            }
+                        )
+
                 rel_arr = per_user["delta_rel"]
                 for i, user in enumerate(probe_users.tolist()):
                     probe_rows.append(
@@ -363,7 +453,11 @@ def run_single(
 
         window_ndcg.append(last_ndcg)
         window_hr.append(last_hr)
+        if profile is not None:
+            profile_prev = profile
         write_csv(out_dir / "dg_round_metrics.csv", round_rows, ROUND_FIELDS)
+        if genre_rows:
+            write_csv(out_dir / "dg_genre_metrics.csv", genre_rows, GENRE_FIELDS)
         if user_rows:
             write_csv(out_dir / "dg_user_metrics.csv", user_rows, USER_FIELDS)
         if probe_rows:
@@ -383,6 +477,11 @@ def run_single(
         "mean_delta_rel_median": mean(delta_rel_medians),
         "mean_neighbor_lift": mean(lifts),
         "mean_probe_with_graph": mean(with_graph_points),
+        "mean_frozen_share": mean(frozen_points),
+        "mean_turnover_from_ref": mean(turnover_points),
+        "final_frozen_share": frozen_points[-1] if frozen_points else float("nan"),
+        "run_tag": getattr(args, "run_tag", ""),
+        "genre_rows": len(genre_rows),
         "avg_ecr": mean(ecrs), "avg_added": mean(added),
         "final_n_edges": final_n_edges,
         "graph_updates_total": int(getattr(graph, "n_updates", 0)),
@@ -435,6 +534,14 @@ def parse_args() -> argparse.Namespace:
     )
     add_feddieg_args(parser)
     add_dg_args(parser)   # 必须在 add_feddieg_args 之后（会把 lambda_struct 默认改成 0）
+    parser.add_argument(
+        "--run-tag", default="",
+        help="追加到结果目录名的标记，用于区分「同臂不同配置」（如 genre）",
+    )
+    parser.add_argument(
+        "--genre-npz", type=Path, default=None,
+        help="真实 genre 矩阵（val_DynamicGraph/data/item_genres_ml1m.npz）；给了就写 dg_genre_metrics.csv",
+    )
     parser.set_defaults(out_root=DEFAULT_OUT_ROOT)
     return parser.parse_args()
 
@@ -447,7 +554,9 @@ def main() -> None:
     set_seed(cfg.seed)
     device = make_device(cfg.device)
 
-    arm_dir = arm_dir_name(args.arm, cfg, args.freeze_round, args.refresh_rounds)
+    arm_dir = arm_dir_name(
+        args.arm, cfg, args.freeze_round, args.refresh_rounds, getattr(args, "run_tag", "")
+    )
     out_root = Path(args.out_root)
     if args.out_dir is not None:
         out_dir = Path(args.out_dir).resolve()
@@ -473,6 +582,8 @@ def main() -> None:
             "freeze_round": args.freeze_round,
             "refresh_rounds": args.refresh_rounds,
             "probe_size": int(args.probe_size),
+            "run_tag": getattr(args, "run_tag", ""),
+            "genre_npz": str(args.genre_npz) if getattr(args, "genre_npz", None) else None,
         },
     )
 

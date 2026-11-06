@@ -1,0 +1,45 @@
+==============================================================
+Q2（冻结归因）+ Q3（genre 邻居有效性）
+  数据集   : movielens-1m   种子: 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  并行     : 每卡 2 进程 x 2 卡 = 4 并发
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw
+  genre    : /home/wl/exp_FedDIEG/val_DynamicGraph/data/item_genres_ml1m.npz（存在）
+==============================================================
+
+待跑 15 个任务，4 并发。
+
+[13:30:36] 启动 GPU0 | dynamic_rho0.8 | seed 42
+[13:30:38] 启动 GPU1 | dynamic_rho0.8 | seed 777
+[13:30:40] 启动 GPU0 | dynamic_rho0.8 | seed 2024
+[13:30:42] 启动 GPU1 | dynamic_rho0.8_warm | seed 42
+[13:56:48] 启动 GPU0 | dynamic_rho0.8_warm | seed 777
+[13:56:54] 启动 GPU1 | dynamic_rho0.8_warm | seed 2024
+[13:58:04] 启动 GPU0 | dynamic_rho0.8_topk | seed 42
+[13:58:06] 启动 GPU1 | dynamic_rho0.8_topk | seed 777
+[14:22:50] 启动 GPU0 | dynamic_rho0.8_topk | seed 2024
+[14:24:11] 启动 GPU1 | dynamic_rho0.8_topk_warm | seed 42
+[14:24:23] 启动 GPU0 | dynamic_rho0.8_topk_warm | seed 777
+[14:25:11] 启动 GPU1 | dynamic_rho0.8_topk_warm | seed 2024
+[14:48:55] 启动 GPU0 | dynamic_genre | seed 42
+[14:50:33] 启动 GPU1 | dynamic_genre | seed 777
+[14:51:27] 启动 GPU0 | dynamic_genre | seed 2024
+
+全部进程结束，墙钟 105 分 57 秒
+--- 结果核对 ---
+  [ok  ] dynamic_rho0.8 seed 42
+  [ok  ] dynamic_rho0.8 seed 777
+  [ok  ] dynamic_rho0.8 seed 2024
+  [ok  ] dynamic_rho0.8_warm seed 42
+  [ok  ] dynamic_rho0.8_warm seed 777
+  [ok  ] dynamic_rho0.8_warm seed 2024
+  [ok  ] dynamic_rho0.8_topk seed 42
+  [ok  ] dynamic_rho0.8_topk seed 777
+  [ok  ] dynamic_rho0.8_topk seed 2024
+  [ok  ] dynamic_rho0.8_topk_warm seed 42
+  [ok  ] dynamic_rho0.8_topk_warm seed 777
+  [ok  ] dynamic_rho0.8_topk_warm seed 2024
+  [ok  ] dynamic_genre seed 42
+  [ok  ] dynamic_genre seed 777
+  [ok  ] dynamic_genre seed 2024
+日志目录：/home/wl/exp_FedDIEG/val_DynamicGraph/results/q23_logs
