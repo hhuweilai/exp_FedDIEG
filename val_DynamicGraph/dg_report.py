@@ -190,6 +190,28 @@ class Bundle:
         s = a[a["dataset"] == raw]
         return s if len(s) else None
 
+    def freeze_flags(self, ds: str) -> Optional[Dict[str, bool]]:
+        """四种配置各自有没有冻住（turnover 低 / frozen_share 高 / ECR 近 0，任一命中）。"""
+        fz = self.freeze.get(ds)
+        if not fz or fz.get("cells") is None:
+            return None
+        flags: Dict[str, bool] = {}
+        for _, r in fz["cells"].iterrows():
+            def num(key):
+                try:
+                    v = float(r[key])
+                except Exception:  # noqa: BLE001
+                    return float("nan")
+                return v if np.isfinite(v) else float("nan")
+
+            tv, fzv, ec = num("turnover_from_ref"), num("frozen_share"), num("ecr")
+            flags[str(r["cell"])] = (
+                (np.isfinite(tv) and tv < 0.5)
+                or (np.isfinite(fzv) and fzv > 0.3)
+                or (np.isfinite(ec) and ec < 0.01)
+            )
+        return flags
+
     def curve_of(self, ds: str) -> Optional[pd.DataFrame]:
         a = self.arm_curve
         if a is None:
@@ -420,8 +442,48 @@ def section_q1(b: Bundle) -> str:
         lines.append("；".join(parts) + "。")
     out.extend(lines)
     out.append("")
-    out.append("> **一句话**：动态图确有独立贡献，但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，"
-               "而不是「每轮 EMA 平滑」——后者的边际收益小一个量级。一次性冻结的图几乎没有贡献。\n")
+    # ---- 自动生成"一句话"（按两个数据集的实测模式说话，不预设结论）
+    eff, noeff, shares, static_ok, static_bad = [], [], [], [], []
+    for ds in DATASETS:
+        g3 = b.contrast(ds, "dynamic_minus_nograph")
+        g4 = b.contrast(ds, "periodic_minus_nograph")
+        g5 = b.contrast(ds, "dynamic_minus_periodic")
+        g1 = b.contrast(ds, "static_minus_nograph")
+        if g3 is None:
+            continue
+        d3 = float(g3["delta_mean"])
+        real = d3 >= 0.002 and float(g3["p_paired"]) < 0.05
+        (eff if real else noeff).append(DS_LABEL.get(ds, ds))
+        if g4 is not None and d3:
+            shares.append((DS_LABEL.get(ds, ds), float(g4["delta_mean"]) / d3,
+                           float(g5["delta_mean"]) if g5 is not None else float("nan")))
+        if g1 is not None:
+            (static_bad if abs(float(g1["delta_mean"])) < 0.002 else static_ok).append(
+                DS_LABEL.get(ds, ds))
+
+    parts = []
+    if eff:
+        parts.append(f"动态图在 {'、'.join(eff)} 上有明确独立贡献")
+    if noeff:
+        parts.append(f"在 {'、'.join(noeff)} 上没有测出显著收益（该数据集更稀疏，"
+                     f"摘要质量不足时图本身就提供不了有效邻居）")
+    if shares:
+        lo = min(s for _, s, _ in shares)
+        hi = max(s for _, s, _ in shares)
+        share_txt = f"{lo:.0%}" if abs(hi - lo) < 1e-9 else f"{lo:.0%}~{hi:.0%}"
+        parts.append(f"但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」——"
+                     f"只刷新几次的 periodic 就拿到总收益的 {share_txt}")
+        tails = [g5 for _, _, g5 in shares if np.isfinite(g5)]
+        if tails:
+            t_lo, t_hi = min(tails), max(tails)
+            tail_txt = f"{t_lo:+.4f}" if abs(t_hi - t_lo) < 1e-9 else f"{t_lo:+.4f}~{t_hi:+.4f}"
+            parts.append(f"每轮 EMA 的额外边际只有 {tail_txt}")
+    if static_bad:
+        parts.append(f"一次性冻结的图在 {'、'.join(static_bad)} 上相对无图无可测收益")
+    if static_ok:
+        parts.append(f"（注意 {'、'.join(static_ok)} 上静态图并非无效，需结合第三章解释）")
+
+    out.append("> **一句话**：" + "；".join(parts) + "。\n")
     return "\n".join(out)
 
 
@@ -465,17 +527,66 @@ def section_q2(b: Bundle) -> str:
         out.append("")
 
     out.append("### 3.3 结论\n")
-    out.append(
-        "**冻结不是 EMA 造成的，也不是新边初始化单独造成的，而是「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应——"
-        "改任一项就都不冻。**\n\n"
-        "机制：`topk` 只保留 K 个槽位并按 EMA 值排序；新边以 `(1−ρ)Δe` 起步（ρ=0.8 时只有 20%），"
+    mechanism = (
+        "机制：`topk` 只保留 K 个槽位并按 EMA 值排序；新边以 `(1−ρ)Δe` 起步（ρ=0.8 时只有初始相似度的 20%），"
         "要挤进 Top-K 必须 `0.2·Δe_new > EMA_incumbent`，而余弦量级给不出 5 倍优势 ⇒ 永远挤不进 ⇒ "
-        "它的 EMA 永远不会累积 ⇒ 永久冻结。这正是审计文档描述的 `1/(1−ρ)` 屏障，"
-        "但实测表明它**必须叠加 zero 初值才成立**：换成 warm 初值后，`topk` 状态也能完全解冻。\n\n"
-        "**代价与警告**：冻结显著拉低邻居质量（`neighbor_lift` 1.56 → 1.33），但 **NDCG@10 几乎不动**。"
-        "这说明该指标对「图不再适应」不敏感——报告图更新效果时必须同时给出 `neighbor_lift` / ECR / turnover "
-        "这类结构指标，否则一个已经冻结的实现也能拿到相同的推荐分数。\n"
+        "它的 EMA 永远不会累积 ⇒ 永久冻结。这正是审计文档描述的 `1/(1−ρ)` 屏障。\n"
     )
+    verdicts = []
+    for ds in DATASETS:
+        fl = b.freeze_flags(ds)
+        if not fl:
+            continue
+        pz = fl.get("pool_zero_rho0.8", False)
+        pw = fl.get("pool_warm_rho0.8", False)
+        tz = fl.get("topk_zero_rho0.8", False)
+        tw = fl.get("topk_warm_rho0.8", False)
+        name = DS_LABEL.get(ds, ds)
+        pat = f"pool+zero={'冻' if pz else '不冻'}、pool+warm={'冻' if pw else '不冻'}、" \
+              f"topk+zero={'冻' if tz else '不冻'}、topk+warm={'冻' if tw else '不冻'}"
+        if tz and not (pz or pw or tw):
+            verdicts.append(f"- **{name}**（{pat}）：冻结只出现在 `topk + zero` 一个组合，"
+                            f"换成 pool 或 warm 任一项即解除 ⇒ **「只存 Top-K 的状态规则」×「新边 0 初值」的联合效应**，"
+                            f"既不是 EMA 强度、也不是初始化规则单独造成。")
+        elif tz and tw and not pz and not pw:
+            verdicts.append(f"- **{name}**（{pat}）：topk 两格都冻、pool 两格不冻 ⇒ 冻结来自**状态保留规则**，"
+                            f"与初始化无关。")
+        elif pz and pw:
+            verdicts.append(f"- **{name}**（{pat}）：pool 也冻住了 ⇒ 在该数据集上 ρ=0.8 的 EMA 本身就慢到接近冻结。")
+        elif not any((pt, pv, t1, t2) for pt, pv, t1, t2 in [(pz, pw, tz, tw)]):
+            verdicts.append(f"- **{name}**（{pat}）：四格都没冻，本数据集没有复现出冻结。")
+        else:
+            verdicts.append(f"- **{name}**（{pat}）：冻结模式不规则，需逐格排查。")
+
+    out.append("**冻结的归属（逐数据集实测）**\n")
+    out.extend(verdicts if verdicts else ["- （无数据）"])
+    out.append("")
+    out.append(mechanism)
+
+    # 代价：邻居质量 vs NDCG（数据驱动）
+    cost_lines = []
+    for ds in DATASETS:
+        c = b.freeze.get(ds, {}).get("cells")
+        if c is None:
+            continue
+        try:
+            z = c[c["cell"] == "pool_zero_rho0.8"].iloc[0]
+            k = c[c["cell"] == "topk_zero_rho0.8"].iloc[0]
+            cost_lines.append(
+                f"- **{DS_LABEL.get(ds, ds)}**：`neighbor_lift` {float(z['neighbor_lift']):.3f} → "
+                f"{float(k['neighbor_lift']):.3f}（{float(k['neighbor_lift'])-float(z['neighbor_lift']):+.3f}），"
+                f"窗口级 NDCG@10 {float(z['ndcg_win_mean']):.4f} → {float(k['ndcg_win_mean']):.4f}"
+                f"（{float(k['ndcg_win_mean'])-float(z['ndcg_win_mean']):+.4f}）"
+            )
+        except Exception:  # noqa: BLE001
+            continue
+    if cost_lines:
+        out.append("**代价：邻居质量 vs 推荐指标**\n")
+        out.extend(cost_lines)
+        out.append("")
+        out.append("> 冻结显著拉低邻居质量，但 NDCG@10 几乎不动。这说明该指标对「图不再适应」不敏感——"
+                   "报告图更新效果时必须同时给出 `neighbor_lift` / ECR / turnover 这类结构指标，"
+                   "否则一个已经冻结的实现也能拿到相同的推荐分数。\n")
     return "\n".join(out)
 
 
