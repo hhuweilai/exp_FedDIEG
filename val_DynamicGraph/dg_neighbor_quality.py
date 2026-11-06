@@ -132,7 +132,8 @@ def quintiles(df: pd.DataFrame, key: str, target: str = "dndcg", q: int = 5) -> 
 
 
 def load_joined(root: Path, dataset: str) -> pd.DataFrame:
-    base = root / dataset
+    # results/raw 下的子目录是 slug 化的（"amazon-digital music" -> "amazon-digital_music"）
+    base = root / _slug(dataset)
     probe = sorted((base / ARM_GRAPH).glob("seed_*/dg_probe_metrics.csv"))
     dyn = sorted((base / ARM_GRAPH).glob("seed_*/dg_user_metrics.csv"))
     nog = sorted((base / ARM_BASE).glob("seed_*/dg_user_metrics.csv"))

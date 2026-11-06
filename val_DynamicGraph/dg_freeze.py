@@ -136,7 +136,7 @@ def load_cells(root: Path, dataset: str = DATASET) -> Tuple[pd.DataFrame, pd.Dat
     """返回 (逐 windows 的窗口级表, 逐评测点表, 逐 run 的 summary 表)。"""
     win_rows, round_rows, sum_rows = [], [], []
     for cell, dirname, state, init, rho in CELLS:
-        for seed_dir in sorted((root / dataset / dirname).glob("seed_*")):
+        for seed_dir in sorted((root / _slug(dataset) / dirname).glob("seed_*")):
             rp = seed_dir / "dg_round_metrics.csv"
             sp = seed_dir / "dg_summary.csv"
             if not (rp.exists() and sp.exists()):

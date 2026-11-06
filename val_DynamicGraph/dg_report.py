@@ -44,6 +44,9 @@ DEFAULT_OUT = DG_DIR / "实验验证报告_动态图_2026-11-06.md"
 
 DATASETS = ["movielens-1m", "amazon-digital_music"]
 DS_LABEL = {"movielens-1m": "MovieLens-1M", "amazon-digital_music": "Amazon-Digital-Music"}
+#: 聚合表（results/aggregated）里的 dataset 列用的是「传给 --dataset 的原始名」，
+#: 而 results/{freeze,quality}/ 与图片文件名用的是 slug。这里显式对照，避免读错目录。
+DS_RAW = {"movielens-1m": "movielens-1m", "amazon-digital_music": "amazon-digital music"}
 
 
 # ----------------------------------------------------------------- 工具
@@ -159,21 +162,40 @@ class Bundle:
         c = self.contrasts
         if c is None:
             return None
-        s = c[(c["dataset"] == ds) & (c["contrast"] == name) & (c["metric"] == metric)]
+        raw = DS_RAW.get(ds, ds)
+        s = c[(c["dataset"] == raw) & (c["contrast"] == name) & (c["metric"] == metric)]
         return s.iloc[0] if len(s) else None
 
     def arm_row(self, ds: str, arm: str) -> Optional[pd.Series]:
         a = self.arm_summary
         if a is None:
             return None
-        s = a[(a["dataset"] == ds) & (a["arm_dir"] == arm)]
+        raw = DS_RAW.get(ds, ds)
+        s = a[(a["dataset"] == raw) & (a["arm_dir"] == arm)]
         return s.iloc[0] if len(s) else None
 
     def verdict_rows(self, ds: str) -> Optional[pd.DataFrame]:
         v = self.verdict
         if v is None:
             return None
-        s = v[v["dataset"] == ds]
+        raw = DS_RAW.get(ds, ds)
+        s = v[v["dataset"] == raw]
+        return s if len(s) else None
+
+    def arms_of(self, ds: str) -> Optional[pd.DataFrame]:
+        a = self.arm_summary
+        if a is None:
+            return None
+        raw = DS_RAW.get(ds, ds)
+        s = a[a["dataset"] == raw]
+        return s if len(s) else None
+
+    def curve_of(self, ds: str) -> Optional[pd.DataFrame]:
+        a = self.arm_curve
+        if a is None:
+            return None
+        raw = DS_RAW.get(ds, ds)
+        s = a[a["dataset"] == raw]
         return s if len(s) else None
 
 
@@ -194,8 +216,8 @@ def section_setup(b: Bundle) -> str:
     a = b.arm_summary
     if a is not None:
         for ds in DATASETS:
-            s = a[a["dataset"] == ds]
-            if len(s) == 0:
+            s = b.arms_of(ds)
+            if s is None or len(s) == 0:
                 continue
             rows.append(f"- **{DS_LABEL.get(ds, ds)}**：{len(s)} 个臂/变体，"
                         f"每臂 {int(s['n_seeds'].max())} 个种子")
@@ -251,11 +273,8 @@ def section_q1(b: Bundle) -> str:
     out: List[str] = ["## 二、问题一：动态图有没有独立贡献？提升了多少、来自哪里\n"]
 
     for ds in DATASETS:
-        arm_rows = b.arm_summary
-        if arm_rows is None:
-            continue
-        s = arm_rows[arm_rows["dataset"] == ds]
-        if len(s) == 0:
+        s = b.arms_of(ds)
+        if s is None or len(s) == 0:
             continue
         out.append(f"### 2.{DATASETS.index(ds)+1} {DS_LABEL.get(ds, ds)}\n")
         out.append("**各臂总体水平**（窗口级 NDCG@10，跨种子平均；只列四条核心臂，"
@@ -311,10 +330,9 @@ def section_q1(b: Bundle) -> str:
             out.append("")
 
         # 逐窗口
-        curve = b.arm_curve
-        if curve is not None:
-            c = curve[curve["dataset"] == ds]
-            if len(c):
+        c = b.curve_of(ds)
+        if c is not None and len(c):
+            if True:
                 piv = c.pivot_table(index="window", columns="arm_dir", values="ndcg_win_mean")
                 keep = [k for k in ("nograph", "static", "periodic", "dynamic") if k in piv.columns]
                 if keep:
@@ -581,8 +599,7 @@ def main() -> None:
 
     b = Bundle()
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    have = [ds for ds in DATASETS
-            if b.arm_summary is not None and (b.arm_summary["dataset"] == ds).any()]
+    have = [ds for ds in DATASETS if (b.arms_of(ds) is not None and len(b.arms_of(ds)) > 0)]
 
     parts: List[str] = []
     parts.append("# 动态图（DynamicGraph）验证实验报告\n")
