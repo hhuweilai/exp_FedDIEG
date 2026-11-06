@@ -1,6 +1,6 @@
 # val_DynamicGraph 报告：动态图到底有没有明确贡献？
 
-同一序列编码器、同一训练协议、同一份种子与参与序列，只改图分支：`dynamic`, `nograph`, `periodic`, `static`, `static_at120`。
+同一序列编码器、同一训练协议、同一份种子与参与序列，只改图分支：`dynamic`, `dynamic_genre`, `dynamic_rho0.8`, `dynamic_rho0.8_topk`, `dynamic_rho0.8_topk_warm`, `dynamic_rho0.8_warm`, `nograph`, `periodic`, `static`, `static_at120`。
 
 ## movielens-1m
 
@@ -16,7 +16,7 @@
 | ①b | 补充：把冻结时点从第 21 轮推到第 120 轮能否救回静态图（static_at120 − StaticGraph） | 6.40e-05 | Δ=+0.0001 [-0.0002, +0.0003]，n=15，正号比例 0.47，种子 2/3 为正，p_paired=0.644，p_sign=1 | |Δ| < 0.002（可忽略）；不显著（p≥0.05） |
 | ⑥ | 图分支把最终用户表示挪动了多少（delta_rel = ‖Δ‖ / ‖seq_emb‖） | 1.1816 | NoGraph=0.00e+00，StaticGraph=1.90e-01，DynamicGraph=1.18e+00 | NoGraph 恒为 0（控制生效）；动态图臂约 1.18e+00（≥0.5），图分支与序列表示同量级甚至更大 —— 协同分支是主导项之一，「图分支被稀释」的假设不成立。 |
 | ⑦ | 图里的邻居到底有没有信息（neighbor_lift = 邻居余弦 / 随机用户余弦） | 1.5622 | StaticGraph lift=0.760（边 1275），static_at120 lift=0.946（边 1429），PeriodicGraph lift=1.338（边 5973），DynamicGraph lift=1.562（边 6040） | lift=1.56 > 1：Top-K 邻居确实比随机用户更像自己（图有区分度）；对照的静态臂 lift 只有 0.76，低于随机基线 |
-| ⑧ | 严格性检查（协议一致 / 空图 / 冻结 / 每轮更新 / 评测对齐） | 7 | 全部通过 | 可以信任上面的差值 |
+| ⑧ | 严格性检查（协议一致 / 空图 / 冻结 / 每轮更新 / 评测对齐） | 9 | 全部通过 | 可以信任上面的差值 |
 | ⑨ | 总体结论 |  | **动态图有明确贡献（③=+0.0076，窗口正号 93%、种子 3/3 为正），但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」，而不是「每轮 EMA」**：每 120 轮才刷新一次的 periodic 臂只用了 5 次刷新，就拿到 ④=+0.0051（占总收益 67%，窗口正号 100%、种子 3/3 为正）；每轮 EMA 相对「每窗口才刷新一次」还有小幅但一致的额外收益（⑤=+0.0025，窗口正号 73%、种子 3/3 为正，p=0.00432）—— 这部分才是「自适应更新速度」真正能争取的空间。把冻结时点从第 21 轮推到第 120 轮也救不回来（①b=+0.0001，无差异）；一次性冻结的图完全没用，原因是它只能覆盖冻结时刻已上传摘要的用户（1275~1429/6040），而且邻居质量随兴趣漂移掉到随机基线以下（见 ⑦）。 | 这是本实验要回答的那句话 |
 
 
@@ -25,6 +25,11 @@
 | arm_dir | n_seeds | ndcg_win_mean | ndcg_win_last | delta_rel | neighbor_lift | ecr | n_edges | graph_updates |
 |---|---|---|---|---|---|---|---|---|
 | dynamic | 3 | 0.2379 | 0.2479 | 1.1816 | 1.5622 | 0.1681 | 6040 | 580 |
+| dynamic_genre | 3 | 0.2379 | 0.2479 | 1.1816 | 1.5622 | 0.1681 | 6040 | 580 |
+| dynamic_rho0.8 | 3 | 0.2378 | 0.2479 | 1.1850 | 1.5568 | 0.1061 | 6040 | 580 |
+| dynamic_rho0.8_topk | 3 | 0.2377 | 0.2473 | 1.1873 | 1.3250 | 7.56e-04 | 6040 | 580 |
+| dynamic_rho0.8_topk_warm | 3 | 0.2378 | 0.2480 | 1.1843 | 1.5595 | 0.1401 | 6040 | 580 |
+| dynamic_rho0.8_warm | 3 | 0.2378 | 0.2479 | 1.1825 | 1.5590 | 0.1324 | 6040 | 580 |
 | nograph | 3 | 0.2303 | 0.2376 | 0.0000 | nan | 0.0000 | 0 | 0 |
 | periodic | 3 | 0.2354 | 0.2454 | 0.9682 | 1.3380 | 0.0000 | 5973 | 5 |
 | static | 3 | 0.2291 | 0.2355 | 0.1899 | 0.7598 | 0.0000 | 1275 | 1 |
@@ -38,8 +43,10 @@
 | check | ok | detail |
 |---|---|---|
 | 协议参数一致（除图以外没有别的差别） | 1 | 一致 |
+| 图状态（实验变量，允许不同） | 1 | pool、topk |
+| 新边初始化（实验变量，允许不同） | 1 | warm、zero |
 | 个性化层位置（仅性能开关，不改数值） | 1 | personal_on_cpu=0,1（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，所以混用不影响可比性） |
-| 每条臂的种子数一致 | 1 | dynamic:3, nograph:3, periodic:3, static:3, static_at120:3 |
+| 每条臂的种子数一致 | 1 | dynamic:3, dynamic_genre:3, dynamic_rho0.8:3, dynamic_rho0.8_topk:3, dynamic_rho0.8_topk_warm:3, dynamic_rho0.8_warm:3, nograph:3, periodic:3, static:3, static_at120:3 |
 | NoGraph 的图分支恒为 0 | 1 | max delta_rel=0.000e+00（要求 ≤ 1e-12） |
 | StaticGraph 冻结后边不再变化 | 1 | edge_changed_after_freeze=0（要求 0） |
 | DynamicGraph 预热后每轮都更新 | 1 | max|updates-(global_round-20)|=0 |
@@ -57,6 +64,11 @@
 | movielens-1m | dynamic_minus_nograph | 23694 | 0.0108 | 0.0000 | 0.0091 | 0.0125 | 0.1283 | 2.37e-19 | 3.99e-29 |
 | movielens-1m | periodic_minus_nograph | 23694 | 0.0081 | 0.0000 | 0.0066 | 0.0097 | 0.1145 | 1.18e-09 | 8.54e-18 |
 | movielens-1m | dynamic_minus_periodic | 23694 | 0.0026 | 0.0000 | 0.0018 | 0.0035 | 0.0645 | 5.18e-13 | 3.75e-13 |
+| movielens-1m | dynamic_genre_minus_dynamic | 23694 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | 1.0000 | nan |
+| movielens-1m | dynamic_rho0.8_minus_dynamic | 23694 | 1.58e-05 | 0.0000 | -3.99e-04 | 4.50e-04 | 0.0210 | 0.3181 | 0.8542 |
+| movielens-1m | dynamic_rho0.8_topk_minus_dynamic | 23694 | -6.81e-04 | 0.0000 | -0.0015 | 4.19e-05 | 0.0485 | 2.04e-04 | 0.0071 |
+| movielens-1m | dynamic_rho0.8_topk_warm_minus_dynamic | 23694 | 6.39e-06 | 0.0000 | -3.56e-04 | 4.01e-04 | 0.0180 | 0.7086 | 0.9828 |
+| movielens-1m | dynamic_rho0.8_warm_minus_dynamic | 23694 | -6.42e-06 | 0.0000 | -4.01e-04 | 3.95e-04 | 0.0187 | 0.5410 | 0.9243 |
 | movielens-1m | static_at120_minus_static | 23694 | -5.67e-04 | 0.0000 | -0.0011 | -6.02e-05 | 0.0257 | 0.0326 | 0.0463 |
 
 

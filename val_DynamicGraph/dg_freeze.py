@@ -464,9 +464,11 @@ def make_figure(win: pd.DataFrame, out_png: Path) -> Optional[str]:
         agg = g.groupby("window")[["turnover", "frozen", "n_edges"]].mean()
         x = agg.index.to_numpy()
         for ax, (col, _title) in zip(axes, panels):
-            ax.plot(x, agg[col].to_numpy(), marker="o", ms=4, lw=1.6,
-                    color=colors.get(cell, None), label=cell if ax is axes[0] else None)
-        axes[0].set_xticks(x)
+            y = agg[col].to_numpy()
+            # 该面板没数据（例如参照格早于冻结指标加入）就别在图例里占一行
+            label = cell if (ax is axes[0] and np.isfinite(y).any()) else None
+            ax.plot(x, y, marker="o", ms=4, lw=1.6, color=colors.get(cell, None), label=label)
+            ax.set_xticks(x)
     for ax, (_, title) in zip(axes, panels):
         ax.set_xlabel("window")
         ax.set_title(title, fontsize=10)
