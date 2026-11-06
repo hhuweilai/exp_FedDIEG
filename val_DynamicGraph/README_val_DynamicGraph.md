@@ -311,6 +311,27 @@ python val_DynamicGraph/dg_genre.py          # -> results/genre/{dg_genre_report
 python val_DynamicGraph/dg_genre_selftest.py  # 构造用例自检（秒级）：同群邻居 lift>1.5、异群<1
 ```
 
+## 15. 最终验证报告（双数据集）
+
+- **报告**：`实验验证报告_动态图_2026-11-06.md`（由 `dg_report.py` 从聚合表自动生成，不手抄数字）
+- **覆盖**：MovieLens-1M + Amazon-Digital-Music 两个数据集，三个研究问题
+- **验收**：`bash dg_verify.sh` —— 核验 run 数、四类聚合产出、严格性检查、报告章节完整性、图引用是否齐全
+
+生成/刷新报告：
+
+```bash
+python -X utf8 dg_report.py          # 读 results/{aggregated,freeze,genre,quality} 生成报告
+bash dg_verify.sh                    # 验收（应输出 ALL CHECKS PASSED）
+```
+
+全流程编排（Amazon 为例，均已封装）：
+
+```bash
+bash dg_run_amazon.sh        # 24 个 run（实验一 4 臂 + 实验二 2x2，各 3 种子），4 并发
+bash dg_finish_all.sh        # 训练结束后自动跑全部聚合
+bash dg_finalize.sh          # 聚合结束后自动生成报告并提交
+```
+
 ## 14. 补充实验结论（2026-11-06，新增 15 次运行）
 
 ### 14.1 冻结归因（ρ=0.8，每格 3 种子）
