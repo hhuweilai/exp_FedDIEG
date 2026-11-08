@@ -53,7 +53,12 @@ ARM_NOGRAPH = "nograph"
 ARM_STATIC = "static"
 ARM_DYNAMIC = "dynamic"
 ARM_PERIODIC = "periodic"
-ARM_ORDER = {ARM_NOGRAPH: 0, ARM_STATIC: 1, ARM_PERIODIC: 2, ARM_DYNAMIC: 3}
+ARM_ONBOARDING = "onboarding"
+ARM_FRESH_ONLY = "fresh_only"
+ARM_ORDER = {
+    ARM_NOGRAPH: 0, ARM_STATIC: 1, ARM_PERIODIC: 2, ARM_DYNAMIC: 3,
+    ARM_ONBOARDING: 4, ARM_FRESH_ONLY: 5,
+}
 
 #: 主对照（顺序即「看图应该按这个顺序读」）
 PRIMARY_CONTRASTS: List[Tuple[str, str, str]] = [
@@ -65,6 +70,11 @@ PRIMARY_CONTRASTS: List[Tuple[str, str, str]] = [
 EXTRA_CONTRASTS: List[Tuple[str, str, str]] = [
     ("periodic_minus_nograph", ARM_PERIODIC, ARM_NOGRAPH),
     ("dynamic_minus_periodic", ARM_DYNAMIC, ARM_PERIODIC),
+    # 阶段 2 新增：覆盖/演化/针对性的三项分解
+    ("onboarding_minus_static", ARM_ONBOARDING, ARM_STATIC),
+    ("dynamic_minus_onboarding", ARM_DYNAMIC, ARM_ONBOARDING),
+    ("fresh_only_minus_static", ARM_FRESH_ONLY, ARM_STATIC),
+    ("dynamic_minus_fresh_only", ARM_DYNAMIC, ARM_FRESH_ONLY),
 ]
 
 METRICS = ("ndcg_win_mean", "ndcg_win_last", "hr_win_mean")
@@ -122,6 +132,23 @@ def paired_p(diff) -> float:
         except Exception:  # pragma: no cover
             pass
     return float(min(1.0, math.erfc(abs(t) / math.sqrt(2.0))))
+
+
+def t_ci(values) -> Tuple[float, float]:
+    """均值的 t 分布 95% CI（小样本用；n=3 时 df=2）。"""
+    d = _finite(values)
+    n = d.size
+    if n < 2:
+        return float("nan"), float("nan")
+    se = float(d.std(ddof=1) / math.sqrt(n))
+    if _sp is not None:
+        try:
+            crit = float(_sp.t.ppf(0.975, n - 1))
+        except Exception:  # pragma: no cover
+            crit = 1.96
+    else:  # pragma: no cover
+        crit = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571}.get(n - 1, 1.96)
+    return float(d.mean() - crit * se), float(d.mean() + crit * se)
 
 
 def wilcoxon_p(diff) -> float:
@@ -245,7 +272,9 @@ def canonical_dirs(variants: Sequence[str]) -> Dict[str, str]:
     解析出代表目录 —— 换个 neighbors / rho / graph_mix 不会让 ①②③ 失效。
     """
     out: Dict[str, str] = {}
-    for arm in (ARM_NOGRAPH, ARM_STATIC, ARM_DYNAMIC, ARM_PERIODIC):
+    for arm in (
+        ARM_NOGRAPH, ARM_STATIC, ARM_DYNAMIC, ARM_PERIODIC, ARM_ONBOARDING, ARM_FRESH_ONLY,
+    ):
         if arm in variants:
             out[arm] = arm
             continue
@@ -322,6 +351,7 @@ def summarise_contrasts(contrasts: pd.DataFrame) -> pd.DataFrame:
             if "seed" in part.columns
             else pd.Series(dtype=float)
         )
+        seed_lo, seed_hi = t_ci(per_seed)
         row.update(
             {
                 "n_obs": int(d.size),
@@ -339,6 +369,12 @@ def summarise_contrasts(contrasts: pd.DataFrame) -> pd.DataFrame:
                 "p_wilcoxon": wilcoxon_p(d),
                 "seeds_positive": int((per_seed > 0).sum()),
                 "seeds_total": int(per_seed.size),
+                # ---- 种子级（主证据；窗口级只作敏感性分析）----
+                "delta_seed_mean": float(per_seed.mean()) if per_seed.size else float("nan"),
+                "delta_seed_sd": sd_or_nan(per_seed),
+                "ci95_seed_lo": seed_lo,
+                "ci95_seed_hi": seed_hi,
+                "p_seed_t": paired_p(per_seed),
             }
         )
         out.append(row)
@@ -756,7 +792,13 @@ def build_verdict(
 # 图（matplotlib 可选）
 # ======================================================================================
 def _arm_of(variant: str) -> Optional[str]:
-    """目录名 -> 它属于哪条臂（认不出来返回 None）。"""
+    """目录名 -> 它属于哪条臂（认不出来返回 None）。
+
+    先做「精确同名」判定（`onboarding` / `fresh_only` 没有配置变体），
+    再退回前缀匹配（`static_build120`、`dynamic_rho0.8` 这类变体）。
+    """
+    if variant in ARM_ORDER:
+        return variant
     return next(
         (a for a in (ARM_PERIODIC, ARM_DYNAMIC, ARM_STATIC, ARM_NOGRAPH) if variant.startswith(a)),
         None,

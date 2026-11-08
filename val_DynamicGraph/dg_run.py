@@ -64,6 +64,7 @@ import numpy as np
 import torch
 
 from dg_common import (  # noqa: E402  (dg_common 会先把 ROOT 塞进 sys.path)
+    ARM_FRESH_ONLY,
     ARM_LABELS,
     ARM_NOGRAPH,
     ARM_STATIC,
@@ -116,6 +117,20 @@ ROUND_FIELDS = [
 
 USER_FIELDS = ["dataset", "arm", "arm_dir", "seed", "window", "user", "ndcg", "hr"]
 
+#: 阶段 2 新增：**每轮**图指标（ECR 不再只写在评测轮 → C1）
+GRAPH_ROUND_FIELDS = [
+    "dataset", "arm", "arm_dir", "seed", "window", "window_round", "global_round",
+    "n_edges", "is_update", "is_refresh", "n_updated",
+    "ecr_round_mean", "added_round_sum", "pool_fill",
+    "ecr_since_eval", "added_since_eval", "rounds_since_eval",
+    "has_eval", "active_coverage", "n_eval",
+]
+
+#: 阶段 2 新增：逐用户「首次有邻居」的轮次（C6）
+USER_COVERAGE_FIELDS = [
+    "dataset", "arm", "arm_dir", "seed", "user", "first_covered_round",
+]
+
 #: Genre 分析用：逐用户「邻居 vs 随机」的 genre / 语义一致度（只在 --genre-npz 时产出）
 GENRE_FIELDS = [
     "dataset", "arm", "arm_dir", "seed", "window", "user", "ndcg",
@@ -141,11 +156,13 @@ SUMMARY_FIELDS = [
     # ---- 会直接影响可比性的配置（聚合时用来核对「确实只差图」）----
     "graph_mix", "rho", "neighbors", "graph_state", "graph_new_edge",
     "graph_update_scope", "graph_warmup_rounds", "freeze_round", "period",
+    "build_only", "refresh_phase",
     "num_windows", "rounds_per_window", "total_rounds", "eval_every",
     "clients_per_round", "participation_rate", "local_epochs", "lr",
     "server_lr_init", "server_lr_final", "fedavg_weighting", "personalization", "personal_on_cpu",
     "lambda_temp", "lambda_struct", "top_k", "candidate_count",
     "probe_size", "n_users", "n_items",
+    "mean_active_coverage", "n_first_covered", "n_user_updates",
     "elapsed_seconds", "train_seconds", "eval_seconds", "core_version",
 ]
 
@@ -169,12 +186,18 @@ def run_single(
     )
 
     trainer = FedTrainer(cfg, num_users, num_items, device)
-    graph = build_graph(cfg, args.arm, num_users, device, args.freeze_round, args.refresh_rounds)
+    build_only = bool(getattr(args, "build_only", False))
+    refresh_phase = str(getattr(args, "refresh_phase", "warmup"))
+    graph = build_graph(
+        cfg, args.arm, num_users, device, args.freeze_round, args.refresh_rounds,
+        build_only=build_only, refresh_phase=refresh_phase,
+    )
     eval_model = build_eval_model(trainer, cfg)
     rng = np.random.default_rng(cfg.seed)
 
     arm_dir = arm_dir_name(
-        args.arm, cfg, args.freeze_round, args.refresh_rounds, getattr(args, "run_tag", "")
+        args.arm, cfg, args.freeze_round, args.refresh_rounds, getattr(args, "run_tag", ""),
+        build_only=build_only, refresh_phase=refresh_phase,
     )
     tag = f"[{args.arm}]"
 
@@ -205,6 +228,8 @@ def run_single(
     round_rows: List[Dict[str, object]] = []
     user_rows: List[Dict[str, object]] = []
     probe_rows: List[Dict[str, object]] = []
+    graph_round_rows: List[Dict[str, object]] = []
+    cover_rows: List[Dict[str, object]] = []
     window_ndcg: List[float] = []
     window_hr: List[float] = []
     delta_rel_points: List[float] = []
@@ -213,6 +238,7 @@ def run_single(
     with_graph_points: List[float] = []
     ecrs: List[float] = []
     added: List[float] = []
+    active_cov_points: List[float] = []
     edge_changed_total = 0
     eval_time = 0.0
     train_time = 0.0
@@ -226,6 +252,14 @@ def run_single(
     turnover_points: List[float] = []
     ref_ids: Optional[torch.Tensor] = None
     ref_valid: Optional[torch.Tensor] = None
+    # ---- 阶段 2 新增：逐用户首次覆盖 + 评测间隔累计 ----
+    first_covered: Optional[torch.Tensor] = (
+        None if args.arm == ARM_NOGRAPH
+        else torch.full((num_users,), -1, dtype=torch.long, device=device)
+    )
+    ecr_since_eval = 0.0
+    added_since_eval = 0.0
+    rounds_since_eval = 0
 
     for window_idx, window in enumerate(windows, start=1):
         print(
@@ -259,15 +293,58 @@ def run_single(
                 update_users = torch.arange(num_users, device=device)
             else:
                 update_users = torch.tensor(sampled, dtype=torch.long, device=device)
+            if args.arm == ARM_FRESH_ONLY and hasattr(graph, "last_user_update"):
+                # 只更新「自上次更新后有新上传」的用户（针对性更新策略）
+                pending = (
+                    trainer.last_upload_round[update_users]
+                    > graph.last_user_update[update_users]
+                )
+                update_users = update_users[pending]
             gstats = graph.update(
                 trainer.summary_bank, trainer.summary_active, update_users, global_round
             )
             train_time += time.time() - round_start
 
+            # ---------------- ②' 每轮图指标（C1：ECR 不再只写在评测轮）
+            n_edges_now = n_users_with_edges(graph)
+            if first_covered is not None:
+                covered_now = graph.mask & (graph.ids >= 0).any(dim=1)
+                newly_covered = covered_now & (first_covered < 0)
+                if bool(newly_covered.any()):
+                    first_covered[newly_covered] = global_round
+            n_updated = int(len(gstats)) if gstats is not None else 0
+            ecr_round = (
+                float(gstats.ecr.mean()) if (gstats is not None and len(gstats) > 0)
+                else float("nan")
+            )
+            added_round = (
+                float(gstats.n_added.sum()) if (gstats is not None and len(gstats) > 0) else 0.0
+            )
+            pool_fill_round = float(gstats.pool_fill) if gstats is not None else float("nan")
+            if np.isfinite(ecr_round):
+                ecr_since_eval += ecr_round
+            added_since_eval += added_round
+            rounds_since_eval += 1
+
             should_eval = (window_round % max(1, cfg.eval_every) == 0) or (
                 window_round == cfg.rounds_per_window
             )
+            gr_row = {
+                "dataset": cfg.dataset, "arm": args.arm, "arm_dir": arm_dir, "seed": cfg.seed,
+                "window": window_idx, "window_round": window_round,
+                "global_round": global_round,
+                "n_edges": n_edges_now,
+                "is_update": int(gstats is not None and len(gstats) > 0),
+                "is_refresh": int(bool(getattr(graph, "last_update_was_refresh", False))),
+                "n_updated": n_updated,
+                "ecr_round_mean": ecr_round, "added_round_sum": added_round,
+                "pool_fill": pool_fill_round,
+                "ecr_since_eval": float("nan"), "added_since_eval": float("nan"),
+                "rounds_since_eval": 0,
+                "has_eval": 0, "active_coverage": float("nan"), "n_eval": 0,
+            }
             if not should_eval:
+                graph_round_rows.append(gr_row)
                 continue
 
             # ---------------- ③ 评测（与 val01/02/03 完全同一套评测函数）
@@ -278,6 +355,27 @@ def run_single(
             all_ndcg = float(ndcgs.mean()) if ndcgs.size else 0.0
             all_hr = float(hrs.mean()) if hrs.size else 0.0
             last_ndcg, last_hr = all_ndcg, all_hr
+
+            # ---------------- ③' 本窗口有效覆盖（A6：分母 = 本窗口被评测用户）
+            if first_covered is not None and uids.size:
+                uids_t = torch.as_tensor(uids, dtype=torch.long, device=device)
+                active_cov = float(
+                    (graph.ids[uids_t] >= 0).any(dim=1).to(torch.float32).mean().item()
+                )
+            else:
+                active_cov = float("nan")
+            gr_row["has_eval"] = 1
+            gr_row["n_eval"] = int(ndcgs.size)
+            gr_row["active_coverage"] = active_cov
+            gr_row["ecr_since_eval"] = ecr_since_eval
+            gr_row["added_since_eval"] = added_since_eval
+            gr_row["rounds_since_eval"] = rounds_since_eval
+            graph_round_rows.append(gr_row)
+            if np.isfinite(active_cov):
+                active_cov_points.append(active_cov)
+            ecr_since_eval = 0.0
+            added_since_eval = 0.0
+            rounds_since_eval = 0
 
             # ---------------- ④ 图协同分支诊断（三条臂同一批探针用户）
             # 邻居质量的随机基线每次评测重抽：窗口 1 开头摘要库还是空的，
@@ -456,6 +554,7 @@ def run_single(
         if profile is not None:
             profile_prev = profile
         write_csv(out_dir / "dg_round_metrics.csv", round_rows, ROUND_FIELDS)
+        write_csv(out_dir / "dg_graph_round_metrics.csv", graph_round_rows, GRAPH_ROUND_FIELDS)
         if genre_rows:
             write_csv(out_dir / "dg_genre_metrics.csv", genre_rows, GENRE_FIELDS)
         if user_rows:
@@ -466,6 +565,18 @@ def run_single(
             f"{tag} W{window_idx} end | NDCG@{cfg.top_k} {last_ndcg:.4f} HR {last_hr:.4f} | "
             f"rows={len(user_rows)} probe={len(probe_rows)} | {time.time() - start_time:.0f}s"
         )
+
+    # ---- 逐用户「首次有邻居」的轮次（C6）：一次运行写一次 ----
+    if first_covered is not None:
+        for _u in range(num_users):
+            cover_rows.append(
+                {
+                    "dataset": cfg.dataset, "arm": args.arm, "arm_dir": arm_dir,
+                    "seed": cfg.seed, "user": int(_u),
+                    "first_covered_round": int(first_covered[_u]),
+                }
+            )
+        write_csv(out_dir / "dg_user_coverage.csv", cover_rows, USER_COVERAGE_FIELDS)
 
     summary = {
         "dataset": cfg.dataset, "arm": args.arm, "arm_dir": arm_dir, "seed": cfg.seed,
@@ -496,9 +607,16 @@ def run_single(
         ),
         "period": (
             int(getattr(graph, "period", 0) or 0)
-            if args.arm not in (ARM_NOGRAPH, ARM_STATIC)
+            if args.arm == "periodic"
             else ""
         ),
+        "build_only": int(bool(getattr(args, "build_only", False))),
+        "refresh_phase": str(getattr(args, "refresh_phase", "warmup")),
+        "mean_active_coverage": mean(active_cov_points),
+        "n_first_covered": (
+            int((first_covered >= 0).sum().item()) if first_covered is not None else 0
+        ),
+        "n_user_updates": int(getattr(graph, "n_user_updates", 0)),
         "num_windows": cfg.num_windows, "rounds_per_window": cfg.rounds_per_window,
         "total_rounds": cfg.total_rounds, "eval_every": cfg.eval_every,
         "clients_per_round": clients_per_round, "participation_rate": cfg.participation_rate,
@@ -555,7 +673,9 @@ def main() -> None:
     device = make_device(cfg.device)
 
     arm_dir = arm_dir_name(
-        args.arm, cfg, args.freeze_round, args.refresh_rounds, getattr(args, "run_tag", "")
+        args.arm, cfg, args.freeze_round, args.refresh_rounds, getattr(args, "run_tag", ""),
+        build_only=bool(getattr(args, "build_only", False)),
+        refresh_phase=str(getattr(args, "refresh_phase", "warmup")),
     )
     out_root = Path(args.out_root)
     if args.out_dir is not None:
@@ -581,6 +701,8 @@ def main() -> None:
             "arm_dir": arm_dir,
             "freeze_round": args.freeze_round,
             "refresh_rounds": args.refresh_rounds,
+            "build_only": bool(getattr(args, "build_only", False)),
+            "refresh_phase": str(getattr(args, "refresh_phase", "warmup")),
             "probe_size": int(args.probe_size),
             "run_tag": getattr(args, "run_tag", ""),
             "genre_npz": str(args.genre_npz) if getattr(args, "genre_npz", None) else None,

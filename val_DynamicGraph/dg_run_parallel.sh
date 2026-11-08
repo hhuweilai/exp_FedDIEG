@@ -46,6 +46,9 @@ NO_AGGREGATE="${NO_AGGREGATE:-0}"
 FORCE="${FORCE:-0}"
 FREEZE_ROUND="${FREEZE_ROUND:-}"
 REFRESH_ROUNDS="${REFRESH_ROUNDS:-}"
+BUILD_ONLY="${BUILD_ONLY:-0}"
+REFRESH_PHASE="${REFRESH_PHASE:-warmup}"
+EXTRA_ARGS="${EXTRA_ARGS:-}"
 GPUS="${GPUS:-0,1}"
 
 PYTHON="${PYTHON:-}"
@@ -77,6 +80,16 @@ VARIANT_SUFFIX=""
 [ "$GRAPH_MIX" != "1" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_mix${GRAPH_MIX}"
 [ "$RHO" != "0.2" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_rho${RHO}"
 [ "$NEIGHBORS" != "20" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_k${NEIGHBORS}"
+
+#: 与 dg_common.arm_dir_name 保持一致：static+build_only 的目录名是 static_build<N>
+arm_dir_for() {
+    local arm="$1"
+    if [ "$BUILD_ONLY" = "1" ] && [ "$arm" = "static" ] && [ -n "$FREEZE_ROUND" ]; then
+        echo "static_build${FREEZE_ROUND}${VARIANT_SUFFIX}"
+        return
+    fi
+    echo "${arm}${VARIANT_SUFFIX}"
+}
 
 echo "=============================================================="
 echo "val_DynamicGraph 并行版"
@@ -116,7 +129,7 @@ for DATASET in "${DATASET_ARR[@]}"; do
     S="$(slug "$DATASET")"
     for SEED in $SEEDS; do
         for ARM in $ARMS; do
-            ARM_DIR="$ARM$VARIANT_SUFFIX"
+            ARM_DIR="$(arm_dir_for "$ARM")"
             if [ -f "$RAW/$S/$ARM_DIR/seed_$SEED/dg_summary.csv" ]; then
                 echo "[skip] $DATASET | $ARM_DIR | seed $SEED 已完成"
                 continue
@@ -150,6 +163,16 @@ else
         if [ -n "$REFRESH_ROUNDS" ] && [ "$T_ARM" = "periodic" ]; then
             EXTRA+=(--refresh-rounds "$REFRESH_ROUNDS")
         fi
+        if [ "$BUILD_ONLY" = "1" ] && [ "$T_ARM" = "static" ]; then
+            EXTRA+=(--build-only)
+        fi
+        if [ "$REFRESH_PHASE" != "warmup" ] && [ "$T_ARM" = "periodic" ]; then
+            EXTRA+=(--refresh-phase "$REFRESH_PHASE")
+        fi
+        if [ -n "$EXTRA_ARGS" ]; then
+            # shellcheck disable=SC2206
+            EXTRA+=($EXTRA_ARGS)
+        fi
 
         echo "[$(date '+%H:%M:%S')] 启动 GPU$GPU | $T_DS | $T_ARM | seed $T_SEED -> $LOGF"
         CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" \
@@ -177,7 +200,7 @@ else
     MISSING=()
     for TASK in "${TASKS[@]}"; do
         IFS='|' read -r T_DS T_ARM T_SEED <<< "$TASK"
-        F="$RAW/$(slug "$T_DS")/$T_ARM$VARIANT_SUFFIX/seed_$T_SEED/dg_summary.csv"
+        F="$RAW/$(slug "$T_DS")/$(arm_dir_for "$T_ARM")/seed_$T_SEED/dg_summary.csv"
         if [ -f "$F" ]; then
             echo "  [ok  ] $T_DS | $T_ARM | seed $T_SEED"
         else

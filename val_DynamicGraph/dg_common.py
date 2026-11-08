@@ -80,26 +80,39 @@ ARM_NOGRAPH = "nograph"
 ARM_STATIC = "static"
 ARM_DYNAMIC = "dynamic"
 ARM_PERIODIC = "periodic"
+ARM_ONBOARDING = "onboarding"
+ARM_FRESH_ONLY = "fresh_only"
 
-ARM_CHOICES = (ARM_NOGRAPH, ARM_STATIC, ARM_DYNAMIC, ARM_PERIODIC)
+ARM_CHOICES = (
+    ARM_NOGRAPH, ARM_STATIC, ARM_DYNAMIC, ARM_PERIODIC, ARM_ONBOARDING, ARM_FRESH_ONLY,
+)
 #: 主实验默认三条臂（回答「动态图有没有贡献」的最小完整设计）
 DEFAULT_ARMS = (ARM_NOGRAPH, ARM_STATIC, ARM_DYNAMIC)
-#: 补充臂：不是必须，但能挡住「静态臂是稻草人」的反驳
-EXTRA_ARMS = (ARM_PERIODIC,)
+#: 补充臂：不是必须，但能挡住「静态臂是稻草人」「更新是否必要」的反驳
+EXTRA_ARMS = (ARM_PERIODIC, ARM_ONBOARDING, ARM_FRESH_ONLY)
 
 ARM_SHORT = {
     ARM_NOGRAPH: "NoGraph",
     ARM_STATIC: "StaticGraph",
     ARM_DYNAMIC: "DynamicGraph",
     ARM_PERIODIC: "PeriodicGraph",
+    ARM_ONBOARDING: "OnboardingGraph",
+    ARM_FRESH_ONLY: "FreshOnlyGraph",
 }
 ARM_LABELS = {
     ARM_NOGRAPH: "NoGraph：无图分支（u_i = seq_emb_i）",
     ARM_STATIC: "StaticGraph：预热结束建一次图，之后完全冻结",
     ARM_DYNAMIC: "DynamicGraph：论文 EMA，每轮更新全部活跃节点的边",
     ARM_PERIODIC: "PeriodicGraph：每 period 轮清零重建（慢刷新静态图，补充对照）",
+    ARM_ONBOARDING: "OnboardingGraph：用户首次有摘要时建边，之后不再更新（覆盖对照）",
+    ARM_FRESH_ONLY: "FreshOnlyGraph：只更新「自上次更新后有新上传」的用户（针对性更新对照）",
 }
-ARM_ORDER = {arm: i for i, arm in enumerate((ARM_NOGRAPH, ARM_STATIC, ARM_PERIODIC, ARM_DYNAMIC))}
+ARM_ORDER = {
+    arm: i
+    for i, arm in enumerate(
+        (ARM_NOGRAPH, ARM_STATIC, ARM_PERIODIC, ARM_DYNAMIC, ARM_ONBOARDING, ARM_FRESH_ONLY)
+    )
+}
 
 
 # ======================================================================================
@@ -188,11 +201,19 @@ class PolicyGraph(DynamicInterestGraph):
     """在 `DynamicInterestGraph`（论文公式 + 审计修复）之上加一层「更新策略」。
 
     边怎么算、Top-K 怎么选、softmax 边权怎么归一 —— 一个字都没改，全部沿用基类；
-    本类只决定 ``update()`` 在哪些轮次真正执行：
+    本类只决定 ``update()`` 在哪些轮次、对哪些用户真正执行：
 
-      * ``dynamic``  ：预热之后每轮都更新（论文语义，`graph_update_scope` 决定更新谁）
-      * ``static``   ：只更新到 ``freeze_round`` 为止（默认预热结束那一轮 ⇒ 只建一次）
-      * ``periodic`` ：每 ``period`` 轮把状态清零后重建一次（快照刷新）
+      * ``dynamic``    ：预热之后每轮都更新（论文语义，`graph_update_scope` 决定更新谁）
+      * ``static``     ：只更新到 ``freeze_round`` 为止（默认预热结束那一轮 ⇒ 只建一次）
+                        ``build_only=True`` 时改为「第 freeze_round 轮清零重建一次，之后冻结」
+                        用来回答「第 120 轮才建图是否有救」（与「晚冻结」是两个问题）。
+      * ``periodic``   ：每 ``period`` 轮把状态清零后重建一次（快照刷新）
+                        ``refresh_phase="boundary"`` 时改为「预热后建一次 + 每个窗口边界重建」
+      * ``onboarding`` ：只对「当前还没有任何邻居」的用户建边，建过就不再更新
+      * ``fresh_only`` ：只更新「自上次更新后有新上传」的用户（过滤在 dg_run 里做）
+
+    ``last_user_update``（逐用户上次被更新的轮次）与 ``last_update_was_refresh``
+    （本轮是否发生过清零重建）供 ``dg_run.py`` 落盘，用于 ECR/覆盖类指标的分母注记。
     """
 
     def __init__(
@@ -203,8 +224,10 @@ class PolicyGraph(DynamicInterestGraph):
         arm: str,
         freeze_round: Optional[int] = None,
         period: Optional[int] = None,
+        build_only: bool = False,
+        refresh_phase: str = "warmup",
     ):
-        if arm not in (ARM_STATIC, ARM_DYNAMIC, ARM_PERIODIC):
+        if arm not in (ARM_STATIC, ARM_DYNAMIC, ARM_PERIODIC, ARM_ONBOARDING, ARM_FRESH_ONLY):
             raise ValueError(f"PolicyGraph 不支持 arm={arm!r}")
         super().__init__(cfg, num_users, device)
         self.arm = arm
@@ -213,9 +236,20 @@ class PolicyGraph(DynamicInterestGraph):
             int(cfg.graph_warmup_rounds) + 1 if freeze_round is None else int(freeze_round)
         )
         self.period = int(cfg.rounds_per_window) if period is None else int(max(1, period))
+        self.build_only = bool(build_only)
+        self.refresh_phase = str(refresh_phase or "warmup")
+        if self.refresh_phase not in ("warmup", "boundary"):
+            raise ValueError(f"refresh_phase 只能是 warmup / boundary，收到 {refresh_phase!r}")
+        if self.build_only and arm != ARM_STATIC:
+            raise ValueError("--build-only 只用于 static 臂")
         self.n_updates = 0
+        self.n_user_updates = 0
         self.last_update_round = -1
         self.skipped_updates = 0
+        self.last_update_was_refresh = False
+        self.last_user_update = torch.full(
+            (int(num_users),), -1, dtype=torch.long, device=device
+        )
         if arm == ARM_STATIC and self.freeze_round < int(cfg.graph_warmup_rounds) + 1:
             # 冻结轮次早于预热结束 ⇒ 一次都不会更新 ⇒ 等价于 NoGraph（但分支还开着）
             print(
@@ -232,14 +266,24 @@ class PolicyGraph(DynamicInterestGraph):
             return False
         if self.arm == ARM_DYNAMIC:
             return True
+        if self.arm in (ARM_ONBOARDING, ARM_FRESH_ONLY):
+            # 每轮都「扫描」；真正要更新谁由 update()/dg_run 过滤
+            return True
         if self.arm == ARM_STATIC:
+            if self.build_only:
+                return r == self.freeze_round
             return r <= self.freeze_round
         if self.arm == ARM_PERIODIC:
+            if self.refresh_phase == "boundary":
+                # 预热后建一次（r=warmup+1），之后每个窗口边界（r=1,121,241,...）重建
+                if r == warmup + 1:
+                    return True
+                return (r - 1) % max(self.period, 1) == 0
             return (r - warmup - 1) % max(self.period, 1) == 0
         return False
 
     def reset_state(self) -> None:
-        """把边状态清零（periodic 的快照刷新用）。"""
+        """把边状态清零（periodic 的快照刷新 / static 的一次性重建用）。"""
         self.ids.fill_(-1)
         self.weights.zero_()
         self.mask.fill_(False)
@@ -249,15 +293,24 @@ class PolicyGraph(DynamicInterestGraph):
 
     @torch.no_grad()
     def update(self, summary_bank, active_clients, update_users, round_idx):
+        self.last_update_was_refresh = False
         if not self.should_update(round_idx):
             self.skipped_updates += 1
             return None
-        if self.arm == ARM_PERIODIC:
+        refresh = (self.arm == ARM_PERIODIC) or (self.arm == ARM_STATIC and self.build_only)
+        if refresh:
             self.reset_state()
+            self.last_update_was_refresh = True
+        update_users = update_users.to(self.device, non_blocking=True)
+        if self.arm == ARM_ONBOARDING:
+            # 只给「还没有任何邻居行」的用户建边
+            update_users = update_users[~self.mask[update_users]]
         stats = super().update(summary_bank, active_clients, update_users, round_idx)
         if stats is not None and len(stats) > 0:
             self.n_updates += 1
+            self.n_user_updates += int(len(stats))
             self.last_update_round = int(round_idx)
+            self.last_user_update[stats.updated.to(self.device)] = int(round_idx)
         return stats
 
     def describe(self) -> dict:
@@ -266,8 +319,11 @@ class PolicyGraph(DynamicInterestGraph):
             {
                 "arm": self.arm,
                 "freeze_round": int(self.freeze_round) if self.arm == ARM_STATIC else None,
+                "build_only": bool(self.build_only),
                 "period": int(self.period) if self.arm == ARM_PERIODIC else None,
+                "refresh_phase": str(self.refresh_phase) if self.arm == ARM_PERIODIC else None,
                 "n_updates": int(self.n_updates),
+                "n_user_updates": int(self.n_user_updates),
             }
         )
         return base
@@ -280,12 +336,15 @@ def build_graph(
     device: torch.device,
     freeze_round: Optional[int] = None,
     period: Optional[int] = None,
+    build_only: bool = False,
+    refresh_phase: str = "warmup",
 ):
-    """按臂名构造图对象。三条臂的构造顺序一致、都不消耗随机数。"""
+    """按臂名构造图对象。各臂的构造顺序一致、都不消耗随机数。"""
     if arm == ARM_NOGRAPH:
         return NullGraph(cfg, num_users, device)
     return PolicyGraph(
-        cfg, num_users, device, arm=arm, freeze_round=freeze_round, period=period
+        cfg, num_users, device, arm=arm, freeze_round=freeze_round, period=period,
+        build_only=build_only, refresh_phase=refresh_phase,
     )
 
 
@@ -298,6 +357,8 @@ def arm_dir_name(
     freeze_round: Optional[int] = None,
     period: Optional[int] = None,
     run_tag: str = "",
+    build_only: bool = False,
+    refresh_phase: str = "warmup",
 ) -> str:
     """运行目录名 = 臂名 + 与默认值不同的配置后缀。
 
@@ -305,13 +366,17 @@ def arm_dir_name(
     （例如 `dynamic_rho0.8` 会自动与 `dynamic` 配成一条「ρ 的影响」对照）。
     """
     name = arm
+    if arm == ARM_STATIC and build_only:
+        # 「第 N 轮一次性建图」与「更新到第 N 轮再冻结」是两个问题，目录名必须能区分
+        fr = (int(cfg.graph_warmup_rounds) + 1) if freeze_round is None else int(freeze_round)
+        name = f"static_build{fr}"
     if abs(float(cfg.graph_mix) - 1.0) > 1e-12:
         name += f"_mix{float(cfg.graph_mix):g}"
     if abs(float(cfg.rho) - 0.2) > 1e-12:
         name += f"_rho{float(cfg.rho):g}"
     if int(cfg.neighbors) != 20:
         name += f"_k{int(cfg.neighbors)}"
-    if arm == ARM_STATIC:
+    if arm == ARM_STATIC and not build_only:
         default_freeze = int(cfg.graph_warmup_rounds) + 1
         fr = default_freeze if freeze_round is None else int(freeze_round)
         if fr != default_freeze:
@@ -321,6 +386,8 @@ def arm_dir_name(
         pd = default_period if period is None else int(period)
         if pd != default_period:
             name += f"_p{pd}"
+        if str(refresh_phase) != "warmup":
+            name += f"_{refresh_phase}"
     # 图状态 / 新边初始化规则（冻结归因的 2x2 网格靠这两个后缀区分，否则会互相覆盖）
     if str(cfg.graph_state) != "pool":
         name += f"_{cfg.graph_state}"
@@ -797,11 +864,15 @@ def add_dg_args(parser: argparse.ArgumentParser) -> None:
     """val_DynamicGraph 专用参数。**必须在 `add_feddieg_args` 之后调用**（会改默认值）。"""
     g = parser.add_argument_group("val_DynamicGraph：三条臂（只改图分支）")
     g.add_argument("--arm", choices=list(ARM_CHOICES), default=ARM_DYNAMIC,
-                   help="nograph / static / dynamic / periodic")
+                   help="nograph / static / dynamic / periodic / onboarding / fresh_only")
     g.add_argument("--freeze-round", type=int, default=None,
                    help="static 臂冻结在第几轮（1 基）；默认 = graph_warmup_rounds+1（只建一次图）")
+    g.add_argument("--build-only", action="store_true",
+                   help="static 臂：第 freeze_round 轮清零重建一次后冻结（配 --freeze-round N）")
     g.add_argument("--refresh-rounds", type=int, default=None,
                    help="periodic 臂每多少轮清零重建；默认 = rounds_per_window")
+    g.add_argument("--refresh-phase", choices=["warmup", "boundary"], default="warmup",
+                   help="periodic 的相位：warmup=预热后每 period 轮；boundary=预热后建一次 + 窗口边界重建")
     g.add_argument("--probe-size", type=int, default=256,
                    help="每个评测点抽多少用户做图分支/邻居质量诊断（默认 256）")
     g.add_argument("--user-rows", dest="user_rows", action="store_true", default=True,

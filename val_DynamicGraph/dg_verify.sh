@@ -12,8 +12,8 @@ echo "================ 1) 训练 run 数 ================"
 ML=$(ls -1 results/raw/movielens-1m/*/seed_*/dg_summary.csv 2>/dev/null | wc -l)
 AZ=$(ls -1 results/raw/amazon-digital_music/*/seed_*/dg_summary.csv 2>/dev/null | wc -l)
 echo "  ML: $ML 个 | Amazon: $AZ 个 | 合计 $((ML+AZ))"
-[ "$ML" -ge 30 ] && ok "MovieLens-1M 至少 30 个 run（4 臂 + 5 变体 + periodic + static_at120）" || no "MovieLens-1M run 数不足（$ML < 30）"
-[ "$AZ" -eq 24 ] && ok "Amazon 24 个 run 全部完成" || no "Amazon 只完成 $AZ/24"
+[ "$ML" -ge 30 ] && ok "MovieLens-1M 至少 30 个 run（主臂 + 变体 + periodic + static_at120 + 策略臂）" || no "MovieLens-1M run 数不足（$ML < 30）"
+[ "$AZ" -ge 24 ] && ok "Amazon 至少 24 个 run（主臂 + 冻结网格）" || no "Amazon 只完成 $AZ/24"
 
 echo
 echo "================ 2) 四类聚合产出 ================"

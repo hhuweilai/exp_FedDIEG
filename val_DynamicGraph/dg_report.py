@@ -331,8 +331,50 @@ def section_q1(b: Bundle) -> str:
         st = b.contrast(ds, "static_at120_minus_static")
         if st is not None:
             out.append(c_line(b, ds, "static_at120_minus_static",
-                              "①b 冻于第120轮 − 冻于第21轮（把冻结推后有用吗）"))
+                              "①b 「更新到 120 轮再冻结」− 冻于第 21 轮（晚冻结有用吗）"))
+        st2 = b.contrast(ds, "static_build120_minus_static")
+        if st2 is not None:
+            out.append(c_line(b, ds, "static_build120_minus_static",
+                              "①b2 「第 120 轮一次性建图」− 冻于第 21 轮（晚建图有用吗；只看 W2–W5）"))
         out.append("")
+
+        # 策略臂（覆盖 vs 演化）——只有跑过 onboarding / fresh_only 才出现
+        strat = [a for a in ("onboarding", "fresh_only") if a in set(s["arm_dir"])]
+        if strat:
+            out.append("**策略臂（问题一：收益来自覆盖还是演化）**\n")
+            s_strat = s[s["arm_dir"].isin(strat)].copy()
+            s_strat["_o"] = s_strat["arm_dir"].map({a: i for i, a in enumerate(strat)})
+            s_strat = s_strat.sort_values("_o").drop(columns="_o")
+            strat_cols = [c for c in ["arm_dir", "n_seeds", "ndcg_win_mean", "ndcg_win_last",
+                                      "n_edges", "graph_updates"] if c in s_strat.columns]
+            strat_headers = ["臂", "种子数", "窗口级 NDCG@10", "末窗 NDCG@10", "有边用户",
+                             "更新轮数"][:len(strat_cols)]
+            out.append(md_table(s_strat, strat_cols, headers=strat_headers))
+            out.append("")
+            g_onb = b.contrast(ds, "onboarding_minus_static")
+            g_evo = b.contrast(ds, "dynamic_minus_onboarding")
+            g_fresh = b.contrast(ds, "fresh_only_minus_static")
+            if g_onb is not None:
+                out.append(c_line(b, ds, "onboarding_minus_static",
+                                  "覆盖项 Onboarding − Static（晚出现用户首次拿到邻居）"))
+            if g_evo is not None:
+                out.append(c_line(b, ds, "dynamic_minus_onboarding",
+                                  "演化项 Dynamic − Onboarding（覆盖相同时，边权持续重估）"))
+            if g_fresh is not None:
+                out.append(c_line(b, ds, "fresh_only_minus_static",
+                                  "针对性 FreshOnly − Static（只更新有新证据的用户）"))
+            g1 = b.contrast(ds, "static_minus_nograph")
+            g3 = b.contrast(ds, "dynamic_minus_nograph")
+            if g1 is not None and g_onb is not None and g_evo is not None and g3 is not None:
+                total = (float(g1["delta_mean"]) + float(g_onb["delta_mean"])
+                         + float(g_evo["delta_mean"]))
+                out.append(
+                    f"\n> 恒等式核对：① {float(g1['delta_mean']):+.4f} + 覆盖 "
+                    f"{float(g_onb['delta_mean']):+.4f} + 演化 {float(g_evo['delta_mean']):+.4f} "
+                    f"= {total:+.4f}（③ = {float(g3['delta_mean']):+.4f}，"
+                    f"差 {abs(total - float(g3['delta_mean'])):.1e}）\n"
+                )
+            out.append("")
 
         # 分解
         g3 = b.contrast(ds, "dynamic_minus_nograph")
