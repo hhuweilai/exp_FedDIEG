@@ -121,7 +121,7 @@ USER_FIELDS = ["dataset", "arm", "arm_dir", "seed", "window", "user", "ndcg", "h
 GRAPH_ROUND_FIELDS = [
     "dataset", "arm", "arm_dir", "seed", "window", "window_round", "global_round",
     "n_edges", "is_update", "is_refresh", "n_updated",
-    "ecr_round_mean", "added_round_sum", "pool_fill",
+    "ecr_round_mean", "added_round_sum", "rebuild_turnover", "pool_fill",
     "ecr_since_eval", "added_since_eval", "rounds_since_eval",
     "has_eval", "active_coverage", "n_eval",
 ]
@@ -162,7 +162,7 @@ SUMMARY_FIELDS = [
     "server_lr_init", "server_lr_final", "fedavg_weighting", "personalization", "personal_on_cpu",
     "lambda_temp", "lambda_struct", "top_k", "candidate_count",
     "probe_size", "n_users", "n_items",
-    "mean_active_coverage", "n_first_covered", "n_user_updates",
+    "mean_active_coverage", "n_first_covered", "n_user_updates", "mean_rebuild_turnover",
     "elapsed_seconds", "train_seconds", "eval_seconds", "core_version",
 ]
 
@@ -239,6 +239,7 @@ def run_single(
     ecrs: List[float] = []
     added: List[float] = []
     active_cov_points: List[float] = []
+    rebuild_turnovers: List[float] = []
     edge_changed_total = 0
     eval_time = 0.0
     train_time = 0.0
@@ -321,6 +322,11 @@ def run_single(
                 float(gstats.n_added.sum()) if (gstats is not None and len(gstats) > 0) else 0.0
             )
             pool_fill_round = float(gstats.pool_fill) if gstats is not None else float("nan")
+            rebuild_turnover = float(
+                getattr(graph, "last_rebuild_turnover", float("nan"))
+            )
+            if np.isfinite(rebuild_turnover):
+                rebuild_turnovers.append(rebuild_turnover)
             if np.isfinite(ecr_round):
                 ecr_since_eval += ecr_round
             added_since_eval += added_round
@@ -338,6 +344,7 @@ def run_single(
                 "is_refresh": int(bool(getattr(graph, "last_update_was_refresh", False))),
                 "n_updated": n_updated,
                 "ecr_round_mean": ecr_round, "added_round_sum": added_round,
+                "rebuild_turnover": float(getattr(graph, "last_rebuild_turnover", float("nan"))),
                 "pool_fill": pool_fill_round,
                 "ecr_since_eval": float("nan"), "added_since_eval": float("nan"),
                 "rounds_since_eval": 0,
@@ -613,6 +620,7 @@ def run_single(
         "build_only": int(bool(getattr(args, "build_only", False))),
         "refresh_phase": str(getattr(args, "refresh_phase", "warmup")),
         "mean_active_coverage": mean(active_cov_points),
+        "mean_rebuild_turnover": mean(rebuild_turnovers),
         "n_first_covered": (
             int((first_covered >= 0).sum().item()) if first_covered is not None else 0
         ),

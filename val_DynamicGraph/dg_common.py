@@ -247,6 +247,7 @@ class PolicyGraph(DynamicInterestGraph):
         self.last_update_round = -1
         self.skipped_updates = 0
         self.last_update_was_refresh = False
+        self.last_rebuild_turnover = float("nan")
         self.last_user_update = torch.full(
             (int(num_users),), -1, dtype=torch.long, device=device
         )
@@ -294,10 +295,12 @@ class PolicyGraph(DynamicInterestGraph):
     @torch.no_grad()
     def update(self, summary_bank, active_clients, update_users, round_idx):
         self.last_update_was_refresh = False
+        self.last_rebuild_turnover = float("nan")
         if not self.should_update(round_idx):
             self.skipped_updates += 1
             return None
         refresh = (self.arm == ARM_PERIODIC) or (self.arm == ARM_STATIC and self.build_only)
+        pre_ids = self.ids.detach().clone() if refresh else None
         if refresh:
             self.reset_state()
             self.last_update_was_refresh = True
@@ -311,6 +314,13 @@ class PolicyGraph(DynamicInterestGraph):
             self.n_user_updates += int(len(stats))
             self.last_update_round = int(round_idx)
             self.last_user_update[stats.updated.to(self.device)] = int(round_idx)
+            if pre_ids is not None:
+                # ECR 在「先 reset 再重建」的臂上恒为 0（旧状态被清零），
+                # 所以重建幅度必须用 reset 前/后的邻居集合单独算一遍。
+                idx = stats.updated.to(self.device)
+                self.last_rebuild_turnover = float(
+                    _jaccard_turnover(pre_ids[idx], self.ids[idx]).mean().item()
+                )
         return stats
 
     def describe(self) -> dict:
@@ -418,6 +428,20 @@ def n_users_with_edges(graph) -> int:
         return int(graph.mask.sum().item())
     except Exception:  # noqa: BLE001
         return 0
+
+
+def _jaccard_turnover(a_ids: torch.Tensor, b_ids: torch.Tensor) -> torch.Tensor:
+    """两批邻居集合（n,K）的逐用户 Jaccard 距离；<0 的槽位视为空。"""
+    eq = (
+        (a_ids.unsqueeze(2) == b_ids.unsqueeze(1))
+        & (a_ids.unsqueeze(2) >= 0)
+        & (b_ids.unsqueeze(1) >= 0)
+    )
+    inter = eq.any(dim=2).sum(dim=1).to(torch.float32)
+    n_a = (a_ids >= 0).sum(dim=1).to(torch.float32)
+    n_b = (b_ids >= 0).sum(dim=1).to(torch.float32)
+    union = (n_a + n_b - inter).clamp_min(1e-8)
+    return 1.0 - inter / union
 
 
 def graph_is_empty(graph) -> bool:
