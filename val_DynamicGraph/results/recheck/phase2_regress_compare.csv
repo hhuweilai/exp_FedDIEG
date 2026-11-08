@@ -1,0 +1,5 @@
+﻿arm,d_avg_window_ndcg,d_final_window_ndcg,d_avg_window_hr,d_final_window_hr,d_round_all_ndcg,d_round_all_hr,n_eval_points,d_user_ndcg,d_user_hr,n_user_rows,has_active_coverage,graph_round_rows,coverage_rows,rounds_is_update,rounds_is_refresh,ecr_nonzero_rounds,n_edges_last,active_coverage_mean,refresh_rounds,n_covered_users,median_first_covered
+nograph,0.0,0.0,0.0,0.0,0.0,0.0,60,0.0,0.0,7898,True,600,0,0,0,0,0.0,,,,
+static,0.0,0.0,0.0,0.0,0.0,0.0,60,0.0,0.0,7898,True,600,6040,1,0,0,1264.0,0.2118604941914479,,1264.0,21.0
+periodic,0.0,0.0,0.0,0.0,0.0,0.0,60,0.0,0.0,7898,True,600,6040,5,5,0,5972.0,0.7976363072792689,"21,141,261,381,501",5972.0,261.0
+dynamic,0.0,0.0,0.0,0.0,0.0,0.0,60,0.0,0.0,7898,True,600,6040,580,0,579,6040.0,0.9401188522577286,,6040.0,243.0

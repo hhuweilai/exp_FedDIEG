@@ -523,6 +523,7 @@ def build_verdict(
     hygiene: pd.DataFrame,
     dataset: str,
     threshold: float,
+    contrasts_window: Optional[pd.DataFrame] = None,
 ) -> List[Dict[str, object]]:
     def pick(contrast: str, metric: str = PRIMARY_METRIC) -> Optional[pd.Series]:
         if contrasts_sum.empty:
@@ -574,6 +575,26 @@ def build_verdict(
     )
     g4, g5 = pick("periodic_minus_nograph"), pick("dynamic_minus_periodic")
     g1b = pick("static_at120_minus_static")
+    g1b2 = pick("static_build120_minus_static")
+
+    def pick_w2_5(name: str) -> Optional[Dict[str, object]]:
+        """只看窗口 2–5 的对照（`static_build120` 在窗口 1 无图，必须剔除 W1）。"""
+        if contrasts_window is None or contrasts_window.empty or "window" not in contrasts_window:
+            return None
+        sel = contrasts_window[
+            (contrasts_window["dataset"] == dataset)
+            & (contrasts_window["contrast"] == name)
+            & (contrasts_window["metric"] == PRIMARY_METRIC)
+            & (contrasts_window["window"].astype(int) >= 2)
+        ]
+        if sel.empty:
+            return None
+        summary = summarise_contrasts(
+            sel[["dataset", "metric", "contrast", "seed", "delta"]]
+        )
+        return summary.iloc[0].to_dict() if len(summary) else None
+
+    g1b2_w = pick_w2_5("static_build120_minus_static")
 
     for idx, label, row in (
         ("①", "图协同分支本身有没有贡献（StaticGraph − NoGraph）", g1),
@@ -583,6 +604,8 @@ def build_verdict(
         ("⑤", "补充：每轮 EMA 比慢刷新多给多少（DynamicGraph − PeriodicGraph）", g5),
         ("①b", "补充：把冻结时点从第 21 轮推到第 120 轮能否救回静态图"
                "（static_at120 − StaticGraph）", g1b),
+        ("①b2", "补充：第 120 轮一次性建图是否比第 21 轮建图好（只看窗口 2–5）"
+                "（static_build120 − StaticGraph）", g1b2_w),
     ):
         if row is None:
             push(idx, label, "", "没有对应结果", "未运行该臂 / 该对照")
@@ -595,6 +618,7 @@ def build_verdict(
             f"n={int(row['n_obs'])}，正号比例 {float(row['win_rate']):.2f}，"
             f"种子 {int(row['seeds_positive'])}/{int(row['seeds_total'])} 为正，"
             f"p_paired={p:.3g}，p_sign={float(row['p_sign']):.3g}"
+            + ("（窗口 2–5 子集；该臂在 W1 无图）" if idx == "①b2" else "")
         )
         push(idx, label, round(d, 6), evidence, f"{mag}；{sig}")
 
@@ -1181,7 +1205,12 @@ def main() -> None:
     # ---------------- 结论
     verdict_rows: List[Dict[str, object]] = []
     for dataset in datasets:
-        verdict_rows.extend(build_verdict(contrasts_sum, diagnostics, hygiene, dataset, threshold))
+        verdict_rows.extend(
+            build_verdict(
+                contrasts_sum, diagnostics, hygiene, dataset, threshold,
+                contrasts_window=contrasts_long,
+            )
+        )
     verdict = pd.DataFrame(verdict_rows)
     verdict.to_csv(tables / "dg_verdict.csv", index=False, encoding="utf-8-sig")
 
