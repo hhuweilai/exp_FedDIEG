@@ -204,7 +204,14 @@ def fmt_sci(x) -> str:
 # ======================================================================================
 # 读结果
 # ======================================================================================
-def load_runs(root: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def load_runs(
+    root: Path,
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """返回 (summary, 逐评测点 round, 逐用户, 逐轮图指标)。
+
+    第 4 项来自阶段 2 新增的 `dg_graph_round_metrics.csv`；旧 run 没有该文件，
+    此时返回空表，调用方按 NaN 处理。
+    """
     summary_files = sorted(root.rglob("dg_summary.csv"))
     if not summary_files:
         raise SystemExit(
@@ -213,11 +220,13 @@ def load_runs(root: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     sums = pd.concat([pd.read_csv(p) for p in summary_files], ignore_index=True)
     sums = sums.drop_duplicates(subset=["dataset", "arm_dir", "seed"], keep="last")
 
-    rounds_frames, user_frames = [], []
+    rounds_frames, user_frames, graph_frames = [], [], []
     for path in summary_files:
         run_dir = path.parent
         if (run_dir / "dg_round_metrics.csv").exists():
             rounds_frames.append(pd.read_csv(run_dir / "dg_round_metrics.csv"))
+        if (run_dir / "dg_graph_round_metrics.csv").exists():
+            graph_frames.append(pd.read_csv(run_dir / "dg_graph_round_metrics.csv"))
         if (run_dir / "dg_user_metrics.csv").exists():
             user_frames.append(
                 pd.read_csv(
@@ -227,7 +236,10 @@ def load_runs(root: Path) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
             )
     rounds = pd.concat(rounds_frames, ignore_index=True) if rounds_frames else pd.DataFrame()
     users = pd.concat(user_frames, ignore_index=True) if user_frames else pd.DataFrame()
-    return sums, rounds, users
+    graph_rounds = (
+        pd.concat(graph_frames, ignore_index=True) if graph_frames else pd.DataFrame()
+    )
+    return sums, rounds, users, graph_rounds
 
 
 def window_table(rounds: pd.DataFrame) -> pd.DataFrame:
@@ -431,6 +443,19 @@ def hygiene_checks(sums: pd.DataFrame, rounds: pd.DataFrame) -> pd.DataFrame:
                 + "（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，"
                 "所以混用不影响可比性）",
             )
+
+        # ECR 定义版本：只作信息提示（旧 run 缺字段 = legacy 定义）
+        ecr_vals = (
+            sorted({str(v) for v in part["ecr_def"].dropna().unique()})
+            if "ecr_def" in part.columns else []
+        )
+        legacy = (
+            int(part["ecr_def"].isna().sum()) if "ecr_def" in part.columns else int(len(part))
+        )
+        detail = "、".join(ecr_vals) if ecr_vals else "旧定义（legacy）"
+        if legacy:
+            detail += f"；{legacy} 个 run 为 legacy（首次建边/reset 记 0）"
+        add(dataset, "ECR 定义版本（信息项，不参与失败判定）", True, detail)
 
         per_arm = part.groupby("arm_dir")["seed"].nunique()
         add(
@@ -1062,7 +1087,7 @@ def main() -> None:
     figures.mkdir(parents=True, exist_ok=True)
     threshold = float(args.practical_threshold)
 
-    sums, rounds, users = load_runs(root)
+    sums, rounds, users, graph_rounds = load_runs(root)
     variants = sorted(sums["arm_dir"].unique().tolist())
     datasets = sorted(sums["dataset"].unique().tolist())
     print(f"找到 {len(sums)} 次运行，{len(variants)} 个臂/变体：{variants}")
@@ -1089,6 +1114,29 @@ def main() -> None:
         .reset_index()
         .sort_values(["dataset", "arm_dir"])
     )
+    # ---- 阶段 2：把「每轮图指标」并进逐臂汇总（旧 run 没有这些文件 ⇒ 保持 NaN）
+    if not graph_rounds.empty:
+        # 兼容早期列名/缺列：rebuild_turnover → graph_turnover；两者都没有就补 NaN
+        if "graph_turnover" not in graph_rounds.columns:
+            if "rebuild_turnover" in graph_rounds.columns:
+                graph_rounds = graph_rounds.rename(
+                    columns={"rebuild_turnover": "graph_turnover"}
+                )
+            else:
+                graph_rounds["graph_turnover"] = np.nan
+        gdiag = (
+            graph_rounds.groupby(["dataset", "arm_dir"])
+            .agg(
+                update_rounds=("is_update", "sum"),
+                refresh_rounds=("is_refresh", "sum"),
+                # 只在「真的更新了的轮次」上取均值（未更新轮是 NaN，会被 pandas 跳过）
+                ecr_update_mean=("ecr_round_mean", "mean"),
+                graph_turnover_mean=("graph_turnover", "mean"),
+                active_coverage_mean=("active_coverage", "mean"),
+            )
+            .reset_index()
+        )
+        arm_summary = arm_summary.merge(gdiag, on=["dataset", "arm_dir"], how="left")
     arm_summary.to_csv(tables / "dg_arm_summary.csv", index=False, encoding="utf-8-sig")
     arm_win.to_csv(tables / "dg_arm_window.csv", index=False, encoding="utf-8-sig")
 

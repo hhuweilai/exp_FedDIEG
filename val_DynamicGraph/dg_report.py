@@ -308,12 +308,21 @@ def section_q1(b: Bundle) -> str:
         s_core = s_core.sort_values("_o").drop(columns="_o")
         cols = ["arm_dir", "n_seeds", "ndcg_win_mean", "ndcg_win_last", "delta_rel",
                 "neighbor_lift", "ecr", "n_edges", "graph_updates"]
+        headers_map = {
+            "arm_dir": "臂", "n_seeds": "种子数", "ndcg_win_mean": "窗口级 NDCG@10",
+            "ndcg_win_last": "末窗 NDCG@10", "delta_rel": "delta_rel（图分支剂量）",
+            "neighbor_lift": "neighbor_lift（邻居质量）", "ecr": "ECR（边变化率）",
+            "n_edges": "有边用户", "graph_updates": "图更新次数",
+            "ecr_update_mean": "ECR（更新轮均值，v2 定义）",
+            "graph_turnover_mean": "图变化率 graph_turnover",
+            "active_coverage_mean": "本窗口评测覆盖率",
+        }
         cols = [c for c in cols if c in s_core.columns]
-        out.append(md_table(
-            s_core, cols,
-            headers=["臂", "种子数", "窗口级 NDCG@10", "末窗 NDCG@10", "delta_rel（图分支剂量）",
-                     "neighbor_lift（邻居质量）", "ECR（边变化率）", "有边用户", "图更新次数"][:len(cols)],
-        ))
+        # 阶段 2 的新结构指标：只有真的跑过新记录层的臂才展示（旧 run 是 NaN）
+        for extra in ("ecr_update_mean", "graph_turnover_mean", "active_coverage_mean"):
+            if extra in s_core.columns and s_core[extra].notna().any():
+                cols.append(extra)
+        out.append(md_table(s_core, cols, headers=[headers_map[c] for c in cols]))
         out.append("")
         # 复现性小检查：带 genre 诊断重跑的那条 dynamic 应与 dynamic 完全一致
         g_row = s[s["arm_dir"] == "dynamic_genre"]

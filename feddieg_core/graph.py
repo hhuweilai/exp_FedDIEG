@@ -306,7 +306,13 @@ class DynamicInterestGraph:
             n_old = old_slot.sum(dim=1).to(torch.float32)
             n_new = keep.sum(dim=1).to(torch.float32)
             union = torch.clamp(n_old + n_new - inter, min=1e-8)
-            ecr = torch.where(n_old > 0, 1.0 - inter / union, torch.zeros_like(inter))
+            # 【F5，2026-11-08 修正】ECR 是「邻居集合的 Jaccard 距离」：
+            #   * 旧集合 = 空、新集合非空 ⇒ 1.0（"从无到有"是 100% 变化，不是 0）
+            #   * 旧、新都为空 ⇒ 0.0（确实没有变化）
+            # 旧实现 `where(n_old > 0, ..., 0)` 把「首次建边」和「reset 后重建」都记成 0，
+            # 导致 static / periodic / onboarding 的结构指标失去意义（C1/C4）。
+            has_any = (n_old + n_new) > 0
+            ecr = torch.where(has_any, 1.0 - inter / union, torch.zeros_like(inter))
             n_added = torch.clamp(n_new - inter, min=0.0)
 
             self.ids[block_users] = new_ids

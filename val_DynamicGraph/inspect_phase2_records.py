@@ -41,6 +41,11 @@ def main() -> int:
             print(f"[skip] {arm}: 没有 {g_path}")
             continue
         g = pd.read_csv(g_path)
+        # 阶段 2 早期叫 rebuild_turnover，2026-11-08 起统一为 graph_turnover（语义相同）
+        turnover_col = (
+            "graph_turnover" if "graph_turnover" in g.columns
+            else ("rebuild_turnover" if "rebuild_turnover" in g.columns else None)
+        )
         updates = g[g["is_update"] == 1]
         refreshes = g[g["is_refresh"] == 1]
         cover = pd.read_csv(c_path) if c_path.exists() else pd.DataFrame()
@@ -55,8 +60,8 @@ def main() -> int:
             "updated_users_sum": int(updates["n_updated"].sum()) if len(updates) else 0,
             "added_sum": int(updates["added_round_sum"].sum()) if len(updates) else 0,
             "rebuild_turnover_mean": (
-                round(float(updates["rebuild_turnover"].dropna().mean()), 4)
-                if "rebuild_turnover" in updates and len(updates) else float("nan")
+                round(float(updates[turnover_col].dropna().mean()), 4)
+                if turnover_col and len(updates) else float("nan")
             ),
             "ecr_nonzero_rounds": int((g["ecr_round_mean"].fillna(0) > 0).sum()),
             "n_edges_last": int(g["n_edges"].iloc[-1]),

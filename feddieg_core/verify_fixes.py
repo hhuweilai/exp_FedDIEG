@@ -361,6 +361,26 @@ def group_b() -> None:
         "ecr / n_added 形状一致",
     )
 
+    # ---------------- F6：ECR 的 Jaccard 定义（2026-11-08 修正）
+    #   * 旧集合为空、新集合非空 ⇒ 1.0（"从无到有"是 100% 变化）
+    #   * 旧、新都为空 ⇒ 0.0
+    #   * 邻居集合不变 ⇒ 0.0
+    # 旧实现 `where(n_old > 0, ..., 0)` 把首次建边/reset 后重建都记成 0。
+    st2 = g5.update(bank2, act5, torch.arange(num_users), round_idx=2)
+    with_edges = g5.mask & (g5.ids >= 0).any(dim=1)
+    sel = st.updated.to(torch.long)
+    sel = sel[with_edges[sel]]
+    ecr_first = float(st.ecr[with_edges[st.updated.to(torch.long)]].mean()) if sel.numel() else float("nan")
+    sel2 = st2.updated.to(torch.long)
+    sel2 = sel2[with_edges[sel2]]
+    ecr_same = float(st2.ecr[with_edges[st2.updated.to(torch.long)]].mean()) if sel2.numel() else float("nan")
+    check(
+        "B11 ECR 定义正确（空→非空 = 1.0；邻居集合不变 = 0.0）",
+        np.isfinite(ecr_first) and abs(ecr_first - 1.0) < 1e-6
+        and np.isfinite(ecr_same) and abs(ecr_same) < 1e-6,
+        f"首次建边 ECR={ecr_first:.3f}，重复更新 ECR={ecr_same:.3f}",
+    )
+
 
 # ======================================================================================
 # C. 联邦协议

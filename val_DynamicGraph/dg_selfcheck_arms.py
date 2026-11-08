@@ -110,6 +110,8 @@ def run_arm(
                     "n_edges": int(graph.mask.sum().item()),
                     "refresh": bool(getattr(graph, "last_update_was_refresh", False)),
                     "n_updated": int(len(stats)) if stats is not None else 0,
+                    "ecr": float(stats.ecr.mean().item()) if stats is not None and len(stats) else float("nan"),
+                    "turnover": float(getattr(graph, "last_graph_turnover", float("nan"))),
                     "sig": edge_signature(graph) if arm != ARM_NOGRAPH else "-",
                 }
             )
@@ -149,6 +151,16 @@ def main() -> int:
         "①c static_build：只建一次图",
         int(getattr(graph, "n_updates", 0)) == 1,
         f"n_updates={getattr(graph, 'n_updates', 0)}",
+    )
+
+    # ---------------- ①d ECR 定义（2026-11-08 修正）：空 → 非空 = 1.0
+    build_round = [r for r in rec if int(r["round"]) == 6]
+    build_ecr = float(build_round[0]["ecr"]) if build_round else float("nan")
+    build_turn = float(build_round[0]["turnover"]) if build_round else float("nan")
+    checks.add(
+        "①d ECR 定义：建图轮（空→非空）= 1.0（不是 0）",
+        bool(build_round) and abs(build_ecr - 1.0) < 1e-6 and abs(build_turn - 1.0) < 1e-6,
+        f"ecr={build_ecr:.3f} graph_turnover={build_turn:.3f}",
     )
 
     # ---------------- ② onboarding
@@ -193,6 +205,16 @@ def main() -> int:
         "④ periodic boundary：重建轮 = 预热后首轮 + 窗口边界",
         rounds == sorted(set(expected)),
         f"实际 {rounds} / 期望 {sorted(set(expected))}",
+    )
+    # ④b 重建轮：ECR 因 reset 记 1.0；graph_turnover 是"重建前后"的真实变化（可 <1）
+    refresh_rows = [r for r in rec_p if r["refresh"]]
+    ecr_ok = all(abs(float(r["ecr"]) - 1.0) < 1e-6 for r in refresh_rows if np.isfinite(r["ecr"]))
+    turn_ok = all(np.isfinite(float(r["turnover"])) and float(r["turnover"]) > 0 for r in refresh_rows)
+    checks.add(
+        "④b 重建轮：ECR(reset 语义)=1.0，且 graph_turnover（重建前后）有定义",
+        bool(refresh_rows) and ecr_ok and turn_ok,
+        "; ".join(f"r{int(r['round'])}: ecr={float(r['ecr']):.2f} turn={float(r['turnover']):.2f}"
+                  for r in refresh_rows),
     )
 
     total = len(checks.rows)

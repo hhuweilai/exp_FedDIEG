@@ -247,7 +247,7 @@ class PolicyGraph(DynamicInterestGraph):
         self.last_update_round = -1
         self.skipped_updates = 0
         self.last_update_was_refresh = False
-        self.last_rebuild_turnover = float("nan")
+        self.last_graph_turnover = float("nan")
         self.last_user_update = torch.full(
             (int(num_users),), -1, dtype=torch.long, device=device
         )
@@ -295,12 +295,16 @@ class PolicyGraph(DynamicInterestGraph):
     @torch.no_grad()
     def update(self, summary_bank, active_clients, update_users, round_idx):
         self.last_update_was_refresh = False
-        self.last_rebuild_turnover = float("nan")
+        self.last_graph_turnover = float("nan")
         if not self.should_update(round_idx):
             self.skipped_updates += 1
             return None
         refresh = (self.arm == ARM_PERIODIC) or (self.arm == ARM_STATIC and self.build_only)
-        pre_ids = self.ids.detach().clone() if refresh else None
+        # 统一的「图变化」度量：更新**前**的邻居集合 vs 更新后的邻居集合。
+        #   * 普通臂：更新前 == 上一轮状态 ⇒ 与 ECR 完全等价
+        #   * reset 型臂（periodic / build_only）：更新前是 reset **之前**的状态
+        #     ⇒ 得到"重建到底换掉多少邻居"，而不是被清空后的 1.0
+        pre_ids = self.ids.detach().clone()
         if refresh:
             self.reset_state()
             self.last_update_was_refresh = True
@@ -314,13 +318,10 @@ class PolicyGraph(DynamicInterestGraph):
             self.n_user_updates += int(len(stats))
             self.last_update_round = int(round_idx)
             self.last_user_update[stats.updated.to(self.device)] = int(round_idx)
-            if pre_ids is not None:
-                # ECR 在「先 reset 再重建」的臂上恒为 0（旧状态被清零），
-                # 所以重建幅度必须用 reset 前/后的邻居集合单独算一遍。
-                idx = stats.updated.to(self.device)
-                self.last_rebuild_turnover = float(
-                    _jaccard_turnover(pre_ids[idx], self.ids[idx]).mean().item()
-                )
+            idx = stats.updated.to(self.device)
+            self.last_graph_turnover = float(
+                _jaccard_turnover(pre_ids[idx], self.ids[idx]).mean().item()
+            )
         return stats
 
     def describe(self) -> dict:
