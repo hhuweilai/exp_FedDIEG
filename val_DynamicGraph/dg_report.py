@@ -319,6 +319,11 @@ def section_q1(b: Bundle) -> str:
         }
         cols = [c for c in cols if c in s_core.columns]
         # 阶段 2 的新结构指标：只有真的跑过新记录层的臂才展示（旧 run 是 NaN）
+        has_new_ecr = (
+            "ecr_update_mean" in s_core.columns and s_core["ecr_update_mean"].notna().any()
+        )
+        if has_new_ecr and "ecr" in cols:
+            cols.remove("ecr")   # 旧的 ecr 只在"评测轮"记录，已由 ecr_update_mean 取代
         for extra in ("ecr_update_mean", "graph_turnover_mean", "active_coverage_mean"):
             if extra in s_core.columns and s_core[extra].notna().any():
                 cols.append(extra)
