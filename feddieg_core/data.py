@@ -125,7 +125,12 @@ class ClientWindow:
 
     # ------------------------------------------------------------------ 负采样
     def sample_negatives(self, user: int, rng: np.random.Generator, max_tries: int = 32) -> np.ndarray:
-        """对齐 ``dataset_01.Seq_TrainDataset``：负样本从"用户没交互过的物品"里抽。"""
+        """对齐 ``dataset_01.Seq_TrainDataset``：负样本从"用户没交互过的物品"里抽。
+
+        【F8，2026-11-08 修正】``history`` 现在是**因果训练历史**（不含 val/test），
+        且回退不再取 ``cand[:, 0]``（它可能正好是历史物品/正样本），而是**确定性地线性
+        探测**一个既不在历史、也不等于目标的物品 —— 保证负样本永远合法。
+        """
         pos = self.pos[user].numpy()
         mask = self.mask[user].numpy()
         sel = np.nonzero(mask > 0)[0]
@@ -151,7 +156,17 @@ class ClientWindow:
         first = ok.argmax(axis=1)
         valid = ok.any(axis=1)
         picked = cand[np.arange(sel.size), first]
-        picked = np.where(valid, picked, cand[:, 0])
+        # 回退：逐个"线性探测"一个合法物品（保证不在历史、不等于目标）
+        hist_set = {int(x) for x in hist}
+        for row in np.nonzero(~valid)[0]:
+            start = int(rng.integers(1, self.num_items + 1))
+            fallback = 0
+            for off in range(self.num_items):
+                probe = 1 + (start - 1 + off) % self.num_items
+                if probe not in hist_set and probe != int(targets[row]):
+                    fallback = probe
+                    break
+            picked[row] = fallback
         neg[sel] = picked
         return neg
 
@@ -164,12 +179,61 @@ class ClientWindow:
         raise ValueError(f"unknown split: {name}")
 
 
+def training_history_from_fast(fast) -> List[np.ndarray]:
+    """**因果**训练历史 = 该窗口训练序列里出现过的物品（seq ∪ pos，去掉 padding 0）。
+
+    注意：这受 ``max_len`` 截断（只含最近 L 个），是一个保守近似；
+    ``load_client_windows`` 用的是更精确的 :func:`causal_history_sets`（截至训练截止点的全部历史）。
+    """
+    seq = fast.train_seq.numpy()
+    pos = fast.train_pos.numpy()
+    out: List[np.ndarray] = []
+    for u in range(seq.shape[0]):
+        items = np.union1d(seq[u], pos[u])
+        out.append(items[items > 0].astype(np.int64))
+    return out
+
+
+def causal_history_sets(
+    full_df: pd.DataFrame,
+    num_windows: int,
+    num_users: int,
+    fast_windows: Sequence,
+) -> List[List[np.ndarray]]:
+    """每个窗口的**因果**训练历史：用户截至训练截止点的全部交互（不含 val/test）。
+
+    ``history_sets_from_frame`` 给的是"截至窗口末"的完整历史，包含本窗口的 val/test。
+    本函数按 `exp_02.load_rolling_windows` 的切分规则把它截断：
+
+      * 有评测记录的用户（出现在 ``fast.test_users``）：最后 2 个是 val/test → 去掉 2 个；
+      * 其余用户：``train_sequences = history_seq[:-1]`` → 去掉最后 1 个。
+
+    这与 A/B 版 ``dataset_01.Seq_TrainDataset.user_items_set`` 的口径一致：
+    负采样只排除**训练可见**的物品，不会用到未来（val/test）信息。
+    """
+    end_histories = history_sets_from_frame(full_df, num_windows, num_users)
+    out: List[List[np.ndarray]] = []
+    for fast, hist in zip(fast_windows, end_histories):
+        evaluated = {int(u) for u in fast.test_users.tolist()}
+        per_user: List[np.ndarray] = []
+        for u, arr in enumerate(hist):
+            drop = 2 if u in evaluated else 1
+            per_user.append(arr[: max(0, int(arr.size) - drop)] if arr.size else arr)
+        out.append(per_user)
+    return out
+
+
 def from_fast_data(
     fast,
     history: Sequence[np.ndarray],
     window_idx: int,
 ) -> ClientWindow:
-    """把 `FastData` + 历史物品集合包装成 `ClientWindow`。"""
+    """把 `FastData` + 历史物品集合包装成 `ClientWindow`。
+
+    ``history`` 建议传 ``training_history_from_fast(fast)``（因果口径）；传 ``None`` 时
+    内部自动按因果口径计算（默认推荐）。
+    """
+    hist = training_history_from_fast(fast) if history is None else list(history)
     return ClientWindow(
         window_idx=int(window_idx),
         num_users=int(fast.num_users),
@@ -177,7 +241,7 @@ def from_fast_data(
         seq=fast.train_seq,
         pos=fast.train_pos,
         mask=fast.train_mask,
-        history=list(history),
+        history=hist,
         val_users=fast.val_users,
         val_seq=fast.val_seq,
         val_items=fast.val_items,
@@ -250,7 +314,11 @@ def load_client_windows(
     if full_df is None:
         full_df = build_full_frame(cfg.dataset)
     num_users = int(fast_windows[0].num_users)
-    history_sets = history_sets_from_frame(full_df, cfg.num_windows, num_users)
+    # 【F8，2026-11-08 修正】负采样排除集改用**因果训练历史**（截至训练截止点，去掉 val/test），
+    # 不再用「截至窗口末的完整历史」（后者包含本窗口 val/test 物品 = 利用未来信息）。
+    history_sets = causal_history_sets(
+        full_df, cfg.num_windows, num_users, fast_windows
+    )
     if verify:
         problems = verify_consistency(fast_windows, history_sets)
         if problems:

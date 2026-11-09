@@ -282,6 +282,21 @@ class FedTrainer:
                     sums[k] += value * client_weight
             total_weight += client_weight
 
+            # ---- 【F7，2026-11-08 修正】论文口径：本地训练**完成后**再上传摘要
+            # 旧实现（与 A/B 主程序一致）取的是最后一个 epoch 前向得到的 s_i，
+            # 也就是参数更新**之前**的摘要；论文写的是"客户端完成本地训练后上传当前短期兴趣摘要"。
+            # 这里用更新后的参数重算一次（no_grad + eval 关闭 dropout，保证可复现）。
+            if last_summary is not None:
+                was_training = self.worker.training
+                self.worker.eval()
+                with torch.no_grad():
+                    _, s_after = self.worker(seq, nbr_sum, nbr_w, cfg.graph_mix)
+                self.worker.train(was_training)
+                last_summary = s_after.squeeze(0).detach()
+                if nbr_sum is not None and last_delta is not None:
+                    last_delta = F.cosine_similarity(
+                        last_summary.unsqueeze(0), nbr_sum[0], dim=-1, eps=1e-8
+                    ).clamp_min(0.0)
             if last_summary is not None:
                 upload_users.append(user)
                 upload_summaries.append(last_summary)

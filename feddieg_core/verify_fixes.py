@@ -1,17 +1,17 @@
 #!/usr/bin/env python
-"""修复验证：逐条断言 `feddieg_core` 是否真的修掉了审计报告里的 4 个缺陷，
-以及联邦协议是否真的按 FedAvg 工作。
+"""修复验证：逐条断言 `feddieg_core` 是否真的修掉了审计报告里的缺陷，
+以及联邦协议 / 动态图 / 数据切分是否按论文语义工作。
 
 全部是离线单元测试（不读数据集、不训练大模型），CPU 上几秒跑完：
 
     python -X utf8 feddieg_core/verify_fixes.py
 
-13 个断言，分五组：
+分五组（具体条数见运行输出末尾的汇总）：
   A. 模型与个性化层划分（对齐 A/B 主程序）
-  B. 动态图：F1 量纲 / F2 无效位写 -1 / F3 无 scatter 别名 / F4 候选池 / F5 全局更新
+  B. 动态图：量纲 / 无效位 / 无别名 / 候选池 / 全局更新 / **ECR 定义** / **Top-K 边界**
   C. 联邦协议：FedAvg 聚合 = 客户端参数均值；客户端之间互不干扰
-  D. 摘要缓存：直接替换语义（论文）
-  E. 端到端：一轮完整的 train_round + evaluate_split 能跑通
+  D. 摘要缓存：直接替换语义（论文）+ **上传时点（训练后重算）**
+  E. 端到端 + **负采样的因果历史/回退**
 """
 
 from __future__ import annotations
@@ -29,7 +29,12 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from feddieg_core.config import FedDIEGConfig
-from feddieg_core.data import ClientWindow
+from feddieg_core.data import (
+    ClientWindow,
+    causal_history_sets,
+    history_sets_from_frame,
+    training_history_from_fast,
+)
 from feddieg_core.evaluate import build_eval_model, evaluate_split
 from feddieg_core.federated import FedTrainer, build_participation_schedule
 from feddieg_core.graph import DynamicInterestGraph
@@ -381,6 +386,31 @@ def group_b() -> None:
         f"首次建边 ECR={ecr_first:.3f}，重复更新 ECR={ecr_same:.3f}",
     )
 
+    # ---------------- F9：候选数 < K 时的 Top-K 边界（不得重复邻居 / 权重和 >1）
+    for n_small, k_small in ((2, 4), (3, 4)):
+        cfgk = tiny_cfg(neighbors=k_small, graph_warmup_rounds=0, rho=0.2)
+        gk = DynamicInterestGraph(cfgk, n_small, torch.device("cpu"))
+        gen_k = torch.Generator().manual_seed(7)
+        bankk = F.normalize(
+            torch.randn(n_small, cfgk.latent_dim, generator=gen_k), p=2, dim=1
+        )
+        gk.update(
+            bankk, torch.ones(n_small, dtype=torch.bool),
+            torch.arange(n_small), round_idx=1,
+        )
+        dups, over = 0, 0
+        for u in range(n_small):
+            valid = [int(v) for v in gk.ids[u].tolist() if v >= 0]
+            if len(valid) != len(set(valid)):
+                dups += 1
+            if float(gk.weights[u].sum()) > 1.0 + 1e-5:
+                over += 1
+        check(
+            f"B12 候选数<K（N={n_small}, K={k_small}）：无重复邻居、权重和≤1",
+            dups == 0 and over == 0,
+            f"dup={dups}, sum>1={over}",
+        )
+
 
 # ======================================================================================
 # C. 联邦协议
@@ -466,7 +496,8 @@ def group_c() -> None:
 
     tr3.worker.forward = counting_forward  # type: ignore[assignment]
     tr3.train_round([0], window, g3, round_idx=1, rng=np.random.default_rng(1))
-    check("C7 local_epochs=3 → 每客户端 3 次本地前向", steps["n"] == 3, f"前向次数={steps['n']}")
+    check("C7 local_epochs=3 → 每客户端 3 次**训练**前向 + 1 次上传摘要前向",
+          steps["n"] == 4, f"前向次数={steps['n']}（3 训练 + 1 摘要）")
 
 
 # ======================================================================================
@@ -507,6 +538,41 @@ def group_d() -> None:
         "缓存 == 0.8*old + 0.2*new",
     )
 
+    # ---------------- F7：上传的是「本地训练完成后」重算的摘要（论文口径）
+    cfg_d5 = tiny_cfg(
+        local_epochs=1, lr=0.5, dropout_rate=0.0, neighbors=2, graph_warmup_rounds=10
+    )
+    n_d5 = 3
+    tr_d5 = FedTrainer(cfg_d5, n_d5, 20, torch.device("cpu"))
+    g_d5 = DynamicInterestGraph(cfg_d5, n_d5, torch.device("cpu"))
+    win_d5 = make_window(n_d5, 20, cfg_d5.max_len, seed=3)
+    seq_d5 = win_d5.seq[0].unsqueeze(0)
+    tr_d5.worker.load_state_dict(tr_d5.state_for(0))
+    with torch.no_grad():
+        _, s_pre = tr_d5.worker(seq_d5, None, None, cfg_d5.graph_mix)
+    s_pre = s_pre[0].clone()
+    captured = {}
+    orig_up = tr_d5.upload_summary
+
+    def _spy_up(users, summaries, round_idx):
+        # 此刻 worker 仍是该客户端**训练后**的本地参数（服务器聚合只改 global_state）
+        with torch.no_grad():
+            _, s_now = tr_d5.worker(seq_d5, None, None, cfg_d5.graph_mix)
+        captured["uploaded"] = summaries[0].clone()
+        captured["expected"] = s_now[0].clone()
+        return orig_up(users, summaries, round_idx)
+
+    tr_d5.upload_summary = _spy_up  # type: ignore[assignment]
+    tr_d5.train_round([0], win_d5, g_d5, round_idx=1, rng=np.random.default_rng(3))
+    up = captured["uploaded"]
+    gap_post = float((up - captured["expected"]).abs().max())
+    gap_pre = float((up - s_pre).abs().max())
+    check(
+        "D5 上传摘要 = 本地训练**完成后**重算（不再是训练前的 s_i）",
+        gap_post < 1e-6 and gap_pre > 1e-4,
+        f"与训练后 max|Δ|={gap_post:.2e}；与训练前 max|Δ|={gap_pre:.2e}",
+    )
+
 
 # ======================================================================================
 # E. 端到端
@@ -545,6 +611,65 @@ def group_e() -> None:
         ok = False
         detail = f"{type(exc).__name__}: {exc}"
     check("E1 联邦训练 + 图更新 + 评测全流程可跑通", ok, detail)
+
+    # ---------------- F10：负采样只用因果训练历史（不含 val/test），且回退不取历史物品
+    cfg_e2 = tiny_cfg(neighbors=2, graph_warmup_rounds=10)
+    win_e2 = make_window(2, 20, cfg_e2.max_len, seed=5)
+    # 只允许 16..20 作为负样本（1..15 全部视为"已交互"）
+    win_e2.history = [np.arange(1, 16, dtype=np.int64) for _ in range(2)]
+    rng_e2 = np.random.default_rng(0)
+    hist_hits, picked_items = 0, set()
+    for _ in range(50):
+        for u in range(2):
+            neg = win_e2.sample_negatives(u, rng_e2)
+            vals = neg[win_e2.mask[u].numpy() > 0]
+            hist_hits += int(np.isin(vals, win_e2.history[u]).sum())
+            picked_items |= {int(v) for v in vals.tolist()}
+    check(
+        "E2 负采样：绝不取已交互物品（含回退路径），且不排除 val/test 物品",
+        hist_hits == 0 and picked_items.issubset({16, 17, 18, 19, 20}) and picked_items,
+        f"历史命中={hist_hits}，取到={sorted(picked_items)}",
+    )
+
+    # ---------------- F10b：因果训练历史 = seq ∪ pos（不含 val/test，去 padding）
+    class _FakeFast:
+        pass
+
+    fake = _FakeFast()
+    fake.train_seq = torch.tensor([[1, 2, 3], [3, 0, 0]])
+    fake.train_pos = torch.tensor([[2, 3, 4], [3, 0, 0]])
+    hist = training_history_from_fast(fake)
+    check(
+        "E3 因果训练历史 = seq ∪ pos（不含 val/test，去掉 padding 0）",
+        set(hist[0].tolist()) == {1, 2, 3, 4} and set(hist[1].tolist()) == {3},
+        f"user0={hist[0].tolist()}，user1={hist[1].tolist()}",
+    )
+
+    # ---------------- F10c：精确因果历史 = 截止点前的全部交互（有评测去 2，其余去 1）
+    import pandas as _pd
+
+    df_e4 = _pd.DataFrame(
+        {
+            "userId": [0, 0, 0, 0, 1, 1],
+            "itemId": [1, 2, 3, 4, 5, 6],
+            "timestamp": list(range(6)),
+        }
+    )
+
+    class _FakeFast2:
+        pass
+
+    ff2 = _FakeFast2()
+    ff2.test_users = torch.tensor([0])   # user0 有评测记录 → 去掉 val/test
+    causal = causal_history_sets(df_e4, 1, 2, [ff2])
+    end_hist = history_sets_from_frame(df_e4, 1, 2)[0]
+    check(
+        "E4 精确因果历史：有评测用户去掉 val/test，其余去掉最后 1 个",
+        causal[0][0].tolist() == end_hist[0][:-2].tolist()
+        and causal[0][1].tolist() == end_hist[1][:-1].tolist(),
+        f"user0={causal[0][0].tolist()}（原 {end_hist[0].tolist()}），"
+        f"user1={causal[0][1].tolist()}（原 {end_hist[1].tolist()}）",
+    )
 
 
 def main() -> int:
