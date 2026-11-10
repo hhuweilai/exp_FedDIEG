@@ -29,6 +29,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from datetime import datetime
@@ -41,6 +42,15 @@ import pandas as pd
 DG_DIR = Path(__file__).resolve().parent
 RESULTS = DG_DIR / "results"
 DEFAULT_OUT = DG_DIR / "实验验证报告_动态图_2026-11-06.md"
+
+# 各聚合表的根目录。默认沿用 legacy 路径（results/aggregated、results/freeze…）；
+# 阶段 4 的 5 种子复跑写到 results/agg_formal 等隔离目录，用环境变量或 CLI 切换，
+# 这样旧结果不会被覆盖，报告里也能同时对比「修前 / 修后」两套表。
+AGG_ROOT = Path(os.environ.get("DG_AGG_ROOT") or (RESULTS / "aggregated"))
+FREEZE_ROOT = Path(os.environ.get("DG_FREEZE_ROOT") or (RESULTS / "freeze"))
+GENRE_ROOT = Path(os.environ.get("DG_GENRE_ROOT") or (RESULTS / "genre"))
+QUALITY_ROOT = Path(os.environ.get("DG_QUALITY_ROOT") or (RESULTS / "quality"))
+RAW_ROOT = Path(os.environ.get("DG_RAW_ROOT") or (RESULTS / "raw"))
 
 DATASETS = ["movielens-1m", "amazon-digital_music"]
 DS_LABEL = {"movielens-1m": "MovieLens-1M", "amazon-digital_music": "Amazon-Digital-Music"}
@@ -109,7 +119,10 @@ def md_table(df: Optional[pd.DataFrame], cols: Sequence[str], max_rows: int = 40
 def img(path: Path, caption: str) -> str:
     if not path.exists():
         return f"（图缺失：`{path.name}`）\n"
-    rel = path.relative_to(DG_DIR)
+    try:
+        rel = path.relative_to(DG_DIR)
+    except ValueError:  # 聚合表放在 val_DynamicGraph 之外时只给文件名
+        rel = Path(path.name)
     return f"![{caption}]({rel})\n\n*{caption}*\n"
 
 
@@ -125,7 +138,7 @@ def git_head() -> str:
 # ----------------------------------------------------------------- 取数
 class Bundle:
     def __init__(self) -> None:
-        agg = RESULTS / "aggregated" / "tables"
+        agg = AGG_ROOT / "tables"
         self.arm_summary = read_csv(agg / "dg_arm_summary.csv")
         self.arm_curve = read_csv(agg / "dg_arm_curve.csv")
         self.contrasts = read_csv(agg / "dg_contrasts.csv")
@@ -133,14 +146,14 @@ class Bundle:
         self.hygiene = read_csv(agg / "dg_hygiene.csv")
         self.freeze: Dict[str, Dict[str, pd.DataFrame]] = {}
         for ds in DATASETS:
-            base = RESULTS / "freeze" / slug(ds) / "tables"
+            base = FREEZE_ROOT / slug(ds) / "tables"
             if base.exists():
                 self.freeze[ds] = {
                     "cells": read_csv(base / "dg_freeze_cells.csv"),
                     "contrasts": read_csv(base / "dg_freeze_contrasts.csv"),
                     "verdict": read_csv(base / "dg_freeze_verdict.csv"),
                 }
-        g = RESULTS / "genre" / "tables"
+        g = GENRE_ROOT / "tables"
         self.genre = {
             "verdict": read_csv(g / "dg_genre_verdict.csv"),
             "desc": read_csv(g / "dg_genre_descriptives.csv"),
@@ -149,7 +162,7 @@ class Bundle:
         }
         self.quality: Dict[str, Dict[str, pd.DataFrame]] = {}
         for ds in DATASETS:
-            base = RESULTS / "quality" / slug(ds) / "tables"
+            base = QUALITY_ROOT / slug(ds) / "tables"
             if base.exists():
                 self.quality[ds] = {
                     "verdict": read_csv(base / "dg_quality_verdict.csv"),
@@ -421,7 +434,7 @@ def section_q1(b: Bundle) -> str:
                                         headers=["窗口", *keep]))
                     out.append("")
 
-        out.append(img(RESULTS / "aggregated" / "figures" / f"dg_fig_arms_{slug(ds)}.png",
+        out.append(img(AGG_ROOT / "figures" / f"dg_fig_arms_{slug(ds)}.png",
                        f"{DS_LABEL.get(ds, ds)}：三条臂的 NDCG 曲线 / 图分支剂量 delta_rel / 邻居质量 lift"))
         out.append("")
 
@@ -585,7 +598,7 @@ def section_q2(b: Bundle) -> str:
                 if isinstance(r["judgement"], str) and r["judgement"].strip():
                     out.append(f"- 判定：{r['judgement']}")
                 out.append("")
-        out.append(img(RESULTS / "freeze" / slug(ds) / "figures" / "dg_fig_freeze.png",
+        out.append(img(FREEZE_ROOT / slug(ds) / "figures" / "dg_fig_freeze.png",
                        f"{DS_LABEL.get(ds, ds)}：turnover / frozen_share / 有边用户数"))
         out.append("")
 
@@ -679,7 +692,7 @@ def section_q3(b: Bundle) -> str:
                                         ["bucket", "n", "dndcg_mean", "ci95_lo", "ci95_hi",
                                          "dndcg_pos_rate"]))
                     out.append("")
-        out.append(img(RESULTS / "genre" / "figures" / "dg_fig_genre_gain.png",
+        out.append(img(GENRE_ROOT / "figures" / "dg_fig_genre_gain.png",
                        "ML-1M：图的逐用户收益 vs genre 相似度 / 语义相似度 / 兴趣漂移（五分位）"))
         out.append("")
     else:
@@ -710,7 +723,7 @@ def section_q3(b: Bundle) -> str:
                                         ["bucket", "n", "dndcg_mean", "ci95_lo", "ci95_hi",
                                          "dndcg_pos_rate"]))
                     out.append("")
-        out.append(img(RESULTS / "quality" / slug(ds) / "figures" / "dg_fig_quality_gain.png",
+        out.append(img(QUALITY_ROOT / slug(ds) / "figures" / "dg_fig_quality_gain.png",
                        f"{DS_LABEL.get(ds, ds)}：图的逐用户收益 vs 邻居质量 / 图注入力度（五分位）"))
         out.append("")
 
@@ -850,7 +863,7 @@ def section_limits() -> str:
 
 def section_repro(b: Bundle) -> str:
     n_runs = "—"
-    raw = RESULTS / "raw"
+    raw = RAW_ROOT
     if raw.exists():
         n_runs = str(len(list(raw.rglob("dg_summary.csv"))))
     return f"""## 七、复现与产出清单
@@ -902,9 +915,23 @@ python -X utf8 val_DynamicGraph/dg_report.py
 
 
 def main() -> None:
+    global AGG_ROOT, FREEZE_ROOT, GENRE_ROOT, QUALITY_ROOT, RAW_ROOT
     parser = argparse.ArgumentParser(description="生成最终实验验证报告")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    parser.add_argument("--agg-root", type=Path, default=AGG_ROOT,
+                        help="主对照聚合表根目录（默认 results/aggregated；正式复跑用 results/agg_formal）")
+    parser.add_argument("--freeze-root", type=Path, default=FREEZE_ROOT,
+                        help="冻结归因表根目录（默认 results/freeze）")
+    parser.add_argument("--genre-root", type=Path, default=GENRE_ROOT,
+                        help="ML Genre 诊断表根目录（默认 results/genre）")
+    parser.add_argument("--quality-root", type=Path, default=QUALITY_ROOT,
+                        help="无标签邻居质量诊断表根目录（默认 results/quality）")
+    parser.add_argument("--raw-root", type=Path, default=RAW_ROOT,
+                        help="逐 run 结果根目录（默认 results/raw；正式复跑用 results/raw_formal）")
     args = parser.parse_args()
+    AGG_ROOT, FREEZE_ROOT = args.agg_root, args.freeze_root
+    GENRE_ROOT, QUALITY_ROOT = args.genre_root, args.quality_root
+    RAW_ROOT = args.raw_root
 
     b = Bundle()
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
