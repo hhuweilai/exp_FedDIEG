@@ -89,6 +89,7 @@ VARIANT_SUFFIX=""
 [ -n "$RUN_TAG" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_${RUN_TAG}"
 
 #: 与 dg_common.arm_dir_name 保持一致：static+build_only 的目录名是 static_build<N>
+#: 与 dg_common.arm_dir_name 保持一致：static/periodic 的目录名后缀
 arm_dir_for() {
     local arm="$1" d
     if [ "$arm" = "static" ] && [ -n "$FREEZE_ROUND" ]; then
@@ -160,11 +161,25 @@ else
     echo ""
     T_START=$(date +%s)
     IDX=0
+    #: 我们的进程 -> GPU 的映射；用于"按我们自己的负载"选卡（避免崩溃重排后挤在一张卡上）
+    declare -A OUR_PIDS=()
+    pick_gpu() {
+        local g pid n best="" bestn=99999
+        for g in $(echo "$GPUS" | tr ',' ' '); do
+            n=0
+            for pid in "${!OUR_PIDS[@]}"; do
+                if ! kill -0 "$pid" 2>/dev/null; then unset 'OUR_PIDS[$pid]'; continue; fi
+                [ "${OUR_PIDS[$pid]}" = "$g" ] && n=$((n + 1))
+            done
+            if [ "$n" -lt "$bestn" ]; then bestn=$n; best=$g; fi
+        done
+        echo "$best"
+    }
     for TASK in "${TASKS[@]}"; do
         IFS='|' read -r T_DS T_ARM T_SEED <<< "$TASK"
         while [ "$(jobs -rp | wc -l)" -ge "$SLOTS" ]; do sleep 2; done
 
-        GPU=$(echo "$GPUS" | cut -d, -f$(( (IDX % n_gpus) + 1 )))
+        GPU=$(pick_gpu)
         T_SLUG="$(slug "$T_DS")"
         LOGF="$LOGS/${T_SLUG}_${T_ARM}_seed${T_SEED}.log"
         EXTRA=()
@@ -213,6 +228,7 @@ else
             --device cuda \
             --out-root "$RAW" \
             "${EXTRA[@]}" >"$LOGF" 2>&1 &
+        OUR_PIDS[$!]="$GPU"
         IDX=$((IDX + 1))
     done
     wait
