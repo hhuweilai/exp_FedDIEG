@@ -48,6 +48,10 @@ FREEZE_ROUND="${FREEZE_ROUND:-}"
 REFRESH_ROUNDS="${REFRESH_ROUNDS:-}"
 BUILD_ONLY="${BUILD_ONLY:-0}"
 REFRESH_PHASE="${REFRESH_PHASE:-warmup}"
+GRAPH_STATE="${GRAPH_STATE:-pool}"
+GRAPH_NEW_EDGE="${GRAPH_NEW_EDGE:-zero}"
+RUN_TAG="${RUN_TAG:-}"
+GENRE_NPZ="${GENRE_NPZ:-}"
 EXTRA_ARGS="${EXTRA_ARGS:-}"
 GPUS="${GPUS:-0,1}"
 
@@ -80,15 +84,23 @@ VARIANT_SUFFIX=""
 [ "$GRAPH_MIX" != "1" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_mix${GRAPH_MIX}"
 [ "$RHO" != "0.2" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_rho${RHO}"
 [ "$NEIGHBORS" != "20" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_k${NEIGHBORS}"
+[ "$GRAPH_STATE" != "pool" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_${GRAPH_STATE}"
+[ "$GRAPH_NEW_EDGE" != "zero" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_${GRAPH_NEW_EDGE}"
+[ -n "$RUN_TAG" ] && VARIANT_SUFFIX="${VARIANT_SUFFIX}_${RUN_TAG}"
 
 #: 与 dg_common.arm_dir_name 保持一致：static+build_only 的目录名是 static_build<N>
 arm_dir_for() {
-    local arm="$1"
-    if [ "$BUILD_ONLY" = "1" ] && [ "$arm" = "static" ] && [ -n "$FREEZE_ROUND" ]; then
-        echo "static_build${FREEZE_ROUND}${VARIANT_SUFFIX}"
-        return
+    local arm="$1" d
+    if [ "$arm" = "static" ] && [ -n "$FREEZE_ROUND" ]; then
+        if [ "$BUILD_ONLY" = "1" ]; then d="static_build${FREEZE_ROUND}"; else d="static_at${FREEZE_ROUND}"; fi
+    else
+        d="$arm"
     fi
-    echo "${arm}${VARIANT_SUFFIX}"
+    if [ "$arm" = "periodic" ]; then
+        if [ -n "$REFRESH_ROUNDS" ] && [ "$REFRESH_ROUNDS" != "120" ]; then d="${d}_p${REFRESH_ROUNDS}"; fi
+        if [ "$REFRESH_PHASE" != "warmup" ]; then d="${d}_${REFRESH_PHASE}"; fi
+    fi
+    echo "${d}${VARIANT_SUFFIX}"
 }
 
 echo "=============================================================="
@@ -105,7 +117,7 @@ echo "  输出     : $RAW"
 echo "=============================================================="
 
 # ---- 安全检查：别和正在跑的批次抢同一个结果目录
-if [ "$FORCE" != "1" ] && pgrep -f "val_DynamicGraph/dg_run.py" >/dev/null 2>&1; then
+if [ "$FORCE" != "1" ] && pgrep -f "[v]al_DynamicGraph/dg_run.py" >/dev/null 2>&1; then
     echo ""
     echo "!! 已经有 dg_run.py 在运行（可能就是你之前启动的串行批次）。" >&2
     echo "   两个批次会写同一批结果目录，互相覆盖。" >&2
@@ -168,6 +180,18 @@ else
         fi
         if [ "$REFRESH_PHASE" != "warmup" ] && [ "$T_ARM" = "periodic" ]; then
             EXTRA+=(--refresh-phase "$REFRESH_PHASE")
+        fi
+        if [ "$GRAPH_STATE" != "pool" ]; then
+            EXTRA+=(--graph-state "$GRAPH_STATE")
+        fi
+        if [ "$GRAPH_NEW_EDGE" != "zero" ]; then
+            EXTRA+=(--graph-new-edge "$GRAPH_NEW_EDGE")
+        fi
+        if [ -n "$RUN_TAG" ]; then
+            EXTRA+=(--run-tag "$RUN_TAG")
+        fi
+        if [ -n "$GENRE_NPZ" ]; then
+            EXTRA+=(--genre-npz "$GENRE_NPZ")
         fi
         if [ -n "$EXTRA_ARGS" ]; then
             # shellcheck disable=SC2206
