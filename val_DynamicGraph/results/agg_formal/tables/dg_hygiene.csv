@@ -1,0 +1,21 @@
+﻿dataset,check,ok,detail
+amazon-digital music,协议参数一致（除图以外没有别的差别）,1,一致
+amazon-digital music,图状态（实验变量，允许不同）,1,pool、topk
+amazon-digital music,新边初始化（实验变量，允许不同）,1,warm、zero
+amazon-digital music,个性化层位置（仅性能开关，不改数值）,1,personal_on_cpu=0（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，所以混用不影响可比性）
+amazon-digital music,ECR 定义版本（信息项，不参与失败判定）,1,v2_empty_to_full
+amazon-digital music,每条臂的种子数一致,1,"dynamic:5, dynamic_rho0.8:5, dynamic_rho0.8_topk:5, dynamic_rho0.8_topk_warm:5, dynamic_rho0.8_warm:5, fresh_only:5, nograph:5, onboarding:5, periodic:5, static:5（诊断臂的种子数允许不同）"
+amazon-digital music,NoGraph 的图分支恒为 0,1,max delta_rel=0.000e+00（要求 ≤ 1e-12）
+amazon-digital music,StaticGraph 冻结后边不再变化,1,edge_changed_after_freeze=0（要求 0）
+amazon-digital music,DynamicGraph 预热后每轮都更新,1,max|updates-(global_round-20)|=0
+amazon-digital music,同一窗口内各臂评测用户数一致,1,逐窗口跨臂最大差=0（各窗口人数不同是正常的：3178~3657 人）
+movielens-1m,协议参数一致（除图以外没有别的差别）,1,一致
+movielens-1m,图状态（实验变量，允许不同）,1,pool、topk
+movielens-1m,新边初始化（实验变量，允许不同）,1,warm、zero
+movielens-1m,个性化层位置（仅性能开关，不改数值）,1,personal_on_cpu=0（实测同 seed 下 cpu/gpu 驻留的逐用户 NDCG 与逐轮指标逐位一致，所以混用不影响可比性）
+movielens-1m,ECR 定义版本（信息项，不参与失败判定）,1,v2_empty_to_full
+movielens-1m,每条臂的种子数一致,1,"dynamic:5, dynamic_genre:5, dynamic_mix0.005:1, dynamic_mix0.05:1, dynamic_rho0.8:5, dynamic_rho0.8_topk:5, dynamic_rho0.8_topk_warm:5, dynamic_rho0.8_warm:5, fresh_only:5, nograph:5, onboarding:5, periodic:5, periodic_boundary:5, periodic_p20:3, periodic_p240:3, static:5, static_at120:5, static_build120:5（诊断臂的种子数允许不同）"
+movielens-1m,NoGraph 的图分支恒为 0,1,max delta_rel=0.000e+00（要求 ≤ 1e-12）
+movielens-1m,StaticGraph 冻结后边不再变化,1,edge_changed_after_freeze=0（要求 0）
+movielens-1m,DynamicGraph 预热后每轮都更新,1,max|updates-(global_round-20)|=0
+movielens-1m,同一窗口内各臂评测用户数一致,1,逐窗口跨臂最大差=0（各窗口人数不同是正常的：1421~1763 人）

@@ -1,0 +1,1879 @@
+[2026-11-10 17:52:13] 开始：批次=all，最多 3 轮（每轮跳过已完成 run）
+
+=========== round 1 / 3 ===========
+
+################ phase3_new ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : onboarding fresh_only static periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 12 个任务，4 并发 => 约 3 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[17:52:15] 启动 GPU0 | movielens-1m | onboarding | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed42.log
+[17:52:15] 启动 GPU1 | movielens-1m | fresh_only | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_fresh_only_seed42.log
+[17:52:15] 启动 GPU0 | movielens-1m | static | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed42.log
+[17:52:15] 启动 GPU1 | movielens-1m | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed42.log
+[18:21:44] 启动 GPU0 | movielens-1m | onboarding | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed777.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2013404 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[18:21:48] 启动 GPU0 | movielens-1m | fresh_only | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_fresh_only_seed777.log
+[18:21:48] 启动 GPU0 | movielens-1m | static | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2013574 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[18:21:52] 启动 GPU0 | movielens-1m | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed777.log
+[18:27:40] 启动 GPU1 | movielens-1m | onboarding | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed2024.log
+[18:27:50] 启动 GPU1 | movielens-1m | fresh_only | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_fresh_only_seed2024.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2013795 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[18:38:55] 启动 GPU0 | movielens-1m | static | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed2024.log
+[18:51:34] 启动 GPU0 | movielens-1m | periodic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed2024.log
+
+全部进程结束，墙钟 85 分 5 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | onboarding | seed 42
+  [ok  ] movielens-1m | fresh_only | seed 42
+  [ok  ] movielens-1m | static | seed 42
+  [ok  ] movielens-1m | periodic | seed 42
+  [FAIL] movielens-1m | onboarding | seed 777（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed777.log）
+  [ok  ] movielens-1m | fresh_only | seed 777
+  [FAIL] movielens-1m | static | seed 777（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log）
+  [FAIL] movielens-1m | periodic | seed 777（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed777.log）
+  [ok  ] movielens-1m | onboarding | seed 2024
+  [ok  ] movielens-1m | fresh_only | seed 2024
+  [ok  ] movielens-1m | static | seed 2024
+  [ok  ] movielens-1m | periodic | seed 2024
+失败 3 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ phase3_new done ################
+
+################ core6 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : nograph static periodic dynamic onboarding fresh_only
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | onboarding | seed 42 已完成
+[skip] movielens-1m | fresh_only | seed 42 已完成
+[skip] movielens-1m | fresh_only | seed 777 已完成
+[skip] movielens-1m | onboarding | seed 2024 已完成
+[skip] movielens-1m | fresh_only | seed 2024 已完成
+
+待跑 55 个任务，4 并发 => 约 14 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[19:17:22] 启动 GPU0 | movielens-1m | nograph | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed42.log
+[19:17:22] 启动 GPU1 | movielens-1m | static | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed42.log
+[19:17:22] 启动 GPU0 | movielens-1m | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed42.log
+[19:17:22] 启动 GPU1 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[19:17:26] 启动 GPU1 | movielens-1m | nograph | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed777.log
+[19:45:29] 启动 GPU0 | movielens-1m | static | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2127732 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[19:45:33] 启动 GPU0 | movielens-1m | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed777.log
+[19:46:39] 启动 GPU0 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2129520 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[19:46:55] 启动 GPU0 | movielens-1m | onboarding | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed777.log
+[19:51:17] 启动 GPU1 | movielens-1m | nograph | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed2024.log
+[19:51:19] 启动 GPU1 | movielens-1m | static | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed2024.log
+[19:52:15] 启动 GPU1 | movielens-1m | periodic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed2024.log
+[20:15:53] 启动 GPU0 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[20:17:05] 启动 GPU0 | movielens-1m | nograph | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed1234.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2170867 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[20:23:14] 启动 GPU0 | movielens-1m | static | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed1234.log
+[20:26:04] 启动 GPU1 | movielens-1m | periodic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed1234.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2178792 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[20:26:08] 启动 GPU1 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+[20:27:24] 启动 GPU1 | movielens-1m | onboarding | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed1234.log
+[20:45:02] 启动 GPU0 | movielens-1m | fresh_only | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_fresh_only_seed1234.log
+[20:51:23] 启动 GPU0 | movielens-1m | nograph | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed3407.log
+[21:01:30] 启动 GPU1 | movielens-1m | static | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log
+[21:01:32] 启动 GPU1 | movielens-1m | periodic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed3407.log
+[21:03:04] 启动 GPU1 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+[21:13:51] 启动 GPU0 | movielens-1m | onboarding | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_onboarding_seed3407.log
+[21:19:37] 启动 GPU0 | movielens-1m | fresh_only | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_fresh_only_seed3407.log
+[21:36:43] 启动 GPU1 | amazon-digital music | nograph | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed42.log
+[21:38:41] 启动 GPU1 | amazon-digital music | static | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_static_seed42.log
+[21:43:35] 启动 GPU0 | amazon-digital music | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_periodic_seed42.log
+[21:50:18] 启动 GPU0 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+[22:46:21] 启动 GPU0 | amazon-digital music | onboarding | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed42.log
+[22:47:17] 启动 GPU1 | amazon-digital music | fresh_only | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed42.log
+[22:49:34] 启动 GPU1 | amazon-digital music | nograph | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed777.log
+[22:52:54] 启动 GPU0 | amazon-digital music | static | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_static_seed777.log
+[23:47:57] 启动 GPU0 | amazon-digital music | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_periodic_seed777.log
+[23:53:27] 启动 GPU0 | amazon-digital music | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed777.log
+[00:00:06] 启动 GPU1 | amazon-digital music | onboarding | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed777.log
+[00:00:08] 启动 GPU1 | amazon-digital music | fresh_only | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed777.log
+[00:50:23] 启动 GPU0 | amazon-digital music | nograph | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed2024.log
+[00:56:05] 启动 GPU0 | amazon-digital music | static | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_static_seed2024.log
+[01:13:43] 启动 GPU1 | amazon-digital music | periodic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_periodic_seed2024.log
+[01:14:01] 启动 GPU1 | amazon-digital music | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed2024.log
+[01:49:26] 启动 GPU0 | amazon-digital music | onboarding | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed2024.log
+[01:55:45] 启动 GPU0 | amazon-digital music | fresh_only | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed2024.log
+[02:27:44] 启动 GPU1 | amazon-digital music | nograph | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed1234.log
+[02:27:44] 启动 GPU1 | amazon-digital music | static | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_static_seed1234.log
+[02:36:43] 启动 GPU1 | amazon-digital music | periodic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_periodic_seed1234.log
+[02:52:30] 启动 GPU0 | amazon-digital music | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed1234.log
+[02:58:33] 启动 GPU0 | amazon-digital music | onboarding | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed1234.log
+[02:58:35] 启动 GPU0 | amazon-digital music | fresh_only | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed1234.log
+[03:39:27] 启动 GPU1 | amazon-digital music | nograph | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed3407.log
+[03:49:53] 启动 GPU1 | amazon-digital music | static | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_static_seed3407.log
+[03:55:56] 启动 GPU0 | amazon-digital music | periodic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_periodic_seed3407.log
+[04:01:55] 启动 GPU0 | amazon-digital music | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed3407.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2517708 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[04:12:52] 启动 GPU1 | amazon-digital music | onboarding | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed3407.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 2543837 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[04:12:58] 启动 GPU1 | amazon-digital music | fresh_only | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed3407.log
+
+全部进程结束，墙钟 585 分 46 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | nograph | seed 42
+  [FAIL] movielens-1m | static | seed 42（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed42.log）
+  [ok  ] movielens-1m | periodic | seed 42
+  [ok  ] movielens-1m | dynamic | seed 42
+  [ok  ] movielens-1m | nograph | seed 777
+  [FAIL] movielens-1m | static | seed 777（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log）
+  [ok  ] movielens-1m | periodic | seed 777
+  [FAIL] movielens-1m | dynamic | seed 777（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log）
+  [ok  ] movielens-1m | onboarding | seed 777
+  [FAIL] movielens-1m | nograph | seed 2024（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed2024.log）
+  [ok  ] movielens-1m | static | seed 2024
+  [ok  ] movielens-1m | periodic | seed 2024
+  [FAIL] movielens-1m | dynamic | seed 2024（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log）
+  [ok  ] movielens-1m | nograph | seed 1234
+  [ok  ] movielens-1m | static | seed 1234
+  [FAIL] movielens-1m | periodic | seed 1234（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed1234.log）
+  [ok  ] movielens-1m | dynamic | seed 1234
+  [ok  ] movielens-1m | onboarding | seed 1234
+  [ok  ] movielens-1m | fresh_only | seed 1234
+  [ok  ] movielens-1m | nograph | seed 3407
+  [FAIL] movielens-1m | static | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log）
+  [ok  ] movielens-1m | periodic | seed 3407
+  [ok  ] movielens-1m | dynamic | seed 3407
+  [ok  ] movielens-1m | onboarding | seed 3407
+  [ok  ] movielens-1m | fresh_only | seed 3407
+  [ok  ] amazon-digital music | nograph | seed 42
+  [ok  ] amazon-digital music | static | seed 42
+  [ok  ] amazon-digital music | periodic | seed 42
+  [ok  ] amazon-digital music | dynamic | seed 42
+  [ok  ] amazon-digital music | onboarding | seed 42
+  [ok  ] amazon-digital music | fresh_only | seed 42
+  [ok  ] amazon-digital music | nograph | seed 777
+  [ok  ] amazon-digital music | static | seed 777
+  [ok  ] amazon-digital music | periodic | seed 777
+  [ok  ] amazon-digital music | dynamic | seed 777
+  [ok  ] amazon-digital music | onboarding | seed 777
+  [ok  ] amazon-digital music | fresh_only | seed 777
+  [ok  ] amazon-digital music | nograph | seed 2024
+  [ok  ] amazon-digital music | static | seed 2024
+  [ok  ] amazon-digital music | periodic | seed 2024
+  [ok  ] amazon-digital music | dynamic | seed 2024
+  [ok  ] amazon-digital music | onboarding | seed 2024
+  [ok  ] amazon-digital music | fresh_only | seed 2024
+  [FAIL] amazon-digital music | nograph | seed 1234（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed1234.log）
+  [ok  ] amazon-digital music | static | seed 1234
+  [ok  ] amazon-digital music | periodic | seed 1234
+  [ok  ] amazon-digital music | dynamic | seed 1234
+  [FAIL] amazon-digital music | onboarding | seed 1234（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed1234.log）
+  [ok  ] amazon-digital music | fresh_only | seed 1234
+  [FAIL] amazon-digital music | nograph | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed3407.log）
+  [ok  ] amazon-digital music | static | seed 3407
+  [ok  ] amazon-digital music | periodic | seed 3407
+  [ok  ] amazon-digital music | dynamic | seed 3407
+  [FAIL] amazon-digital music | onboarding | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed3407.log）
+  [FAIL] amazon-digital music | fresh_only | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed3407.log）
+失败 12 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ core6 done ################
+
+################ static_at120 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : static
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 5 个任务，4 并发 => 约 2 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[05:03:10] 启动 GPU0 | movielens-1m | static | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed42.log
+[05:03:10] 启动 GPU1 | movielens-1m | static | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log
+[05:03:10] 启动 GPU0 | movielens-1m | static | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed2024.log
+[05:03:10] 启动 GPU1 | movielens-1m | static | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed1234.log
+[05:31:36] 启动 GPU0 | movielens-1m | static | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log
+
+全部进程结束，墙钟 50 分 44 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | static | seed 42
+  [ok  ] movielens-1m | static | seed 777
+  [ok  ] movielens-1m | static | seed 2024
+  [ok  ] movielens-1m | static | seed 1234
+  [ok  ] movielens-1m | static | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ static_at120 done ################
+
+################ static_build120 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : static
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | static_build120 | seed 42 已完成
+[skip] movielens-1m | static_build120 | seed 2024 已完成
+
+待跑 3 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[05:53:55] 启动 GPU0 | movielens-1m | static | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log
+[05:53:55] 启动 GPU1 | movielens-1m | static | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed1234.log
+[05:53:55] 启动 GPU0 | movielens-1m | static | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log
+
+全部进程结束，墙钟 27 分 32 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | static | seed 777
+  [ok  ] movielens-1m | static | seed 1234
+  [FAIL] movielens-1m | static | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log）
+失败 1 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ static_build120 done ################
+
+################ periodic_boundary ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_boundary | seed 42 已完成
+[skip] movielens-1m | periodic_boundary | seed 2024 已完成
+
+待跑 3 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[06:21:29] 启动 GPU0 | movielens-1m | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed777.log
+[06:21:29] 启动 GPU1 | movielens-1m | periodic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed1234.log
+[06:21:29] 启动 GPU0 | movielens-1m | periodic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed3407.log
+
+全部进程结束，墙钟 29 分 7 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | periodic | seed 777
+  [ok  ] movielens-1m | periodic | seed 1234
+  [ok  ] movielens-1m | periodic | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_boundary done ################
+
+################ periodic_p20 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 3 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[06:50:38] 启动 GPU0 | movielens-1m | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed42.log
+[06:50:38] 启动 GPU1 | movielens-1m | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed777.log
+[06:50:38] 启动 GPU0 | movielens-1m | periodic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed2024.log
+
+全部进程结束，墙钟 29 分 41 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | periodic | seed 42
+  [ok  ] movielens-1m | periodic | seed 777
+  [ok  ] movielens-1m | periodic | seed 2024
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_p20 done ################
+
+################ periodic_p240 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 3 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[07:20:21] 启动 GPU0 | movielens-1m | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed42.log
+[07:20:21] 启动 GPU1 | movielens-1m | periodic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed777.log
+[07:20:21] 启动 GPU0 | movielens-1m | periodic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed2024.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 234: 2673313 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+
+全部进程结束，墙钟 28 分 22 秒
+--- 结果核对 ---
+  [FAIL] movielens-1m | periodic | seed 42（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed42.log）
+  [ok  ] movielens-1m | periodic | seed 777
+  [ok  ] movielens-1m | periodic | seed 2024
+失败 1 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_p240 done ################
+
+################ genre ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 5 个任务，4 并发 => 约 2 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[07:48:45] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[07:48:45] 启动 GPU1 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+[07:48:45] 启动 GPU0 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[07:48:45] 启动 GPU1 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+[07:51:09] 启动 GPU0 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+
+全部进程结束，墙钟 34 分 49 秒
+--- 结果核对 ---
+  [FAIL] movielens-1m | dynamic | seed 42（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log）
+  [ok  ] movielens-1m | dynamic | seed 777
+  [ok  ] movielens-1m | dynamic | seed 2024
+  [ok  ] movielens-1m | dynamic | seed 1234
+  [FAIL] movielens-1m | dynamic | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log）
+失败 2 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ genre done ################
+
+################ grid_pool_zero ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 10 个任务，4 并发 => 约 3 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[08:23:35] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[08:23:35] 启动 GPU1 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+[08:23:35] 启动 GPU0 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[08:23:35] 启动 GPU1 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+[08:53:38] 启动 GPU0 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+[08:53:52] 启动 GPU0 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+[08:56:14] 启动 GPU1 | amazon-digital music | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed777.log
+[08:56:16] 启动 GPU1 | amazon-digital music | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed2024.log
+[09:24:05] 启动 GPU0 | amazon-digital music | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed1234.log
+[09:56:48] 启动 GPU0 | amazon-digital music | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed3407.log
+
+全部进程结束，墙钟 146 分 47 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+  [ok  ] movielens-1m | dynamic | seed 777
+  [ok  ] movielens-1m | dynamic | seed 2024
+  [ok  ] movielens-1m | dynamic | seed 1234
+  [ok  ] movielens-1m | dynamic | seed 3407
+  [ok  ] amazon-digital music | dynamic | seed 42
+  [ok  ] amazon-digital music | dynamic | seed 777
+  [ok  ] amazon-digital music | dynamic | seed 2024
+  [ok  ] amazon-digital music | dynamic | seed 1234
+  [ok  ] amazon-digital music | dynamic | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_pool_zero done ################
+
+################ grid_pool_warm ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 10 个任务，4 并发 => 约 3 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[10:50:24] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[10:50:24] 启动 GPU1 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+[10:50:24] 启动 GPU0 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[10:50:24] 启动 GPU1 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+[11:20:47] 启动 GPU0 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+[11:20:59] 启动 GPU0 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+[11:21:01] 启动 GPU0 | amazon-digital music | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed777.log
+[11:21:07] 启动 GPU1 | amazon-digital music | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed2024.log
+[11:21:11] 启动 GPU1 | amazon-digital music | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed1234.log
+[11:51:00] 启动 GPU0 | amazon-digital music | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed3407.log
+
+全部进程结束，墙钟 115 分 38 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+  [ok  ] movielens-1m | dynamic | seed 777
+  [ok  ] movielens-1m | dynamic | seed 2024
+  [ok  ] movielens-1m | dynamic | seed 1234
+  [ok  ] movielens-1m | dynamic | seed 3407
+  [FAIL] amazon-digital music | dynamic | seed 42（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log）
+  [ok  ] amazon-digital music | dynamic | seed 777
+  [ok  ] amazon-digital music | dynamic | seed 2024
+  [ok  ] amazon-digital music | dynamic | seed 1234
+  [ok  ] amazon-digital music | dynamic | seed 3407
+失败 1 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_pool_warm done ################
+
+################ grid_topk_zero ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 10 个任务，4 并发 => 约 3 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[12:46:03] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[12:46:03] 启动 GPU1 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+[12:46:03] 启动 GPU0 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[12:46:03] 启动 GPU1 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+[13:15:40] 启动 GPU0 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+[13:15:46] 启动 GPU0 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+[13:16:50] 启动 GPU1 | amazon-digital music | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed777.log
+[13:16:56] 启动 GPU1 | amazon-digital music | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed2024.log
+[13:45:45] 启动 GPU0 | amazon-digital music | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed1234.log
+[14:17:58] 启动 GPU0 | amazon-digital music | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed3407.log
+
+全部进程结束，墙钟 145 分 14 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+  [ok  ] movielens-1m | dynamic | seed 777
+  [ok  ] movielens-1m | dynamic | seed 2024
+  [ok  ] movielens-1m | dynamic | seed 1234
+  [ok  ] movielens-1m | dynamic | seed 3407
+  [ok  ] amazon-digital music | dynamic | seed 42
+  [ok  ] amazon-digital music | dynamic | seed 777
+  [ok  ] amazon-digital music | dynamic | seed 2024
+  [ok  ] amazon-digital music | dynamic | seed 1234
+  [ok  ] amazon-digital music | dynamic | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_topk_zero done ################
+
+################ grid_topk_warm ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 10 个任务，4 并发 => 约 3 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[15:11:19] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[15:11:19] 启动 GPU1 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+[15:11:19] 启动 GPU0 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[15:11:19] 启动 GPU1 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 3012392 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[15:11:25] 启动 GPU1 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+[15:41:36] 启动 GPU0 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+[15:41:38] 启动 GPU0 | amazon-digital music | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed777.log
+[15:41:56] 启动 GPU0 | amazon-digital music | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed2024.log
+[15:42:16] 启动 GPU1 | amazon-digital music | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed1234.log
+[15:42:16] 启动 GPU1 | amazon-digital music | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed3407.log
+
+全部进程结束，墙钟 96 分 59 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+  [ok  ] movielens-1m | dynamic | seed 777
+  [ok  ] movielens-1m | dynamic | seed 2024
+  [FAIL] movielens-1m | dynamic | seed 1234（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log）
+  [ok  ] movielens-1m | dynamic | seed 3407
+  [FAIL] amazon-digital music | dynamic | seed 42（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log）
+  [ok  ] amazon-digital music | dynamic | seed 777
+  [ok  ] amazon-digital music | dynamic | seed 2024
+  [ok  ] amazon-digital music | dynamic | seed 1234
+  [ok  ] amazon-digital music | dynamic | seed 3407
+失败 2 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_topk_warm done ################
+
+################ anchor_mix0005 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=0.005
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 1 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[16:48:20] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+
+全部进程结束，墙钟 22 分 26 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ anchor_mix0005 done ################
+
+################ anchor_mix005 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=0.05
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+
+待跑 1 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[17:10:48] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+
+全部进程结束，墙钟 22 分 11 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ anchor_mix005 done ################
+
+==============================================================
+批次结束。结果目录：/home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+已完成 run 数：109
+==============================================================
+=========== round 1 done ===========
+
+=========== round 2 / 3 ===========
+
+################ phase3_new ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : onboarding fresh_only static periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | onboarding | seed 42 已完成
+[skip] movielens-1m | fresh_only | seed 42 已完成
+[skip] movielens-1m | static_build120 | seed 42 已完成
+[skip] movielens-1m | periodic_boundary | seed 42 已完成
+[skip] movielens-1m | onboarding | seed 777 已完成
+[skip] movielens-1m | fresh_only | seed 777 已完成
+[skip] movielens-1m | static_build120 | seed 777 已完成
+[skip] movielens-1m | periodic_boundary | seed 777 已完成
+[skip] movielens-1m | onboarding | seed 2024 已完成
+[skip] movielens-1m | fresh_only | seed 2024 已完成
+[skip] movielens-1m | static_build120 | seed 2024 已完成
+[skip] movielens-1m | periodic_boundary | seed 2024 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ phase3_new done ################
+
+################ core6 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : nograph static periodic dynamic onboarding fresh_only
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | nograph | seed 42 已完成
+[skip] movielens-1m | periodic | seed 42 已完成
+[skip] movielens-1m | dynamic | seed 42 已完成
+[skip] movielens-1m | onboarding | seed 42 已完成
+[skip] movielens-1m | fresh_only | seed 42 已完成
+[skip] movielens-1m | nograph | seed 777 已完成
+[skip] movielens-1m | periodic | seed 777 已完成
+[skip] movielens-1m | onboarding | seed 777 已完成
+[skip] movielens-1m | fresh_only | seed 777 已完成
+[skip] movielens-1m | static | seed 2024 已完成
+[skip] movielens-1m | periodic | seed 2024 已完成
+[skip] movielens-1m | onboarding | seed 2024 已完成
+[skip] movielens-1m | fresh_only | seed 2024 已完成
+[skip] movielens-1m | nograph | seed 1234 已完成
+[skip] movielens-1m | static | seed 1234 已完成
+[skip] movielens-1m | dynamic | seed 1234 已完成
+[skip] movielens-1m | onboarding | seed 1234 已完成
+[skip] movielens-1m | fresh_only | seed 1234 已完成
+[skip] movielens-1m | nograph | seed 3407 已完成
+[skip] movielens-1m | periodic | seed 3407 已完成
+[skip] movielens-1m | dynamic | seed 3407 已完成
+[skip] movielens-1m | onboarding | seed 3407 已完成
+[skip] movielens-1m | fresh_only | seed 3407 已完成
+[skip] amazon-digital music | nograph | seed 42 已完成
+[skip] amazon-digital music | static | seed 42 已完成
+[skip] amazon-digital music | periodic | seed 42 已完成
+[skip] amazon-digital music | dynamic | seed 42 已完成
+[skip] amazon-digital music | onboarding | seed 42 已完成
+[skip] amazon-digital music | fresh_only | seed 42 已完成
+[skip] amazon-digital music | nograph | seed 777 已完成
+[skip] amazon-digital music | static | seed 777 已完成
+[skip] amazon-digital music | periodic | seed 777 已完成
+[skip] amazon-digital music | dynamic | seed 777 已完成
+[skip] amazon-digital music | onboarding | seed 777 已完成
+[skip] amazon-digital music | fresh_only | seed 777 已完成
+[skip] amazon-digital music | nograph | seed 2024 已完成
+[skip] amazon-digital music | static | seed 2024 已完成
+[skip] amazon-digital music | periodic | seed 2024 已完成
+[skip] amazon-digital music | dynamic | seed 2024 已完成
+[skip] amazon-digital music | onboarding | seed 2024 已完成
+[skip] amazon-digital music | fresh_only | seed 2024 已完成
+[skip] amazon-digital music | static | seed 1234 已完成
+[skip] amazon-digital music | periodic | seed 1234 已完成
+[skip] amazon-digital music | dynamic | seed 1234 已完成
+[skip] amazon-digital music | fresh_only | seed 1234 已完成
+[skip] amazon-digital music | static | seed 3407 已完成
+[skip] amazon-digital music | periodic | seed 3407 已完成
+[skip] amazon-digital music | dynamic | seed 3407 已完成
+
+待跑 12 个任务，4 并发 => 约 3 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[17:33:03] 启动 GPU0 | movielens-1m | static | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed42.log
+[17:33:03] 启动 GPU1 | movielens-1m | static | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed777.log
+[17:33:03] 启动 GPU0 | movielens-1m | dynamic | seed 777 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed777.log
+[17:33:03] 启动 GPU1 | movielens-1m | nograph | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_nograph_seed2024.log
+[18:01:40] 启动 GPU1 | movielens-1m | dynamic | seed 2024 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed2024.log
+[18:02:06] 启动 GPU1 | movielens-1m | periodic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed1234.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 178: 3137449 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+[18:02:10] 启动 GPU1 | movielens-1m | static | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log
+[18:02:12] 启动 GPU0 | amazon-digital music | nograph | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed1234.log
+[18:02:32] 启动 GPU0 | amazon-digital music | onboarding | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed1234.log
+[18:31:56] 启动 GPU1 | amazon-digital music | nograph | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_nograph_seed3407.log
+[18:32:06] 启动 GPU1 | amazon-digital music | onboarding | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_onboarding_seed3407.log
+[19:01:15] 启动 GPU0 | amazon-digital music | fresh_only | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed3407.log
+/home/wl/exp_FedDIEG/val_DynamicGraph/dg_run_parallel.sh: line 234: 3199227 Segmentation fault      (core dumped) CUDA_VISIBLE_DEVICES="$GPU" "$PYTHON" -X utf8 "$RUNNER" --dataset "$T_DS" --arm "$T_ARM" --seed "$T_SEED" --rho "$RHO" --neighbors "$NEIGHBORS" --graph-mix "$GRAPH_MIX" --num-windows "$NUM_WINDOWS" --rounds-per-window "$ROUNDS" --participation-rate "$PARTICIPATION" --probe-size "$PROBE_SIZE" --device cuda --out-root "$RAW" "${EXTRA[@]}" > "$LOGF" 2>&1
+
+全部进程结束，墙钟 120 分 30 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | static | seed 42
+  [ok  ] movielens-1m | static | seed 777
+  [ok  ] movielens-1m | dynamic | seed 777
+  [ok  ] movielens-1m | nograph | seed 2024
+  [ok  ] movielens-1m | dynamic | seed 2024
+  [FAIL] movielens-1m | periodic | seed 1234（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed1234.log）
+  [ok  ] movielens-1m | static | seed 3407
+  [ok  ] amazon-digital music | nograph | seed 1234
+  [ok  ] amazon-digital music | onboarding | seed 1234
+  [ok  ] amazon-digital music | nograph | seed 3407
+  [ok  ] amazon-digital music | onboarding | seed 3407
+  [FAIL] amazon-digital music | fresh_only | seed 3407（日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed3407.log）
+失败 2 个任务
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ core6 done ################
+
+################ static_at120 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : static
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | static_at120 | seed 42 已完成
+[skip] movielens-1m | static_at120 | seed 777 已完成
+[skip] movielens-1m | static_at120 | seed 2024 已完成
+[skip] movielens-1m | static_at120 | seed 1234 已完成
+[skip] movielens-1m | static_at120 | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ static_at120 done ################
+
+################ static_build120 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : static
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | static_build120 | seed 42 已完成
+[skip] movielens-1m | static_build120 | seed 777 已完成
+[skip] movielens-1m | static_build120 | seed 2024 已完成
+[skip] movielens-1m | static_build120 | seed 1234 已完成
+
+待跑 1 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[19:33:37] 启动 GPU0 | movielens-1m | static | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_static_seed3407.log
+
+全部进程结束，墙钟 21 分 28 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | static | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ static_build120 done ################
+
+################ periodic_boundary ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_boundary | seed 42 已完成
+[skip] movielens-1m | periodic_boundary | seed 777 已完成
+[skip] movielens-1m | periodic_boundary | seed 2024 已完成
+[skip] movielens-1m | periodic_boundary | seed 1234 已完成
+[skip] movielens-1m | periodic_boundary | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_boundary done ################
+
+################ periodic_p20 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_p20 | seed 42 已完成
+[skip] movielens-1m | periodic_p20 | seed 777 已完成
+[skip] movielens-1m | periodic_p20 | seed 2024 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_p20 done ################
+
+################ periodic_p240 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_p240 | seed 777 已完成
+[skip] movielens-1m | periodic_p240 | seed 2024 已完成
+
+待跑 1 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[19:55:11] 启动 GPU0 | movielens-1m | periodic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed42.log
+
+全部进程结束，墙钟 21 分 48 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | periodic | seed 42
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_p240 done ################
+
+################ genre ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_genre | seed 777 已完成
+[skip] movielens-1m | dynamic_genre | seed 2024 已完成
+[skip] movielens-1m | dynamic_genre | seed 1234 已完成
+
+待跑 2 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[20:17:01] 启动 GPU0 | movielens-1m | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed42.log
+[20:17:01] 启动 GPU1 | movielens-1m | dynamic | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed3407.log
+
+全部进程结束，墙钟 22 分 7 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 42
+  [ok  ] movielens-1m | dynamic | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ genre done ################
+
+################ grid_pool_zero ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8 | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 42 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_pool_zero done ################
+
+################ grid_pool_warm ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 3407 已完成
+
+待跑 1 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[20:39:12] 启动 GPU0 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+
+全部进程结束，墙钟 46 分 19 秒
+--- 结果核对 ---
+  [ok  ] amazon-digital music | dynamic | seed 42
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_pool_warm done ################
+
+################ grid_topk_zero ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 42 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_topk_zero done ################
+
+################ grid_topk_warm ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 3407 已完成
+
+待跑 2 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[21:25:35] 启动 GPU0 | movielens-1m | dynamic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_dynamic_seed1234.log
+[21:25:35] 启动 GPU1 | amazon-digital music | dynamic | seed 42 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_dynamic_seed42.log
+
+全部进程结束，墙钟 46 分 45 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | dynamic | seed 1234
+  [ok  ] amazon-digital music | dynamic | seed 42
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_topk_warm done ################
+
+################ anchor_mix0005 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=0.005
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_mix0.005 | seed 42 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ anchor_mix0005 done ################
+
+################ anchor_mix005 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=0.05
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_mix0.05 | seed 42 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ anchor_mix005 done ################
+
+==============================================================
+批次结束。结果目录：/home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+已完成 run 数：126
+==============================================================
+=========== round 2 done ===========
+
+=========== round 3 / 3 ===========
+
+################ phase3_new ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : onboarding fresh_only static periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | onboarding | seed 42 已完成
+[skip] movielens-1m | fresh_only | seed 42 已完成
+[skip] movielens-1m | static_build120 | seed 42 已完成
+[skip] movielens-1m | periodic_boundary | seed 42 已完成
+[skip] movielens-1m | onboarding | seed 777 已完成
+[skip] movielens-1m | fresh_only | seed 777 已完成
+[skip] movielens-1m | static_build120 | seed 777 已完成
+[skip] movielens-1m | periodic_boundary | seed 777 已完成
+[skip] movielens-1m | onboarding | seed 2024 已完成
+[skip] movielens-1m | fresh_only | seed 2024 已完成
+[skip] movielens-1m | static_build120 | seed 2024 已完成
+[skip] movielens-1m | periodic_boundary | seed 2024 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ phase3_new done ################
+
+################ core6 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : nograph static periodic dynamic onboarding fresh_only
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | nograph | seed 42 已完成
+[skip] movielens-1m | static | seed 42 已完成
+[skip] movielens-1m | periodic | seed 42 已完成
+[skip] movielens-1m | dynamic | seed 42 已完成
+[skip] movielens-1m | onboarding | seed 42 已完成
+[skip] movielens-1m | fresh_only | seed 42 已完成
+[skip] movielens-1m | nograph | seed 777 已完成
+[skip] movielens-1m | static | seed 777 已完成
+[skip] movielens-1m | periodic | seed 777 已完成
+[skip] movielens-1m | dynamic | seed 777 已完成
+[skip] movielens-1m | onboarding | seed 777 已完成
+[skip] movielens-1m | fresh_only | seed 777 已完成
+[skip] movielens-1m | nograph | seed 2024 已完成
+[skip] movielens-1m | static | seed 2024 已完成
+[skip] movielens-1m | periodic | seed 2024 已完成
+[skip] movielens-1m | dynamic | seed 2024 已完成
+[skip] movielens-1m | onboarding | seed 2024 已完成
+[skip] movielens-1m | fresh_only | seed 2024 已完成
+[skip] movielens-1m | nograph | seed 1234 已完成
+[skip] movielens-1m | static | seed 1234 已完成
+[skip] movielens-1m | dynamic | seed 1234 已完成
+[skip] movielens-1m | onboarding | seed 1234 已完成
+[skip] movielens-1m | fresh_only | seed 1234 已完成
+[skip] movielens-1m | nograph | seed 3407 已完成
+[skip] movielens-1m | static | seed 3407 已完成
+[skip] movielens-1m | periodic | seed 3407 已完成
+[skip] movielens-1m | dynamic | seed 3407 已完成
+[skip] movielens-1m | onboarding | seed 3407 已完成
+[skip] movielens-1m | fresh_only | seed 3407 已完成
+[skip] amazon-digital music | nograph | seed 42 已完成
+[skip] amazon-digital music | static | seed 42 已完成
+[skip] amazon-digital music | periodic | seed 42 已完成
+[skip] amazon-digital music | dynamic | seed 42 已完成
+[skip] amazon-digital music | onboarding | seed 42 已完成
+[skip] amazon-digital music | fresh_only | seed 42 已完成
+[skip] amazon-digital music | nograph | seed 777 已完成
+[skip] amazon-digital music | static | seed 777 已完成
+[skip] amazon-digital music | periodic | seed 777 已完成
+[skip] amazon-digital music | dynamic | seed 777 已完成
+[skip] amazon-digital music | onboarding | seed 777 已完成
+[skip] amazon-digital music | fresh_only | seed 777 已完成
+[skip] amazon-digital music | nograph | seed 2024 已完成
+[skip] amazon-digital music | static | seed 2024 已完成
+[skip] amazon-digital music | periodic | seed 2024 已完成
+[skip] amazon-digital music | dynamic | seed 2024 已完成
+[skip] amazon-digital music | onboarding | seed 2024 已完成
+[skip] amazon-digital music | fresh_only | seed 2024 已完成
+[skip] amazon-digital music | nograph | seed 1234 已完成
+[skip] amazon-digital music | static | seed 1234 已完成
+[skip] amazon-digital music | periodic | seed 1234 已完成
+[skip] amazon-digital music | dynamic | seed 1234 已完成
+[skip] amazon-digital music | onboarding | seed 1234 已完成
+[skip] amazon-digital music | fresh_only | seed 1234 已完成
+[skip] amazon-digital music | nograph | seed 3407 已完成
+[skip] amazon-digital music | static | seed 3407 已完成
+[skip] amazon-digital music | periodic | seed 3407 已完成
+[skip] amazon-digital music | dynamic | seed 3407 已完成
+[skip] amazon-digital music | onboarding | seed 3407 已完成
+
+待跑 2 个任务，4 并发 => 约 1 轮。
+参考耗时：nograph 约 13~15 分钟/次，dynamic 约 25~30 分钟/次（单进程基准外推）。
+
+[22:12:28] 启动 GPU0 | movielens-1m | periodic | seed 1234 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/movielens-1m_periodic_seed1234.log
+[22:12:28] 启动 GPU1 | amazon-digital music | fresh_only | seed 3407 -> /home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/amazon-digital_music_fresh_only_seed3407.log
+
+全部进程结束，墙钟 48 分 5 秒
+--- 结果核对 ---
+  [ok  ] movielens-1m | periodic | seed 1234
+  [ok  ] amazon-digital music | fresh_only | seed 3407
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ core6 done ################
+
+################ static_at120 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : static
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | static_at120 | seed 42 已完成
+[skip] movielens-1m | static_at120 | seed 777 已完成
+[skip] movielens-1m | static_at120 | seed 2024 已完成
+[skip] movielens-1m | static_at120 | seed 1234 已完成
+[skip] movielens-1m | static_at120 | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ static_at120 done ################
+
+################ static_build120 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : static
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | static_build120 | seed 42 已完成
+[skip] movielens-1m | static_build120 | seed 777 已完成
+[skip] movielens-1m | static_build120 | seed 2024 已完成
+[skip] movielens-1m | static_build120 | seed 1234 已完成
+[skip] movielens-1m | static_build120 | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ static_build120 done ################
+
+################ periodic_boundary ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_boundary | seed 42 已完成
+[skip] movielens-1m | periodic_boundary | seed 777 已完成
+[skip] movielens-1m | periodic_boundary | seed 2024 已完成
+[skip] movielens-1m | periodic_boundary | seed 1234 已完成
+[skip] movielens-1m | periodic_boundary | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_boundary done ################
+
+################ periodic_p20 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_p20 | seed 42 已完成
+[skip] movielens-1m | periodic_p20 | seed 777 已完成
+[skip] movielens-1m | periodic_p20 | seed 2024 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_p20 done ################
+
+################ periodic_p240 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : periodic
+  种子     : 42 777 2024
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | periodic_p240 | seed 42 已完成
+[skip] movielens-1m | periodic_p240 | seed 777 已完成
+[skip] movielens-1m | periodic_p240 | seed 2024 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ periodic_p240 done ################
+
+################ genre ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_genre | seed 42 已完成
+[skip] movielens-1m | dynamic_genre | seed 777 已完成
+[skip] movielens-1m | dynamic_genre | seed 2024 已完成
+[skip] movielens-1m | dynamic_genre | seed 1234 已完成
+[skip] movielens-1m | dynamic_genre | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ genre done ################
+
+################ grid_pool_zero ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8 | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8 | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 42 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8 | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_pool_zero done ################
+
+################ grid_pool_warm ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8_warm | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 42 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8_warm | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_pool_warm done ################
+
+################ grid_topk_zero ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 42 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_topk_zero done ################
+
+################ grid_topk_warm ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m,amazon-digital music
+  臂       : dynamic
+  种子     : 42 777 2024 1234 3407
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.8 neighbors=20 graph_mix=1
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 42 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 777 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 2024 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 1234 已完成
+[skip] movielens-1m | dynamic_rho0.8_topk_warm | seed 3407 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 42 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 777 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 2024 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 1234 已完成
+[skip] amazon-digital music | dynamic_rho0.8_topk_warm | seed 3407 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ grid_topk_warm done ################
+
+################ anchor_mix0005 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=0.005
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_mix0.005 | seed 42 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ anchor_mix0005 done ################
+
+################ anchor_mix005 ################
+==============================================================
+val_DynamicGraph 并行版
+  解释器   : /home/wl/.venv-feddieg/bin/python
+  数据集   : movielens-1m
+  臂       : dynamic
+  种子     : 42
+  规模     : 5 窗口 x 120 轮 | 参与率 0.1
+  图       : rho=0.2 neighbors=20 graph_mix=0.05
+  并行     : 每卡 2 个进程 x 2 张卡（0,1）= 4 并发
+  个性化层 : GPU 驻留（快）
+  输出     : /home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+==============================================================
+=== 环境自检 ===
+  python 3.12.3 | torch 2.15.0+cu132 | cuda True
+  GPU 数: 2
+[skip] movielens-1m | dynamic_mix0.05 | seed 42 已完成
+没有需要跑的任务。
+
+==============================================================
+结果：
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/dg_report.md
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_verdict.csv
+  /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/figures/dg_fig_arms_*.png
+  逐 run 日志：/home/wl/exp_FedDIEG/val_DynamicGraph/results/logs_formal/
+==============================================================
+################ anchor_mix005 done ################
+
+==============================================================
+批次结束。结果目录：/home/wl/exp_FedDIEG/val_DynamicGraph/results/raw_formal
+已完成 run 数：128
+==============================================================
+=========== round 3 done ===========
+[2026-11-11 23:00:57] 全部轮次结束

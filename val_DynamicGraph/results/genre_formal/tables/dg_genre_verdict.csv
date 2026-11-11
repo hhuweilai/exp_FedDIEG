@@ -1,0 +1,7 @@
+﻿verdict_id,question,value,evidence,judgement
+①,图选出的邻居，在真实 genre 空间是否比随机用户更像自己？,0.05384,"genre_diff=0.0538（95%CI [0.0531, 0.0546]，为正的用户占比 0.774）；genre_lift=1.085；去公共成分后 genrec_diff=0.1517；语义 sem_lift=3.343",是：邻居的 genre 相似度显著高于随机基线
+②,服务器学到的兴趣相似度，与真实 genre 相似度是否一致？,0.35795,"逐用户 corr(ΔNDCG, sem_diff)：Spearman=0.0414（p=0.000, n=39480）；corr(genre_diff, sem_diff)：Spearman=0.3580（p=0.000, n=39480）",只有弱相关：语义相似度包含了 genre 之外的东西
+③,**genre 相似度越高，图带来的推荐收益是否越大？**（核心检验）,0.02006,"corr(ΔNDCG, genre_diff)：Spearman=0.0201（p=0.000, n=39480）；corr(ΔNDCG, genrec_diff)：Spearman=0.0238（p=0.000）；按 genre_diff 五分位：Q1=0.0085(n=7896)，Q2=0.0088(n=7896)，Q3=0.0123(n=7896)，Q4=0.0213(n=7896)，Q5=0.0177(n=7896)；最高分位 − 最低分位 = +0.0092",是：邻居的 genre 相似度越高，图带来的收益越大
+④,图的收益是否集中在「兴趣变化大 / 兴趣分散」的用户上？,0.02371,"corr(ΔNDCG, genre_drift)：Spearman=0.0237（p=0.022）；按 genre_drift 五分位：Q1=0.0175，Q2=0.0177，Q3=0.0271，Q4=0.0278，Q5=0.0296；corr(ΔNDCG, genre_entropy)：Spearman=-0.0228（p=0.000）（drift 口径：本窗口行为 vs 之前历史，见 compute_interest_drift）",是：兴趣漂移越大，图的收益越大（图主要在帮兴趣确实在变的用户）
+⑤,（对照）服务器语义相似度与收益的关系,,"corr(ΔNDCG, sem_diff)：Spearman=0.0414（p=0.000）；按 sem_diff 五分位：Q1=0.0015，Q2=0.0075，Q3=0.0166，Q4=0.0201，Q5=0.0230",与 ③ 对比：如果语义相似度相关而 genre 不相关，说明收益来自 genre 之外的因素
+⑥,一句话结论,,average ΔNDCG = 0.0137（n=39490 个 用户×窗口 观测；ΔNDCG>0 的比例 0.144）,genre 对齐能解释**收益幅度的一部分**（五分位 Q1→Q5 差 +0.0092，已接近全样本平均收益 +0.0137），但**预测不了单个用户**（逐用户 Spearman 只有 +0.020，NDCG 太稀疏）—— 两个层次要分开说；注意 ⑤ 显示「学到语义相似度」与收益的关系比 genre 更强

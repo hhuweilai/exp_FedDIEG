@@ -1,0 +1,475 @@
+﻿dataset,metric,contrast,seed,delta_mean,n_windows
+amazon-digital music,hr_win_mean,dynamic_minus_fresh_only,42,0.00013506019338554442,5
+amazon-digital music,hr_win_mean,dynamic_minus_fresh_only,777,-3.9794276698928986e-05,5
+amazon-digital music,hr_win_mean,dynamic_minus_fresh_only,1234,0.0002639419440438551,5
+amazon-digital music,hr_win_mean,dynamic_minus_fresh_only,2024,4.8363634631382044e-05,5
+amazon-digital music,hr_win_mean,dynamic_minus_fresh_only,3407,3.085868393828961e-05,5
+amazon-digital music,hr_win_mean,dynamic_minus_nograph,42,0.02295457082788589,5
+amazon-digital music,hr_win_mean,dynamic_minus_nograph,777,0.027203306564065183,5
+amazon-digital music,hr_win_mean,dynamic_minus_nograph,1234,0.030112150310029444,5
+amazon-digital music,hr_win_mean,dynamic_minus_nograph,2024,0.02516306349436439,5
+amazon-digital music,hr_win_mean,dynamic_minus_nograph,3407,0.020733783650688935,5
+amazon-digital music,hr_win_mean,dynamic_minus_onboarding,42,-0.000709237863334794,5
+amazon-digital music,hr_win_mean,dynamic_minus_onboarding,777,-0.00042260729608517014,5
+amazon-digital music,hr_win_mean,dynamic_minus_onboarding,1234,-0.0003898501038053226,5
+amazon-digital music,hr_win_mean,dynamic_minus_onboarding,2024,0.0011594333405525958,5
+amazon-digital music,hr_win_mean,dynamic_minus_onboarding,3407,0.0008287302070613567,5
+amazon-digital music,hr_win_mean,dynamic_minus_periodic,42,0.004798586894176238,5
+amazon-digital music,hr_win_mean,dynamic_minus_periodic,777,0.0044801621223986236,5
+amazon-digital music,hr_win_mean,dynamic_minus_periodic,1234,0.006779179404876911,5
+amazon-digital music,hr_win_mean,dynamic_minus_periodic,2024,0.0050674472061819405,5
+amazon-digital music,hr_win_mean,dynamic_minus_periodic,3407,0.003836049545054876,5
+amazon-digital music,hr_win_mean,dynamic_minus_static,42,0.017107509630130406,5
+amazon-digital music,hr_win_mean,dynamic_minus_static,777,0.02097054654328311,5
+amazon-digital music,hr_win_mean,dynamic_minus_static,1234,0.02308949090101409,5
+amazon-digital music,hr_win_mean,dynamic_minus_static,2024,0.018191416744816974,5
+amazon-digital music,hr_win_mean,dynamic_minus_static,3407,0.017307121463903914,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_minus_dynamic,42,7.904036555779203e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_minus_dynamic,777,0.0002427410647026007,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_minus_dynamic,1234,8.619428065761436e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_minus_dynamic,2024,-0.0002072369244707828,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_minus_dynamic,3407,-0.00012045499428638972,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,42,0.0006040054174355491,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,777,0.0008815479852105623,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,1234,7.588182311969449e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,2024,-0.0011464774108705666,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,3407,-0.0006057195792040615,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,42,-5.170922016335955e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,777,2.912830489638085e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,1234,4.017036390556172e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,2024,-8.027788110400724e-05,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,3407,-0.00010971453809420773,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,42,0.0002558344550697755,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,777,-0.00010674586682774546,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,1234,-0.00018581830069363536,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,2024,-0.00017102839489746002,5
+amazon-digital music,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,3407,-0.0001058213949473641,5
+amazon-digital music,hr_win_mean,fresh_only_minus_static,42,0.016972449436744863,5
+amazon-digital music,hr_win_mean,fresh_only_minus_static,777,0.021010340819982036,5
+amazon-digital music,hr_win_mean,fresh_only_minus_static,1234,0.022825548956970233,5
+amazon-digital music,hr_win_mean,fresh_only_minus_static,2024,0.018143053110185593,5
+amazon-digital music,hr_win_mean,fresh_only_minus_static,3407,0.017276262779965624,5
+amazon-digital music,hr_win_mean,onboarding_minus_static,42,0.0178167474934652,5
+amazon-digital music,hr_win_mean,onboarding_minus_static,777,0.021393153839368278,5
+amazon-digital music,hr_win_mean,onboarding_minus_static,1234,0.023479341004819413,5
+amazon-digital music,hr_win_mean,onboarding_minus_static,2024,0.01703198340426438,5
+amazon-digital music,hr_win_mean,onboarding_minus_static,3407,0.016478391256842556,5
+amazon-digital music,hr_win_mean,periodic_minus_nograph,42,0.018155983933709652,5
+amazon-digital music,hr_win_mean,periodic_minus_nograph,777,0.022723144441666558,5
+amazon-digital music,hr_win_mean,periodic_minus_nograph,1234,0.023332970905152534,5
+amazon-digital music,hr_win_mean,periodic_minus_nograph,2024,0.02009561628818245,5
+amazon-digital music,hr_win_mean,periodic_minus_nograph,3407,0.01689773410563406,5
+amazon-digital music,hr_win_mean,static_minus_nograph,42,0.005847061197755482,5
+amazon-digital music,hr_win_mean,static_minus_nograph,777,0.006232760020782074,5
+amazon-digital music,hr_win_mean,static_minus_nograph,1234,0.007022659409015355,5
+amazon-digital music,hr_win_mean,static_minus_nograph,2024,0.006971646749547417,5
+amazon-digital music,hr_win_mean,static_minus_nograph,3407,0.0034266621867850232,5
+amazon-digital music,ndcg_win_last,dynamic_minus_fresh_only,42,-0.00019586844754835575,5
+amazon-digital music,ndcg_win_last,dynamic_minus_fresh_only,777,-0.00015406349384926022,5
+amazon-digital music,ndcg_win_last,dynamic_minus_fresh_only,1234,0.0003835012531257953,5
+amazon-digital music,ndcg_win_last,dynamic_minus_fresh_only,2024,6.380013061149659e-05,5
+amazon-digital music,ndcg_win_last,dynamic_minus_fresh_only,3407,2.924590453083631e-05,5
+amazon-digital music,ndcg_win_last,dynamic_minus_nograph,42,0.027073373906007205,5
+amazon-digital music,ndcg_win_last,dynamic_minus_nograph,777,0.02541373597326978,5
+amazon-digital music,ndcg_win_last,dynamic_minus_nograph,1234,0.027361802634620562,5
+amazon-digital music,ndcg_win_last,dynamic_minus_nograph,2024,0.02618263805033798,5
+amazon-digital music,ndcg_win_last,dynamic_minus_nograph,3407,0.02192265784446463,5
+amazon-digital music,ndcg_win_last,dynamic_minus_onboarding,42,-0.00021132418636946314,5
+amazon-digital music,ndcg_win_last,dynamic_minus_onboarding,777,-0.00036903865546913386,5
+amazon-digital music,ndcg_win_last,dynamic_minus_onboarding,1234,0.0004686600477606578,5
+amazon-digital music,ndcg_win_last,dynamic_minus_onboarding,2024,0.0002941047425311039,5
+amazon-digital music,ndcg_win_last,dynamic_minus_onboarding,3407,0.0007432156314602839,5
+amazon-digital music,ndcg_win_last,dynamic_minus_periodic,42,0.003869254213805284,5
+amazon-digital music,ndcg_win_last,dynamic_minus_periodic,777,0.0033510798918806152,5
+amazon-digital music,ndcg_win_last,dynamic_minus_periodic,1234,0.00461479800225933,5
+amazon-digital music,ndcg_win_last,dynamic_minus_periodic,2024,0.003326574992473305,5
+amazon-digital music,ndcg_win_last,dynamic_minus_periodic,3407,0.0029985383429409957,5
+amazon-digital music,ndcg_win_last,dynamic_minus_static,42,0.01857608422004822,5
+amazon-digital music,ndcg_win_last,dynamic_minus_static,777,0.017799837292003705,5
+amazon-digital music,ndcg_win_last,dynamic_minus_static,1234,0.018605081237154465,5
+amazon-digital music,ndcg_win_last,dynamic_minus_static,2024,0.016892775769183643,5
+amazon-digital music,ndcg_win_last,dynamic_minus_static,3407,0.015551578946086747,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_minus_dynamic,42,-6.981856617305215e-06,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_minus_dynamic,777,0.0001484765239016944,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_minus_dynamic,1234,-3.063823211087169e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_minus_dynamic,2024,5.0315326586783396e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_minus_dynamic,3407,-7.991162611623582e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,42,0.0002407382289402016,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,777,0.000562147372272992,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,1234,-0.0005832667573852229,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,2024,-0.00012581122406843392,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,3407,-0.0006403291383621113,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,42,0.00016952867459782693,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,777,0.000143993762993172,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,1234,-0.0003776243346746783,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,2024,6.91015170791176e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,3407,2.3045910809668667e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,42,-9.05875843375037e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,777,-0.00013184686841099803,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,1234,3.7762433013574516e-05,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,2024,0.00016341192111131442,5
+amazon-digital music,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,3407,-4.84643940036944e-05,5
+amazon-digital music,ndcg_win_last,fresh_only_minus_static,42,0.018771952667596577,5
+amazon-digital music,ndcg_win_last,fresh_only_minus_static,777,0.017953900785852964,5
+amazon-digital music,ndcg_win_last,fresh_only_minus_static,1234,0.018221579984028673,5
+amazon-digital music,ndcg_win_last,fresh_only_minus_static,2024,0.016828975638572146,5
+amazon-digital music,ndcg_win_last,fresh_only_minus_static,3407,0.01552233304155591,5
+amazon-digital music,ndcg_win_last,onboarding_minus_static,42,0.018787408406417683,5
+amazon-digital music,ndcg_win_last,onboarding_minus_static,777,0.018168875947472837,5
+amazon-digital music,ndcg_win_last,onboarding_minus_static,1234,0.01813642118939381,5
+amazon-digital music,ndcg_win_last,onboarding_minus_static,2024,0.01659867102665254,5
+amazon-digital music,ndcg_win_last,onboarding_minus_static,3407,0.014808363314626464,5
+amazon-digital music,ndcg_win_last,periodic_minus_nograph,42,0.02320411969220192,5
+amazon-digital music,ndcg_win_last,periodic_minus_nograph,777,0.022062656081389166,5
+amazon-digital music,ndcg_win_last,periodic_minus_nograph,1234,0.022747004632361234,5
+amazon-digital music,ndcg_win_last,periodic_minus_nograph,2024,0.022856063057864678,5
+amazon-digital music,ndcg_win_last,periodic_minus_nograph,3407,0.01892411950152363,5
+amazon-digital music,ndcg_win_last,static_minus_nograph,42,0.008497289685958984,5
+amazon-digital music,ndcg_win_last,static_minus_nograph,777,0.0076138986812660766,5
+amazon-digital music,ndcg_win_last,static_minus_nograph,1234,0.008756721397466099,5
+amazon-digital music,ndcg_win_last,static_minus_nograph,2024,0.00928986228115434,5
+amazon-digital music,ndcg_win_last,static_minus_nograph,3407,0.0063710788983778795,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_fresh_only,42,9.904144657884029e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_fresh_only,777,-9.898129731222837e-06,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_fresh_only,1234,9.567395723303896e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_fresh_only,2024,-6.849898890018413e-06,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_fresh_only,3407,6.890549033326532e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_nograph,42,0.018870789356516756,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_nograph,777,0.018918199406930777,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_nograph,1234,0.01965608015861415,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_nograph,2024,0.01870840151183638,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_nograph,3407,0.015152364084072297,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_onboarding,42,-0.00011761352967702698,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_onboarding,777,-0.0002398550763435675,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_onboarding,1234,-9.078599140493748e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_onboarding,2024,0.00038708744760086456,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_onboarding,3407,0.0005349634103987477,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_periodic,42,0.003726024131083097,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_periodic,777,0.0033462711939164307,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_periodic,1234,0.004221073024926419,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_periodic,2024,0.003597260667500668,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_periodic,3407,0.002838050021509539,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_static,42,0.01413272549391481,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_static,777,0.014036503875097773,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_static,1234,0.01447583012847777,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_static,2024,0.013493492721660963,5
+amazon-digital music,ndcg_win_mean,dynamic_minus_static,3407,0.01184995644716256,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,42,4.982818422100133e-06,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,777,9.494274055616148e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,1234,4.649275474188641e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,2024,-4.407118765015483e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,3407,2.9459514812035792e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,42,7.254398336114243e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,777,0.0003292109670890886,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,1234,-4.660634971120348e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,2024,-0.00039831331569275543,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,3407,-0.0003798703858655994,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,42,-2.709851095743232e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,777,1.5478002227573008e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,1234,4.573080794726403e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,2024,-8.285939983576628e-06,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,3407,-1.2462157508946748e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,42,6.498544072726098e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,777,-4.714747097639138e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,1234,3.6316089325141856e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,2024,-1.5277138839603354e-05,5
+amazon-digital music,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,3407,-1.7261240624558137e-05,5
+amazon-digital music,ndcg_win_mean,fresh_only_minus_static,42,0.01403368404733597,5
+amazon-digital music,ndcg_win_mean,fresh_only_minus_static,777,0.014046402004828994,5
+amazon-digital music,ndcg_win_mean,fresh_only_minus_static,1234,0.014380156171244732,5
+amazon-digital music,ndcg_win_mean,fresh_only_minus_static,2024,0.01350034262055098,5
+amazon-digital music,ndcg_win_mean,fresh_only_minus_static,3407,0.011781050956829294,5
+amazon-digital music,ndcg_win_mean,onboarding_minus_static,42,0.014250339023591838,5
+amazon-digital music,ndcg_win_mean,onboarding_minus_static,777,0.01427635895144134,5
+amazon-digital music,ndcg_win_mean,onboarding_minus_static,1234,0.014566616119882709,5
+amazon-digital music,ndcg_win_mean,onboarding_minus_static,2024,0.013106405274060099,5
+amazon-digital music,ndcg_win_mean,onboarding_minus_static,3407,0.011314993036763813,5
+amazon-digital music,ndcg_win_mean,periodic_minus_nograph,42,0.015144765225433659,5
+amazon-digital music,ndcg_win_mean,periodic_minus_nograph,777,0.015571928213014346,5
+amazon-digital music,ndcg_win_mean,periodic_minus_nograph,1234,0.015435007133687728,5
+amazon-digital music,ndcg_win_mean,periodic_minus_nograph,2024,0.015111140844335711,5
+amazon-digital music,ndcg_win_mean,periodic_minus_nograph,3407,0.012314314062562759,5
+amazon-digital music,ndcg_win_mean,static_minus_nograph,42,0.004738063862601946,5
+amazon-digital music,ndcg_win_mean,static_minus_nograph,777,0.004881695531833005,5
+amazon-digital music,ndcg_win_mean,static_minus_nograph,1234,0.005180250030136377,5
+amazon-digital music,ndcg_win_mean,static_minus_nograph,2024,0.005214908790175415,5
+amazon-digital music,ndcg_win_mean,static_minus_nograph,3407,0.003302407636909738,5
+movielens-1m,hr_win_mean,dynamic_genre_minus_dynamic,42,0.0,5
+movielens-1m,hr_win_mean,dynamic_genre_minus_dynamic,777,0.0,5
+movielens-1m,hr_win_mean,dynamic_genre_minus_dynamic,1234,0.0,5
+movielens-1m,hr_win_mean,dynamic_genre_minus_dynamic,2024,0.0,5
+movielens-1m,hr_win_mean,dynamic_genre_minus_dynamic,3407,0.0,5
+movielens-1m,hr_win_mean,dynamic_minus_fresh_only,42,0.0003074595919313583,5
+movielens-1m,hr_win_mean,dynamic_minus_fresh_only,777,-0.0003856891833155518,5
+movielens-1m,hr_win_mean,dynamic_minus_fresh_only,1234,-9.017600888614475e-05,5
+movielens-1m,hr_win_mean,dynamic_minus_fresh_only,2024,-0.000151500095247159,5
+movielens-1m,hr_win_mean,dynamic_minus_fresh_only,3407,-5.782112339949297e-05,5
+movielens-1m,hr_win_mean,dynamic_minus_nograph,42,0.010107299564651262,5
+movielens-1m,hr_win_mean,dynamic_minus_nograph,777,0.008065113773438947,5
+movielens-1m,hr_win_mean,dynamic_minus_nograph,1234,0.01726284782341504,5
+movielens-1m,hr_win_mean,dynamic_minus_nograph,2024,0.009891072542419133,5
+movielens-1m,hr_win_mean,dynamic_minus_nograph,3407,0.01582135338850412,5
+movielens-1m,hr_win_mean,dynamic_minus_onboarding,42,0.001803094598018118,5
+movielens-1m,hr_win_mean,dynamic_minus_onboarding,777,1.7420042372706669e-06,5
+movielens-1m,hr_win_mean,dynamic_minus_onboarding,1234,0.0028091763709067407,5
+movielens-1m,hr_win_mean,dynamic_minus_onboarding,2024,0.0014605582002342077,5
+movielens-1m,hr_win_mean,dynamic_minus_onboarding,3407,0.00429888072473259,5
+movielens-1m,hr_win_mean,dynamic_minus_periodic,42,0.0037125613018293866,5
+movielens-1m,hr_win_mean,dynamic_minus_periodic,777,0.004751398016929709,5
+movielens-1m,hr_win_mean,dynamic_minus_periodic,1234,0.0063707510310747175,5
+movielens-1m,hr_win_mean,dynamic_minus_periodic,2024,0.004005176436118562,5
+movielens-1m,hr_win_mean,dynamic_minus_periodic,3407,0.008671897198815748,5
+movielens-1m,hr_win_mean,dynamic_minus_static,42,0.014855603966281916,5
+movielens-1m,hr_win_mean,dynamic_minus_static,777,0.011176798454494508,5
+movielens-1m,hr_win_mean,dynamic_minus_static,1234,0.017886449893329992,5
+movielens-1m,hr_win_mean,dynamic_minus_static,2024,0.012004334049748,5
+movielens-1m,hr_win_mean,dynamic_minus_static,3407,0.0199052923907298,5
+movielens-1m,hr_win_mean,dynamic_mix0.005_minus_dynamic,42,-0.009842301074934034,5
+movielens-1m,hr_win_mean,dynamic_mix0.05_minus_dynamic,42,-0.009418495376005854,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_minus_dynamic,42,-0.0004561191465755732,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_minus_dynamic,777,-0.00016846055376906754,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_minus_dynamic,1234,-8.550855533586698e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_minus_dynamic,2024,-1.1470874767272043e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_minus_dynamic,3407,-0.000377732028589417,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,42,-0.0015473637960909503,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,777,-0.0003080774208077841,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,1234,-0.002024066776606004,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,2024,-0.0014407067915867655,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_minus_dynamic,3407,-0.0032726304126929674,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,42,3.407672792097305e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,777,-0.00011490550129525934,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,1234,0.00015110332681378402,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,2024,0.00011302648033632013,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,3407,-2.8158483696283375e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,42,-8.264989353629071e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,777,8.799282630214122e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,1234,7.992646643036893e-05,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,2024,0.0001952377187508847,5
+movielens-1m,hr_win_mean,dynamic_rho0.8_warm_minus_dynamic,3407,-0.0002748010240204657,5
+movielens-1m,hr_win_mean,fresh_only_minus_static,42,0.014548144374350558,5
+movielens-1m,hr_win_mean,fresh_only_minus_static,777,0.01156248763781006,5
+movielens-1m,hr_win_mean,fresh_only_minus_static,1234,0.017976625902216138,5
+movielens-1m,hr_win_mean,fresh_only_minus_static,2024,0.012155834144995159,5
+movielens-1m,hr_win_mean,fresh_only_minus_static,3407,0.019963113514129292,5
+movielens-1m,hr_win_mean,onboarding_minus_static,42,0.013052509368263798,5
+movielens-1m,hr_win_mean,onboarding_minus_static,777,0.011175056450257237,5
+movielens-1m,hr_win_mean,onboarding_minus_static,1234,0.015077273522423251,5
+movielens-1m,hr_win_mean,onboarding_minus_static,2024,0.010543775849513793,5
+movielens-1m,hr_win_mean,onboarding_minus_static,3407,0.015606411665997211,5
+movielens-1m,hr_win_mean,periodic_boundary_minus_periodic,42,-0.008613811032449426,5
+movielens-1m,hr_win_mean,periodic_boundary_minus_periodic,777,-0.005470287023753717,5
+movielens-1m,hr_win_mean,periodic_boundary_minus_periodic,1234,-0.010151852484572232,5
+movielens-1m,hr_win_mean,periodic_boundary_minus_periodic,2024,-0.006959250180376408,5
+movielens-1m,hr_win_mean,periodic_boundary_minus_periodic,3407,-0.007180774984195148,5
+movielens-1m,hr_win_mean,periodic_minus_nograph,42,0.006394738262821875,5
+movielens-1m,hr_win_mean,periodic_minus_nograph,777,0.003313715756509239,5
+movielens-1m,hr_win_mean,periodic_minus_nograph,1234,0.010892096792340322,5
+movielens-1m,hr_win_mean,periodic_minus_nograph,2024,0.00588589610630057,5
+movielens-1m,hr_win_mean,periodic_minus_nograph,3407,0.007149456189688375,5
+movielens-1m,hr_win_mean,periodic_p20_minus_periodic,42,0.0005714255789498468,5
+movielens-1m,hr_win_mean,periodic_p20_minus_periodic,777,0.002522552706748904,5
+movielens-1m,hr_win_mean,periodic_p20_minus_periodic,2024,0.0018194768634884118,5
+movielens-1m,hr_win_mean,periodic_p240_minus_periodic,42,-0.0065894836063492114,5
+movielens-1m,hr_win_mean,periodic_p240_minus_periodic,777,-0.004742061025729172,5
+movielens-1m,hr_win_mean,periodic_p240_minus_periodic,2024,-0.006157748813753627,5
+movielens-1m,hr_win_mean,static_at120_minus_static,42,0.00012777927863786288,5
+movielens-1m,hr_win_mean,static_at120_minus_static,777,0.00037251333585733846,5
+movielens-1m,hr_win_mean,static_at120_minus_static,1234,0.0005543886343685189,5
+movielens-1m,hr_win_mean,static_at120_minus_static,2024,-0.00015769797991617153,5
+movielens-1m,hr_win_mean,static_at120_minus_static,3407,0.00017025561387076226,5
+movielens-1m,hr_win_mean,static_build120_minus_static,42,0.0038416858239401996,5
+movielens-1m,hr_win_mean,static_build120_minus_static,777,0.003091230429017033,5
+movielens-1m,hr_win_mean,static_build120_minus_static,1234,0.00043224999371064274,5
+movielens-1m,hr_win_mean,static_build120_minus_static,2024,0.0022898041629454747,5
+movielens-1m,hr_win_mean,static_build120_minus_static,3407,0.0023385392218218783,5
+movielens-1m,hr_win_mean,static_minus_nograph,42,-0.004748304401630654,5
+movielens-1m,hr_win_mean,static_minus_nograph,777,-0.00311168468105556,5
+movielens-1m,hr_win_mean,static_minus_nograph,1234,-0.0006236020699149525,5
+movielens-1m,hr_win_mean,static_minus_nograph,2024,-0.0021132615073288672,5
+movielens-1m,hr_win_mean,static_minus_nograph,3407,-0.004083939002225678,5
+movielens-1m,ndcg_win_last,dynamic_genre_minus_dynamic,42,0.0,5
+movielens-1m,ndcg_win_last,dynamic_genre_minus_dynamic,777,0.0,5
+movielens-1m,ndcg_win_last,dynamic_genre_minus_dynamic,1234,0.0,5
+movielens-1m,ndcg_win_last,dynamic_genre_minus_dynamic,2024,0.0,5
+movielens-1m,ndcg_win_last,dynamic_genre_minus_dynamic,3407,0.0,5
+movielens-1m,ndcg_win_last,dynamic_minus_fresh_only,42,0.0004543138165809146,5
+movielens-1m,ndcg_win_last,dynamic_minus_fresh_only,777,0.00027713419871412405,5
+movielens-1m,ndcg_win_last,dynamic_minus_fresh_only,1234,-0.00034740681978700507,5
+movielens-1m,ndcg_win_last,dynamic_minus_fresh_only,2024,-0.0007597131327549744,5
+movielens-1m,ndcg_win_last,dynamic_minus_fresh_only,3407,-0.0005233713530368334,5
+movielens-1m,ndcg_win_last,dynamic_minus_nograph,42,0.011965760964329636,5
+movielens-1m,ndcg_win_last,dynamic_minus_nograph,777,0.010821039375710838,5
+movielens-1m,ndcg_win_last,dynamic_minus_nograph,1234,0.015399421061059793,5
+movielens-1m,ndcg_win_last,dynamic_minus_nograph,2024,0.011061833440284701,5
+movielens-1m,ndcg_win_last,dynamic_minus_nograph,3407,0.016769261662667262,5
+movielens-1m,ndcg_win_last,dynamic_minus_onboarding,42,-0.00017021382497455772,5
+movielens-1m,ndcg_win_last,dynamic_minus_onboarding,777,0.0006725769142933658,5
+movielens-1m,ndcg_win_last,dynamic_minus_onboarding,1234,0.001057248758994289,5
+movielens-1m,ndcg_win_last,dynamic_minus_onboarding,2024,0.001694188235793853,5
+movielens-1m,ndcg_win_last,dynamic_minus_onboarding,3407,0.0035848680185341488,5
+movielens-1m,ndcg_win_last,dynamic_minus_periodic,42,0.001978874823586008,5
+movielens-1m,ndcg_win_last,dynamic_minus_periodic,777,0.00467867785758212,5
+movielens-1m,ndcg_win_last,dynamic_minus_periodic,1234,0.0046522943838792795,5
+movielens-1m,ndcg_win_last,dynamic_minus_periodic,2024,0.0027561736205486465,5
+movielens-1m,ndcg_win_last,dynamic_minus_periodic,3407,0.005966670574789256,5
+movielens-1m,ndcg_win_last,dynamic_minus_static,42,0.01579960451247587,5
+movielens-1m,ndcg_win_last,dynamic_minus_static,777,0.0135461471098054,5
+movielens-1m,ndcg_win_last,dynamic_minus_static,1234,0.016559446022561108,5
+movielens-1m,ndcg_win_last,dynamic_minus_static,2024,0.013959325435172209,5
+movielens-1m,ndcg_win_last,dynamic_minus_static,3407,0.020269832914394093,5
+movielens-1m,ndcg_win_last,dynamic_mix0.005_minus_dynamic,42,-0.011822297791946467,5
+movielens-1m,ndcg_win_last,dynamic_mix0.05_minus_dynamic,42,-0.010871742882442808,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_minus_dynamic,42,4.715243943917424e-05,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_minus_dynamic,777,-0.0008955762853792071,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_minus_dynamic,1234,0.0002388994001409739,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_minus_dynamic,2024,0.00010427596757203728,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_minus_dynamic,3407,-2.3114041570077014e-05,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,42,3.2926976796260335e-05,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,777,-0.001217751537154782,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,1234,-0.0005401719071258693,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,2024,-0.001391221696280548,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_minus_dynamic,3407,-0.002861140743428109,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,42,-0.00015517537775857626,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,777,-0.0009669120776358064,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,1234,0.0004756341838344946,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,2024,-1.2115480982261007e-05,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_topk_warm_minus_dynamic,3407,-0.0006269053839101591,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,42,-0.0002753368155902325,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,777,-0.00020307190447552137,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,1234,0.0002228366461031861,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,2024,-0.00021157128303063156,5
+movielens-1m,ndcg_win_last,dynamic_rho0.8_warm_minus_dynamic,3407,-0.0004885437039227891,5
+movielens-1m,ndcg_win_last,fresh_only_minus_static,42,0.015345290695894954,5
+movielens-1m,ndcg_win_last,fresh_only_minus_static,777,0.013269012911091277,5
+movielens-1m,ndcg_win_last,fresh_only_minus_static,1234,0.016906852842348115,5
+movielens-1m,ndcg_win_last,fresh_only_minus_static,2024,0.014719038567927185,5
+movielens-1m,ndcg_win_last,fresh_only_minus_static,3407,0.020793204267430927,5
+movielens-1m,ndcg_win_last,onboarding_minus_static,42,0.015969818337450425,5
+movielens-1m,ndcg_win_last,onboarding_minus_static,777,0.012873570195512034,5
+movielens-1m,ndcg_win_last,onboarding_minus_static,1234,0.01550219726356682,5
+movielens-1m,ndcg_win_last,onboarding_minus_static,2024,0.012265137199378356,5
+movielens-1m,ndcg_win_last,onboarding_minus_static,3407,0.016684964895859945,5
+movielens-1m,ndcg_win_last,periodic_boundary_minus_periodic,42,-0.009549569133129132,5
+movielens-1m,ndcg_win_last,periodic_boundary_minus_periodic,777,-0.006843479795985802,5
+movielens-1m,ndcg_win_last,periodic_boundary_minus_periodic,1234,-0.009549587428318495,5
+movielens-1m,ndcg_win_last,periodic_boundary_minus_periodic,2024,-0.009318180631819356,5
+movielens-1m,ndcg_win_last,periodic_boundary_minus_periodic,3407,-0.01104825575117826,5
+movielens-1m,ndcg_win_last,periodic_minus_nograph,42,0.009986886140743629,5
+movielens-1m,ndcg_win_last,periodic_minus_nograph,777,0.0061423615181287194,5
+movielens-1m,ndcg_win_last,periodic_minus_nograph,1234,0.010747126677180512,5
+movielens-1m,ndcg_win_last,periodic_minus_nograph,2024,0.008305659819736055,5
+movielens-1m,ndcg_win_last,periodic_minus_nograph,3407,0.010802591087878005,5
+movielens-1m,ndcg_win_last,periodic_p20_minus_periodic,42,0.0005773635864109005,5
+movielens-1m,ndcg_win_last,periodic_p20_minus_periodic,777,0.0030694166460201013,5
+movielens-1m,ndcg_win_last,periodic_p20_minus_periodic,2024,0.0019396292578253316,5
+movielens-1m,ndcg_win_last,periodic_p240_minus_periodic,42,-0.00786414711122833,5
+movielens-1m,ndcg_win_last,periodic_p240_minus_periodic,777,-0.0055495511018073315,5
+movielens-1m,ndcg_win_last,periodic_p240_minus_periodic,2024,-0.00727236207493957,5
+movielens-1m,ndcg_win_last,static_at120_minus_static,42,-0.00012190591183317001,5
+movielens-1m,ndcg_win_last,static_at120_minus_static,777,0.00021383859203090162,5
+movielens-1m,ndcg_win_last,static_at120_minus_static,1234,0.0009182801239810912,5
+movielens-1m,ndcg_win_last,static_at120_minus_static,2024,-1.3381250136418332e-05,5
+movielens-1m,ndcg_win_last,static_at120_minus_static,3407,-0.00014460936538957526,5
+movielens-1m,ndcg_win_last,static_build120_minus_static,42,0.0032233455434133363,5
+movielens-1m,ndcg_win_last,static_build120_minus_static,777,0.0017171971090696847,5
+movielens-1m,ndcg_win_last,static_build120_minus_static,1234,0.001128087577189424,5
+movielens-1m,ndcg_win_last,static_build120_minus_static,2024,0.0032887989004946883,5
+movielens-1m,ndcg_win_last,static_build120_minus_static,3407,0.0025011891400507358,5
+movielens-1m,ndcg_win_last,static_minus_nograph,42,-0.003833843548146232,5
+movielens-1m,ndcg_win_last,static_minus_nograph,777,-0.0027251077340945617,5
+movielens-1m,ndcg_win_last,static_minus_nograph,1234,-0.0011600249615013158,5
+movielens-1m,ndcg_win_last,static_minus_nograph,2024,-0.0028974919948875077,5
+movielens-1m,ndcg_win_last,static_minus_nograph,3407,-0.0035005712517268304,5
+movielens-1m,ndcg_win_mean,dynamic_genre_minus_dynamic,42,0.0,5
+movielens-1m,ndcg_win_mean,dynamic_genre_minus_dynamic,777,0.0,5
+movielens-1m,ndcg_win_mean,dynamic_genre_minus_dynamic,1234,0.0,5
+movielens-1m,ndcg_win_mean,dynamic_genre_minus_dynamic,2024,0.0,5
+movielens-1m,ndcg_win_mean,dynamic_genre_minus_dynamic,3407,0.0,5
+movielens-1m,ndcg_win_mean,dynamic_minus_fresh_only,42,0.0001609810240163767,5
+movielens-1m,ndcg_win_mean,dynamic_minus_fresh_only,777,-0.00018637812051954805,5
+movielens-1m,ndcg_win_mean,dynamic_minus_fresh_only,1234,8.286364763530064e-05,5
+movielens-1m,ndcg_win_mean,dynamic_minus_fresh_only,2024,-0.00019966097697542983,5
+movielens-1m,ndcg_win_mean,dynamic_minus_fresh_only,3407,-3.059506560794123e-05,5
+movielens-1m,ndcg_win_mean,dynamic_minus_nograph,42,0.009083648014432111,5
+movielens-1m,ndcg_win_mean,dynamic_minus_nograph,777,0.006799859066171354,5
+movielens-1m,ndcg_win_mean,dynamic_minus_nograph,1234,0.012435003711362752,5
+movielens-1m,ndcg_win_mean,dynamic_minus_nograph,2024,0.008532513914496553,5
+movielens-1m,ndcg_win_mean,dynamic_minus_nograph,3407,0.012602800678245046,5
+movielens-1m,ndcg_win_mean,dynamic_minus_onboarding,42,6.52205922710869e-05,5
+movielens-1m,ndcg_win_mean,dynamic_minus_onboarding,777,0.00019501734634166934,5
+movielens-1m,ndcg_win_mean,dynamic_minus_onboarding,1234,0.0011125561968365894,5
+movielens-1m,ndcg_win_mean,dynamic_minus_onboarding,2024,0.00031178868306580565,5
+movielens-1m,ndcg_win_mean,dynamic_minus_onboarding,3407,0.0017170499830490682,5
+movielens-1m,ndcg_win_mean,dynamic_minus_periodic,42,0.0022771355751638024,5
+movielens-1m,ndcg_win_mean,dynamic_minus_periodic,777,0.0033768124452330517,5
+movielens-1m,ndcg_win_mean,dynamic_minus_periodic,1234,0.00423521896477449,5
+movielens-1m,ndcg_win_mean,dynamic_minus_periodic,2024,0.0025752217876403305,5
+movielens-1m,ndcg_win_mean,dynamic_minus_periodic,3407,0.005600724976452404,5
+movielens-1m,ndcg_win_mean,dynamic_minus_static,42,0.011102735572186207,5
+movielens-1m,ndcg_win_mean,dynamic_minus_static,777,0.008452999646063619,5
+movielens-1m,ndcg_win_mean,dynamic_minus_static,1234,0.012436996143871625,5
+movielens-1m,ndcg_win_mean,dynamic_minus_static,2024,0.009557576172394222,5
+movielens-1m,ndcg_win_mean,dynamic_minus_static,3407,0.014608303374635655,5
+movielens-1m,ndcg_win_mean,dynamic_mix0.005_minus_dynamic,42,-0.009010192287534847,5
+movielens-1m,ndcg_win_mean,dynamic_mix0.05_minus_dynamic,42,-0.008229050742603777,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,42,-0.00027536458056019454,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,777,-0.00022342564341250591,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,1234,-0.00012706167731594832,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,2024,0.00011153988574534312,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_minus_dynamic,3407,-0.00015636485883926965,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,42,-7.33923652984525e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,777,-0.0003872980819057348,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,1234,-0.0009861631538043646,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,2024,-0.0005818950721693916,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_minus_dynamic,3407,-0.0016723710144651738,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,42,-0.00011010296257477626,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,777,-2.4452080039211176e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,1234,-3.9699956130095915e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,2024,0.00014180683960140494,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_topk_warm_minus_dynamic,3407,-6.449642811044431e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,42,-0.00013893812218459533,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,777,1.2253974568071645e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,1234,-6.666778109172822e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,2024,8.9257101071899e-05,5
+movielens-1m,ndcg_win_mean,dynamic_rho0.8_warm_minus_dynamic,3407,-5.0046696571248715e-05,5
+movielens-1m,ndcg_win_mean,fresh_only_minus_static,42,0.01094175454816983,5
+movielens-1m,ndcg_win_mean,fresh_only_minus_static,777,0.008639377766583167,5
+movielens-1m,ndcg_win_mean,fresh_only_minus_static,1234,0.012354132496236325,5
+movielens-1m,ndcg_win_mean,fresh_only_minus_static,2024,0.009757237149369652,5
+movielens-1m,ndcg_win_mean,fresh_only_minus_static,3407,0.014638898440243598,5
+movielens-1m,ndcg_win_mean,onboarding_minus_static,42,0.01103751497991512,5
+movielens-1m,ndcg_win_mean,onboarding_minus_static,777,0.00825798229972195,5
+movielens-1m,ndcg_win_mean,onboarding_minus_static,1234,0.011324439947035036,5
+movielens-1m,ndcg_win_mean,onboarding_minus_static,2024,0.009245787489328416,5
+movielens-1m,ndcg_win_mean,onboarding_minus_static,3407,0.012891253391586588,5
+movielens-1m,ndcg_win_mean,periodic_boundary_minus_periodic,42,-0.0063418664195155185,5
+movielens-1m,ndcg_win_mean,periodic_boundary_minus_periodic,777,-0.003993015782256809,5
+movielens-1m,ndcg_win_mean,periodic_boundary_minus_periodic,1234,-0.006691167134522474,5
+movielens-1m,ndcg_win_mean,periodic_boundary_minus_periodic,2024,-0.005515914724726556,5
+movielens-1m,ndcg_win_mean,periodic_boundary_minus_periodic,3407,-0.006584699107783776,5
+movielens-1m,ndcg_win_mean,periodic_minus_nograph,42,0.006806512439268308,5
+movielens-1m,ndcg_win_mean,periodic_minus_nograph,777,0.0034230466209383024,5
+movielens-1m,ndcg_win_mean,periodic_minus_nograph,1234,0.008199784746588262,5
+movielens-1m,ndcg_win_mean,periodic_minus_nograph,2024,0.005957292126856223,5
+movielens-1m,ndcg_win_mean,periodic_minus_nograph,3407,0.007002075701792643,5
+movielens-1m,ndcg_win_mean,periodic_p20_minus_periodic,42,0.0005399558075340871,5
+movielens-1m,ndcg_win_mean,periodic_p20_minus_periodic,777,0.002037519235350288,5
+movielens-1m,ndcg_win_mean,periodic_p20_minus_periodic,2024,0.0012373497201163541,5
+movielens-1m,ndcg_win_mean,periodic_p240_minus_periodic,42,-0.005518354893980376,5
+movielens-1m,ndcg_win_mean,periodic_p240_minus_periodic,777,-0.003174863242605913,5
+movielens-1m,ndcg_win_mean,periodic_p240_minus_periodic,2024,-0.004363993928157434,5
+movielens-1m,ndcg_win_mean,static_at120_minus_static,42,6.370295498709378e-05,5
+movielens-1m,ndcg_win_mean,static_at120_minus_static,777,0.0002859132391645314,5
+movielens-1m,ndcg_win_mean,static_at120_minus_static,1234,0.0004933295832963425,5
+movielens-1m,ndcg_win_mean,static_at120_minus_static,2024,-8.620480264879826e-05,5
+movielens-1m,ndcg_win_mean,static_at120_minus_static,3407,-1.6096477016286358e-05,5
+movielens-1m,ndcg_win_mean,static_build120_minus_static,42,0.0016226495734514845,5
+movielens-1m,ndcg_win_mean,static_build120_minus_static,777,0.0013281314213657246,5
+movielens-1m,ndcg_win_mean,static_build120_minus_static,1234,-0.0001794647421536899,5
+movielens-1m,ndcg_win_mean,static_build120_minus_static,2024,0.0011526228052317123,5
+movielens-1m,ndcg_win_mean,static_build120_minus_static,3407,0.0007205027748801273,5
+movielens-1m,ndcg_win_mean,static_minus_nograph,42,-0.0020190875577540957,5
+movielens-1m,ndcg_win_mean,static_minus_nograph,777,-0.0016531405798922648,5
+movielens-1m,ndcg_win_mean,static_minus_nograph,1234,-1.9924325088738203e-06,5
+movielens-1m,ndcg_win_mean,static_minus_nograph,2024,-0.0010250622578976687,5
+movielens-1m,ndcg_win_mean,static_minus_nograph,3407,-0.00200550269639061,5

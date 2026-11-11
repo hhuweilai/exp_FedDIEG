@@ -1,0 +1,84 @@
+[2026-11-10 18:05:25] === 等待正式批次结束（期望 128 个 run）===
+[2026-11-11 23:05:32] 批次进程已退出；已完成 run = 128 / 128
+[2026-11-11 23:05:32] --- 阶段 4：聚合 + 诊断 + 报告 ---
+未知参数：all（用法：--agg-only | --all）
+[2026-11-11 23:05:32] --- 阶段 5：统计表 ---
+[ok] /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_stats_seed.csv（3 行）
+[warn] dg_stats_decomp 为空（缺输入或列不全）
+[ok] /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/dg_stats_coverage.csv（4 行）
+[warn] dg_stats_legacy_vs_formal 为空（缺输入或列不全）
+[ok] /home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/阶段5_统计表.md
+[2026-11-11 23:05:32] --- 阶段 5：验收 ---
+================ 1) 训练 run 数（formal 批次）================
+  ML: 78 个 | Amazon: 50 个 | 合计 128（期望 78 + 50 = 128）
+  [PASS] MovieLens-1M 78 个 run（6 主臂×5 + static 变体 + periodic 变体 + genre + 冻结网格 + 锚点）
+  [PASS] Amazon 50 个 run（6 主臂×5 + 冻结网格）
+
+================ 2) 正式聚合表 ================
+  [PASS] results/agg_formal/tables/dg_arm_summary.csv
+  [PASS] results/agg_formal/tables/dg_contrasts.csv
+  [PASS] results/agg_formal/tables/dg_contrasts_by_seed.csv
+  [PASS] results/agg_formal/tables/dg_contrasts_window.csv
+  [PASS] results/agg_formal/tables/dg_arm_window.csv
+  [PASS] results/agg_formal/tables/dg_verdict.csv
+  [PASS] results/agg_formal/tables/dg_diagnostics.csv
+  [PASS] results/agg_formal/tables/dg_hygiene.csv
+  [PASS] results/agg_formal/figures/dg_fig_arms_movielens-1m.png
+  [FAIL] 缺少 results/agg_formal/figures/dg_fig_arms_amazon-digital_music.png
+
+================ 3) 诊断表（冻结 / 邻居质量 / Genre）===============
+  [FAIL] 缺少 results/freeze_formal/movielens-1m/tables/dg_freeze_cells.csv
+  [FAIL] 缺少 results/freeze_formal/amazon-digital_music/tables/dg_freeze_cells.csv
+  [FAIL] 缺少 results/quality_formal/movielens-1m/tables/dg_quality_verdict.csv
+  [FAIL] 缺少 results/quality_formal/amazon-digital_music/tables/dg_quality_verdict.csv
+  [FAIL] 缺少 results/genre_formal/tables/dg_genre_verdict.csv
+
+================ 4) 数据级严格性（Python）================
+  [PASS] ecr_def 全为 v2：['v2_empty_to_full']
+  [PASS] core_version 唯一：['2026.11.08b']
+  [PASS] movielens-1m/nograph: 5 个种子
+  [PASS] movielens-1m/static: 5 个种子
+  [PASS] movielens-1m/periodic: 5 个种子
+  [PASS] movielens-1m/dynamic: 5 个种子
+  [PASS] movielens-1m/onboarding: 5 个种子
+  [PASS] movielens-1m/fresh_only: 5 个种子
+  [FAIL] amazon-digital_music/nograph 只有 0/5 个种子
+  [FAIL] amazon-digital_music/static 只有 0/5 个种子
+  [FAIL] amazon-digital_music/periodic 只有 0/5 个种子
+  [FAIL] amazon-digital_music/dynamic 只有 0/5 个种子
+  [FAIL] amazon-digital_music/onboarding 只有 0/5 个种子
+  [FAIL] amazon-digital_music/fresh_only 只有 0/5 个种子
+  [PASS] static_build120：5 个 run 的首次有图轮次都是第 120 轮
+  [PASS] static_build120：5 个 run 在第 120 轮之后边数恒定（确实冻结）
+  [PASS] static_at120：5 个 run 冻结后边变化为 0
+  [PASS] static_at120：freeze_round 全为 120（[120]）
+  [PASS] static_at120：build_only=0
+  [PASS] static_build120：5 个 run 冻结后边变化为 0
+  [PASS] static_build120：freeze_round 全为 120（[120]）
+  [PASS] static_build120：build_only=1
+  [PASS] onboarding：10 个 run 的首次覆盖人数 == 用户总数（6040）
+  [PASS] onboarding：每个用户恰好建边一次（更新 6040~12381 次 == 用户数）
+  [PASS] onboarding 全轮平均覆盖 0.9047（参考值：含早轮尚未上传的用户）
+  [PASS] fresh_only：累计更新 233132~496575 次 ≫ 用户数 6040（重复重估，触发条件与 onboarding 不同）
+  [PASS] fresh_only 覆盖 0.9047 vs onboarding 0.9047（覆盖面同量级，差别在更新对象）
+  [PASS] periodic_boundary：5 个 run 均为 5 次刷新（窗口边界）
+  [PASS] dynamic 平均 graph_turnover=0.1258（>0.05：图在演化）
+  [PASS] onboarding 的 graph_turnover ≡ 1.0（首次建边 ∅→K，符合定义）
+  [PASS] dynamic 的 turnover 明显小于 onboarding（0.126 vs 1.000：增量更新 vs 首次建边）
+  [PASS] hygiene 8 项全通过
+  [PASS] dg_contrasts.csv 含种子级统计列（B5）
+  -- 本节小结：PASS 27 / FAIL 6
+  [FAIL] 第 4 节数据级检查有失败项（明细见上）
+
+================ 5) 报告完整性 ================
+  [FAIL] 报告文件不存在：实验验证报告_动态图_2026-11-10.md
+
+================ 6) 是否还有训练进程 ================
+  在跑 dg_run.py: 0
+  [PASS] 训练已全部结束
+
+==============================================================
+验收汇总：PASS 12 / FAIL 8
+还有 8 项未通过
+[2026-11-11 23:05:32] === 结束：phase4=2 stats=0 verify=0 ===
+[2026-11-11 23:05:32] 产物：/home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/tables/　/home/wl/exp_FedDIEG/val_DynamicGraph/results/agg_formal/阶段5_统计表.md　/home/wl/exp_FedDIEG/val_DynamicGraph/实验验证报告_动态图_2026-11-10.md

@@ -1,0 +1,171 @@
+﻿dataset,contrast,window,mean,median,size
+amazon-digital music,dynamic_minus_fresh_only,1,0.00028064072957347967,0.0,15890
+amazon-digital music,dynamic_minus_fresh_only,2,1.4499727705074672e-06,0.0,17675
+amazon-digital music,dynamic_minus_fresh_only,3,-0.00010884385655087205,0.0,17855
+amazon-digital music,dynamic_minus_fresh_only,4,9.600100929306151e-05,0.0,18285
+amazon-digital music,dynamic_minus_fresh_only,5,-0.0001426325082156789,0.0,17245
+amazon-digital music,dynamic_minus_nograph,1,0.027812720065299935,0.0,15890
+amazon-digital music,dynamic_minus_nograph,2,0.03610303232322488,0.0,17675
+amazon-digital music,dynamic_minus_nograph,3,0.0303096043716389,0.0,17855
+amazon-digital music,dynamic_minus_nograph,4,0.013390810621022722,0.0,18285
+amazon-digital music,dynamic_minus_nograph,5,0.020338041027513715,0.0,17245
+amazon-digital music,dynamic_minus_onboarding,1,0.0006154811779908072,0.0,15890
+amazon-digital music,dynamic_minus_onboarding,2,0.0007128718887393849,0.0,17675
+amazon-digital music,dynamic_minus_onboarding,3,0.0003535218580668462,0.0,17855
+amazon-digital music,dynamic_minus_onboarding,4,-0.000514338778967019,0.0,18285
+amazon-digital music,dynamic_minus_onboarding,5,-0.00024191856591657959,0.0,17245
+amazon-digital music,dynamic_minus_periodic,1,0.005353716392799171,0.0,15890
+amazon-digital music,dynamic_minus_periodic,2,0.006601039978874455,0.0,17675
+amazon-digital music,dynamic_minus_periodic,3,0.004109960410548872,0.0,17855
+amazon-digital music,dynamic_minus_periodic,4,0.0009552522487317013,0.0,18285
+amazon-digital music,dynamic_minus_periodic,5,0.001140276412405322,0.0,17245
+amazon-digital music,dynamic_minus_static,1,0.005353716392799171,0.0,15890
+amazon-digital music,dynamic_minus_static,2,0.027719533200648416,0.0,17675
+amazon-digital music,dynamic_minus_static,3,0.025278461339993827,0.0,17855
+amazon-digital music,dynamic_minus_static,4,0.011184409799424554,0.0,18285
+amazon-digital music,dynamic_minus_static,5,0.017889236731610806,0.0,17245
+amazon-digital music,dynamic_rho0.8_minus_dynamic,1,0.00023041697063109947,0.0,15890
+amazon-digital music,dynamic_rho0.8_minus_dynamic,2,5.952622630808613e-05,0.0,17675
+amazon-digital music,dynamic_rho0.8_minus_dynamic,3,-3.394651599906466e-05,0.0,17855
+amazon-digital music,dynamic_rho0.8_minus_dynamic,4,-0.00014192260188550482,0.0,18285
+amazon-digital music,dynamic_rho0.8_minus_dynamic,5,-3.281394341054879e-05,0.0,17245
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,1,-0.0005381425946969668,0.0,15890
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,2,-0.0005708206138314081,0.0,17675
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,3,8.288786144892197e-06,0.0,17855
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,4,0.000360798783598293,0.0,18285
+amazon-digital music,dynamic_rho0.8_topk_minus_dynamic,5,0.00019335412018262467,0.0,17245
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,1,2.2668421005887606e-05,0.0,15890
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,2,-0.00018761226614934552,0.0,17675
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,3,0.00017979996139613964,0.0,17855
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,4,-9.154500712258326e-05,0.0,18285
+amazon-digital music,dynamic_rho0.8_topk_warm_minus_dynamic,5,0.00010473442167501651,0.0,17245
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,1,0.0001144902315283812,0.0,15890
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,2,-0.00024725077850309426,0.0,17675
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,3,3.1290669228909765e-06,0.0,17855
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,4,-4.6438563870770834e-05,0.0,18285
+amazon-digital music,dynamic_rho0.8_warm_minus_dynamic,5,0.0001063455512952929,0.0,17245
+amazon-digital music,fresh_only_minus_static,1,0.005073075663225691,0.0,15890
+amazon-digital music,fresh_only_minus_static,2,0.02771808322787791,0.0,17675
+amazon-digital music,fresh_only_minus_static,3,0.025387305196544696,0.0,17855
+amazon-digital music,fresh_only_minus_static,4,0.01108840879013149,0.0,18285
+amazon-digital music,fresh_only_minus_static,5,0.018031869239826484,0.0,17245
+amazon-digital music,onboarding_minus_static,1,0.004738235214808364,0.0,15890
+amazon-digital music,onboarding_minus_static,2,0.02700666131190903,0.0,17675
+amazon-digital music,onboarding_minus_static,3,0.024924939481926978,0.0,17855
+amazon-digital music,onboarding_minus_static,4,0.011698748578391573,0.0,18285
+amazon-digital music,onboarding_minus_static,5,0.018131155297527384,0.0,17245
+amazon-digital music,periodic_minus_nograph,1,0.022459003672500765,0.0,15890
+amazon-digital music,periodic_minus_nograph,2,0.029501992344350424,0.0,17675
+amazon-digital music,periodic_minus_nograph,3,0.02619964396109003,0.0,17855
+amazon-digital music,periodic_minus_nograph,4,0.01243555837229102,0.0,18285
+amazon-digital music,periodic_minus_nograph,5,0.019197764615108394,0.0,17245
+amazon-digital music,static_minus_nograph,1,0.022459003672500765,0.0,15890
+amazon-digital music,static_minus_nograph,2,0.008383499122576464,0.0,17675
+amazon-digital music,static_minus_nograph,3,0.005031143031645075,0.0,17855
+amazon-digital music,static_minus_nograph,4,0.0022064008215981687,0.0,18285
+amazon-digital music,static_minus_nograph,5,0.0024488042959029104,0.0,17245
+movielens-1m,dynamic_genre_minus_dynamic,1,0.0,0.0,7145
+movielens-1m,dynamic_genre_minus_dynamic,2,0.0,0.0,7105
+movielens-1m,dynamic_genre_minus_dynamic,3,0.0,0.0,8815
+movielens-1m,dynamic_genre_minus_dynamic,4,0.0,0.0,7735
+movielens-1m,dynamic_genre_minus_dynamic,5,0.0,0.0,8690
+movielens-1m,dynamic_minus_fresh_only,1,-3.791291284928212e-05,0.0,7145
+movielens-1m,dynamic_minus_fresh_only,2,-0.000286090285907238,0.0,7105
+movielens-1m,dynamic_minus_fresh_only,3,9.057212809034187e-05,0.0,8815
+movielens-1m,dynamic_minus_fresh_only,4,-0.0005555243475173625,0.0,7735
+movielens-1m,dynamic_minus_fresh_only,5,-0.00011008787210023307,0.0,8690
+movielens-1m,dynamic_minus_nograph,1,0.0003875159733440594,0.0,7145
+movielens-1m,dynamic_minus_nograph,2,0.004395764021702336,0.0,7105
+movielens-1m,dynamic_minus_nograph,3,0.011456751055969005,0.0,8815
+movielens-1m,dynamic_minus_nograph,4,0.02599127344262161,0.0,7735
+movielens-1m,dynamic_minus_nograph,5,0.023786012010415213,0.0,8690
+movielens-1m,dynamic_minus_onboarding,1,-0.00021535102682066932,0.0,7145
+movielens-1m,dynamic_minus_onboarding,2,0.0008958937667105753,0.0,7105
+movielens-1m,dynamic_minus_onboarding,3,0.001036275105928063,0.0,8815
+movielens-1m,dynamic_minus_onboarding,4,0.003258418905866015,0.0,7735
+movielens-1m,dynamic_minus_onboarding,5,0.0018634313509571265,0.0,8690
+movielens-1m,dynamic_minus_periodic,1,-0.00022728859836025785,0.0,7145
+movielens-1m,dynamic_minus_periodic,2,0.0025470242627819687,0.0,7105
+movielens-1m,dynamic_minus_periodic,3,0.004405840610957457,0.0,8815
+movielens-1m,dynamic_minus_periodic,4,0.007508835699300883,0.0,7735
+movielens-1m,dynamic_minus_periodic,5,0.0057982792857052675,0.0,8690
+movielens-1m,dynamic_minus_static,1,-0.00022728859836025785,0.0,7145
+movielens-1m,dynamic_minus_static,2,0.006108329507517697,0.0,7105
+movielens-1m,dynamic_minus_static,3,0.015125503836878983,0.0,8815
+movielens-1m,dynamic_minus_static,4,0.030749104060738334,0.0,7735
+movielens-1m,dynamic_minus_static,5,0.028378707187633932,0.0,8690
+movielens-1m,dynamic_mix0.005_minus_dynamic,1,-0.0015519068865112028,0.0,1429
+movielens-1m,dynamic_mix0.005_minus_dynamic,2,-0.006771814164605298,0.0,1421
+movielens-1m,dynamic_mix0.005_minus_dynamic,3,-0.010081835332000655,0.0,1763
+movielens-1m,dynamic_mix0.005_minus_dynamic,4,-0.021006998163542595,0.0,1547
+movielens-1m,dynamic_mix0.005_minus_dynamic,5,-0.019698934413072567,0.0,1738
+movielens-1m,dynamic_mix0.05_minus_dynamic,1,-0.0026741005308232664,0.0,1429
+movielens-1m,dynamic_mix0.05_minus_dynamic,2,-0.004542535644111123,0.0,1421
+movielens-1m,dynamic_mix0.05_minus_dynamic,3,-0.010146093568001292,0.0,1763
+movielens-1m,dynamic_mix0.05_minus_dynamic,4,-0.019981536679523716,0.0,1547
+movielens-1m,dynamic_mix0.05_minus_dynamic,5,-0.017014447989754627,0.0,1738
+movielens-1m,dynamic_rho0.8_minus_dynamic,1,-3.4166954880081084e-05,0.0,7145
+movielens-1m,dynamic_rho0.8_minus_dynamic,2,-0.0003435977364324668,0.0,7105
+movielens-1m,dynamic_rho0.8_minus_dynamic,3,-0.0004523472899546761,0.0,8815
+movielens-1m,dynamic_rho0.8_minus_dynamic,4,0.0004871177804339063,0.0,7735
+movielens-1m,dynamic_rho0.8_minus_dynamic,5,-0.00018536831896379162,0.0,8690
+movielens-1m,dynamic_rho0.8_topk_minus_dynamic,1,-4.460171772267453e-05,0.0,7145
+movielens-1m,dynamic_rho0.8_topk_minus_dynamic,2,-0.0009627825143385906,0.0,7105
+movielens-1m,dynamic_rho0.8_topk_minus_dynamic,3,-0.0012218296088350137,0.0,8815
+movielens-1m,dynamic_rho0.8_topk_minus_dynamic,4,-0.0030360614243983915,0.0,7735
+movielens-1m,dynamic_rho0.8_topk_minus_dynamic,5,-0.0007120836418983714,0.0,8690
+movielens-1m,dynamic_rho0.8_topk_warm_minus_dynamic,1,0.0002074245517282239,0.0,7145
+movielens-1m,dynamic_rho0.8_topk_warm_minus_dynamic,2,-0.00014493270376716844,0.0,7105
+movielens-1m,dynamic_rho0.8_topk_warm_minus_dynamic,3,3.280486495266296e-05,0.0,8815
+movielens-1m,dynamic_rho0.8_topk_warm_minus_dynamic,4,-0.0004170546627229618,0.0,7735
+movielens-1m,dynamic_rho0.8_topk_warm_minus_dynamic,5,-0.0009637161866430583,0.0,8690
+movielens-1m,dynamic_rho0.8_warm_minus_dynamic,1,-2.5606472397117536e-05,0.0,7145
+movielens-1m,dynamic_rho0.8_warm_minus_dynamic,2,-0.0005632974453831458,0.0,7105
+movielens-1m,dynamic_rho0.8_warm_minus_dynamic,3,-0.0004219172119891447,0.0,8815
+movielens-1m,dynamic_rho0.8_warm_minus_dynamic,4,0.0005348459165483116,0.0,7735
+movielens-1m,dynamic_rho0.8_warm_minus_dynamic,5,-0.00047971184769488864,0.0,8690
+movielens-1m,fresh_only_minus_static,1,-0.00018937568551097574,0.0,7145
+movielens-1m,fresh_only_minus_static,2,0.006394419793424935,0.0,7105
+movielens-1m,fresh_only_minus_static,3,0.015034931708788642,0.0,8815
+movielens-1m,fresh_only_minus_static,4,0.031304628408255694,0.0,7735
+movielens-1m,fresh_only_minus_static,5,0.028488795059734163,0.0,8690
+movielens-1m,onboarding_minus_static,1,-1.1937571539588539e-05,0.0,7145
+movielens-1m,onboarding_minus_static,2,0.005212435740807122,0.0,7105
+movielens-1m,onboarding_minus_static,3,0.01408922873095092,0.0,8815
+movielens-1m,onboarding_minus_static,4,0.02749068515487232,0.0,7735
+movielens-1m,onboarding_minus_static,5,0.026515275836676806,0.0,8690
+movielens-1m,periodic_boundary_minus_periodic,1,0.0,0.0,7145
+movielens-1m,periodic_boundary_minus_periodic,2,-0.0024766368231749886,0.0,7105
+movielens-1m,periodic_boundary_minus_periodic,3,-0.0093792641595623,0.0,8815
+movielens-1m,periodic_boundary_minus_periodic,4,-0.02052779333700884,0.0,7735
+movielens-1m,periodic_boundary_minus_periodic,5,-0.013925378420684911,0.0,8690
+movielens-1m,periodic_minus_nograph,1,0.0006148045717043173,0.0,7145
+movielens-1m,periodic_minus_nograph,2,0.0018487397589203676,0.0,7105
+movielens-1m,periodic_minus_nograph,3,0.007050910445011548,0.0,8815
+movielens-1m,periodic_minus_nograph,4,0.018482437743320725,0.0,7735
+movielens-1m,periodic_minus_nograph,5,0.017987732724709944,0.0,8690
+movielens-1m,periodic_p20_minus_periodic,1,-0.0007140663625589472,0.0,4287
+movielens-1m,periodic_p20_minus_periodic,2,0.0005579230275311829,0.0,4263
+movielens-1m,periodic_p20_minus_periodic,3,0.0015762939268755178,0.0,5289
+movielens-1m,periodic_p20_minus_periodic,4,0.004887856355234354,0.0,4641
+movielens-1m,periodic_p20_minus_periodic,5,0.0030026755366784476,0.0,5214
+movielens-1m,periodic_p240_minus_periodic,1,0.0,0.0,4287
+movielens-1m,periodic_p240_minus_periodic,2,-0.0037606160195534314,0.0,4263
+movielens-1m,periodic_p240_minus_periodic,3,-0.004895429639154536,0.0,5289
+movielens-1m,periodic_p240_minus_periodic,4,-0.020969913864259036,0.0,4641
+movielens-1m,periodic_p240_minus_periodic,5,-0.004850807623658365,0.0,5214
+movielens-1m,static_at120_minus_static,1,-0.00022728859836025785,0.0,7145
+movielens-1m,static_at120_minus_static,2,1.4291281099473818e-05,0.0,7105
+movielens-1m,static_at120_minus_static,3,8.379551273006238e-05,0.0,8815
+movielens-1m,static_at120_minus_static,4,0.00035400731222970144,0.0,7735
+movielens-1m,static_at120_minus_static,5,0.0006274166809538566,0.0,8690
+movielens-1m,static_build120_minus_static,1,0.00022397086368397952,0.0,7145
+movielens-1m,static_build120_minus_static,2,0.002151632694859139,0.0,7105
+movielens-1m,static_build120_minus_static,3,0.001870494147829217,0.0,8815
+movielens-1m,static_build120_minus_static,4,0.004546855362138212,0.0,7735
+movielens-1m,static_build120_minus_static,5,0.0030656652017073197,0.0,8690
+movielens-1m,static_minus_nograph,1,0.0006148045717043173,0.0,7145
+movielens-1m,static_minus_nograph,2,-0.001712565485815361,0.0,7105
+movielens-1m,static_minus_nograph,3,-0.003668752780909979,0.0,8815
+movielens-1m,static_minus_nograph,4,-0.004757830618116727,0.0,7735
+movielens-1m,static_minus_nograph,5,-0.004592695177218719,0.0,8690

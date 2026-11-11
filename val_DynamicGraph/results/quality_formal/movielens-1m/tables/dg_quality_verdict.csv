@@ -1,0 +1,4 @@
+﻿dataset,verdict_id,question,value,evidence,judgement
+movielens-1m,①,图的收益有多大（dynamic − nograph，逐用户）,0.010806,平均 ΔNDCG=+0.0108（n=6400 个 用户×窗口；ΔNDCG>0 比例 0.139）,收益为正，见问题一的配对检验
+movielens-1m,②,邻居越像自己（neighbor_lift 越高），图的收益是否越大？,0.009346,"逐用户 corr(ΔNDCG, neighbor_lift)：Spearman=0.0345（p=0.006，n=6400）；五分位 Q1→Q5 均值差=+0.0093；分位：Q1=0.0028，Q2=0.0072，Q3=0.0135，Q4=0.0182，Q5=0.0122",是（明显）：邻居质量最低的 1/5 与最高的 1/5 之间，收益相差 +0.0093，相当于平均收益的 86%
+movielens-1m,③,图注入力度（delta_rel）越大，图的收益是否越大？,0.020046,"逐用户 corr(ΔNDCG, delta_rel)：Spearman=0.0335（p=0.007）；五分位 Q1→Q5 均值差=+0.0200",是（明显）：图注入力度最低的 1/5 与最高的 1/5 之间，收益相差 +0.0200，相当于平均收益的 186%

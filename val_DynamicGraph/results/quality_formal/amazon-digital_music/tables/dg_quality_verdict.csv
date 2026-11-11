@@ -1,0 +1,4 @@
+﻿dataset,verdict_id,question,value,evidence,judgement
+amazon-digital music,①,图的收益有多大（dynamic − nograph，逐用户）,0.028152,平均 ΔNDCG=+0.0282（n=6400 个 用户×窗口；ΔNDCG>0 比例 0.118）,收益为正，见问题一的配对检验
+amazon-digital music,②,邻居越像自己（neighbor_lift 越高），图的收益是否越大？,-0.004923,"逐用户 corr(ΔNDCG, neighbor_lift)：Spearman=-0.0221（p=0.077，n=6400）；五分位 Q1→Q5 均值差=-0.0049；分位：Q1=0.0278，Q2=0.0320，Q3=0.0411，Q4=0.0170，Q5=0.0229",无关：邻居质量与个体收益没有可测关系（跨度 -0.0049）
+amazon-digital music,③,图注入力度（delta_rel）越大，图的收益是否越大？,0.007552,"逐用户 corr(ΔNDCG, delta_rel)：Spearman=0.0102（p=0.415）；五分位 Q1→Q5 均值差=+0.0076",弱正相关：图注入力度与收益同向，但跨度只有平均收益的 27%

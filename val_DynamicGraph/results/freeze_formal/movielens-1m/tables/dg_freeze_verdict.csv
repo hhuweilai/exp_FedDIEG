@@ -1,0 +1,9 @@
+﻿verdict_id,question,value,evidence,judgement
+①,四种配置下图到底冻没冻住（ρ=0.8）,,"pool+zero: frozen_share=0.020, turnover=0.951, ECR=0.0838, 新边=0.92；pool+warm: frozen_share=0.020, turnover=0.955, ECR=0.0924, 新边=1.03；topk+zero: frozen_share=0.496, turnover=0.161, ECR=0.0022, 新边=0.04；topk+warm: frozen_share=0.020, turnover=0.955, ECR=0.1002, 新边=1.14",frozen_share 越接近 1、turnover 越接近 0 就越冻
+②,冻结的根因：EMA / 新边初始化 / 状态保留规则,,pool+zero=不冻，pool+warm=不冻，topk+zero=冻，topk+warm=不冻,冻结**只出现在 topk + zero 这一个组合**：pool 的两格都不冻（ρ=0.8 也一样），topk+warm 也不冻。所以它既不是 EMA 强度单独造成的，也不是任一单独因素造成的，而是**「只存 Top-K 的旧状态规则」×「新边 0 初值」的联合效应**：topk 状态会丢弃掉出 Top-K 的边历史，而 zero 初值让新边只能以 (1-ρ)Δe 起步（ρ=0.8 时仅 20%），根本挤不进 Top-K；挤不进 ⇒ EMA 永不累积 ⇒ 永久冻结。把任一项改掉（pool 或 warm）就都不冻。
+③,换 warm 初始化能不能解开冻结（topk 状态下）,-0.4764,"Δfrozen_share=-0.476 [-0.579, -0.373]，p=5.04e-09",warm 初始化**几乎完全解开**了冻结：topk+warm 的 frozen_share 只剩 0.020，已与 pool 两格同量级
+④,候选池下，warm 初始化让图转得快多少,0.0042,Δturnover=+0.0042（p=0.00952）；Δ新边=+0.11（p=7.65e-11）；ΔNDCG=+0.0001（p=0.0716）,初始化规则对适应速度几乎没有影响
+⑤,ρ 从 0.2 提到 0.8（同为 pool+zero）改变了什么,-0.0055,Δturnover=-0.0055（p=0.013）；ΔNDCG=-0.0001（p=0.0695）,ρ 对 turnover 没有明显影响
+⑥,各配置的推荐效果（窗口级 NDCG@10）,,pool+zero ρ0.8: 0.2395；pool+warm ρ0.8: 0.2396；topk+zero ρ0.8: 0.2389；topk+warm ρ0.8: 0.2396；论文默认 pool+zero ρ0.2: 0.2396,冻结的图不仅不涨，还会因为邻居失真而略微拖低（见体检列）
+⑥b,冻结的代价：邻居质量与推荐指标,,neighbor_lift：pool+zero=1.690 → topk+zero=1.455（-0.235）；窗口级 NDCG@10：0.2395 → 0.2389（-0.0006）,冻结把邻居质量明显拉低，但 NDCG@10 几乎没变 —— 说明这个指标对「图不再适应」不敏感，评测时不能只看 NDCG，必须同时看 neighbor_lift / ECR 这类结构指标
+⑦,一句话结论,,冻结 = 「只存 Top-K」×「新边 0 初值」的联合效应，改任一项即可解除；topk 下改用 warm 初值可把冻结用户占比降 0.48（p=5e-09）；候选池下 warm 相对 zero 只多转 +0.004（几乎无差别）,回答「更新机制是否合理」：现行实现的隐患是**旧状态规则 + 论文 0 初值的组合会让图永久冻结**；而冻结的代价主要落在邻居质量（lift 下降），NDCG@10 看不出来
