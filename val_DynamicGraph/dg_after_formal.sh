@@ -36,7 +36,7 @@ if [ "$N" -lt "$EXPECTED" ]; then
 fi
 
 log "--- 阶段 4：聚合 + 诊断 + 报告 ---"
-bash "$VAL_DIR/dg_phase4.sh" all >>"$LOG" 2>&1
+bash "$VAL_DIR/dg_phase4.sh" --all >>"$LOG" 2>&1
 RC4=$?
 
 log "--- 阶段 5：统计表 ---"

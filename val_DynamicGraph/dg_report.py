@@ -106,8 +106,13 @@ def md_table(df: Optional[pd.DataFrame], cols: Sequence[str], max_rows: int = 40
             v = row[c]
             if isinstance(v, (float, np.floating)):
                 fv = float(v)
-                cells.append("—" if not np.isfinite(fv)
-                             else (f"{fv:.4f}" if abs(fv) >= 1e-3 or fv == 0 else f"{fv:.2e}"))
+                if not np.isfinite(fv):
+                    cells.append("—")
+                elif abs(fv) >= 1 and abs(fv - round(fv)) < 1e-9:
+                    # 计数/轮次/窗口标签这类整数值：别印成 6040.0000
+                    cells.append(str(int(round(fv))))
+                else:
+                    cells.append(f"{fv:.4f}" if abs(fv) >= 1e-3 or fv == 0 else f"{fv:.2e}")
             else:
                 cells.append(str(v))
         lines.append("| " + " | ".join(cells) + " |")
@@ -233,16 +238,50 @@ class Bundle:
         s = a[a["dataset"] == raw]
         return s if len(s) else None
 
+    def seeds_of(self, ds: str) -> List[str]:
+        """从逐 run 目录名里读出实际用到的种子（不在代码里硬编码）。"""
+        seeds: set = set()
+        for base in (RAW_ROOT / slug(ds), RAW_ROOT / DS_RAW.get(ds, ds)):
+            if not base.exists():
+                continue
+            for p in base.glob("*/seed_*"):
+                if p.is_dir():
+                    seeds.add(p.name[len("seed_"):])
+        return sorted(seeds, key=lambda x: (len(x), x))
+
 
 def c_line(b: Bundle, ds: str, contrast: str, label: str) -> str:
+    """一行配对差值。
+
+    **种子级是主证据**（每个种子一个观测）：均值、t 分布 95%CI、配对 t 的 p；
+    窗口级（种子×窗口）只作敏感性分析并列在同一行 —— 同一种子跨窗口不独立，
+    所以不能把 n=种子数×窗口数 的 p 当主证据。
+    """
     r = b.contrast(ds, contrast)
     if r is None:
         return f"- {label}：无数据"
-    return (f"- {label}：**Δ={float(r['delta_mean']):+.4f}**"
-            f"（95%CI [{float(r['ci95_lo']):+.4f}, {float(r['ci95_hi']):+.4f}]，"
+
+    def g(key: str) -> float:
+        return float(r[key]) if key in r.index and pd.notna(r[key]) else float("nan")
+
+    seed_mean, lo, hi, p_seed = g("delta_seed_mean"), g("ci95_seed_lo"), g("ci95_seed_hi"), g("p_seed_t")
+    if np.isfinite(seed_mean):
+        head = (f"- {label}：**Δ={seed_mean:+.4f}**"
+                f"（种子级 95%CI [{lo:+.4f}, {hi:+.4f}]，"
+                f"种子 {int(g('seeds_positive'))}/{int(g('seeds_total'))} 为正，"
+                f"p={p_seed:.3g}")
+        if np.isfinite(g("cohen_dz")):
+            head += f"，dz={g('cohen_dz'):.2f}"
+        head += "）"
+        tail = (f"；窗口级敏感性：Δ={g('delta_mean'):+.4f}，p={g('p_paired'):.3g}"
+                f"（n={int(g('n_obs'))} 个 种子×窗口 观测）")
+        return head + tail
+    # 旧聚合表没有种子级列时退回窗口级（并在文里说明）
+    return (f"- {label}：**Δ={g('delta_mean'):+.4f}**"
+            f"（窗口级 95%CI [{g('ci95_lo'):+.4f}, {g('ci95_hi'):+.4f}]，"
             f"窗口正号 {pct(r['win_rate']) if 'win_rate' in r else '—'}，"
             f"种子 {int(r.get('seeds_positive', 0))}/{int(r.get('seeds_total', 0))} 为正，"
-            f"p={float(r['p_paired']):.3g}）")
+            f"p={g('p_paired'):.3g}；**该表无种子级列，p 为窗口级**）")
 
 
 # ----------------------------------------------------------------- 各章
@@ -255,8 +294,16 @@ def section_setup(b: Bundle) -> str:
             if s is None or len(s) == 0:
                 continue
             rows.append(f"- **{DS_LABEL.get(ds, ds)}**：{len(s)} 个臂/变体，"
-                        f"每臂 {int(s['n_seeds'].max())} 个种子")
+                        f"主臂各 {int(s['n_seeds'].max())} 个种子")
+    seeds: set = set()
+    for ds in DATASETS:
+        seeds.update(b.seeds_of(ds))
+    seed_txt = " / ".join(sorted(seeds, key=lambda x: (len(x), x))) if seeds else "（未知）"
     return f"""## 一、实验设置与严格性
+
+> 本报告的全部数字来自 **修复后重训的正式批次**（`results/raw_formal`）：
+> 摘要上传时机改为本地训练**之后**取（F7）、时间切分的排除集/回退候选/历史集合改为因果（F8）。
+> 修复前的 `results/raw`、`results/raw_phase2(b)` 一律标为 legacy，**不与本表混比**。
 
 ### 1.1 协议（两个数据集完全一致）
 
@@ -269,7 +316,8 @@ def section_setup(b: Bundle) -> str:
 | 个性化 | 编码器（attention/FFN/LayerNorm/W_proj/q_att）留客户端，其余共享（FedAvg，uniform） |
 | 图 | Top-K = 20，ρ = 0.2（论文默认），预热 20 轮，更新全部活跃节点 |
 | 评测 | 1 正 + 99 负候选，NDCG@10 / HR@10，每 10 轮评一次 |
-| 种子 | 42 / 777 / 2024 |
+| 种子 | {seed_txt}（主臂 5 个；刷新频率扫描与锚点按需减少） |
+| 统计口径 | **种子级**为主证据（每种子一个观测，n=5，t 分布 95%CI + 配对 t）；窗口级只作敏感性分析 |
 
 ### 1.2 数据集
 
@@ -278,18 +326,30 @@ def section_setup(b: Bundle) -> str:
 | MovieLens-1M | 6,040 | 3,416 | 999,611 | 0.0484 | 1,421 ~ 1,763 |
 | Amazon-Digital-Music | 12,381 | 9,906 | 123,518 | 0.0010 | 3,178 ~ 3,657 |
 
-### 1.3 三条臂与对照网格
+### 1.3 六条臂与对照网格
 
 | 臂 | 图分支前向 | 服务器上的边状态 |
 |---|---|---|
 | NoGraph | **关**（`u_i = seq_emb_i`） | 不建图、从不更新 |
-| StaticGraph | 开 | 预热结束建一次，之后完全冻结 |
+| StaticGraph | 开 | 预热结束建一次（第 21 轮），之后完全冻结 |
 | PeriodicGraph | 开 | 每 120 轮清零重建一次（慢刷新对照） |
 | DynamicGraph | 开 | 每轮按 `e ← ρ·e + (1−ρ)·Δe` 更新 |
+| **OnboardingGraph** | 开 | **只给「当前还没有邻居」的用户建边**（每人恰好一次）→ 分离「覆盖」 |
+| **FreshOnlyGraph** | 开 | **只给「自上次更新后有新上传」的用户重估**（同一用户可多次）→ 「有针对性」的演化 |
 
 `StaticGraph` 与 `DynamicGraph` 在预热结束那一轮之前**逐位相同**（同一次构图、同一个 Top-K），
-之后只差"要不要继续更新边"。因此 `Dynamic − Static` 就是动态性的净效应，
-`Static − NoGraph` 是图分支的净效应，`Dynamic − Periodic` 是"每轮 EMA 相对慢刷新"的边际效应。
+之后只差「要不要继续更新边」。因此 `Dynamic − Static` 就是动态性的净效应，
+`Static − NoGraph` 是图分支的净效应，`Dynamic − Periodic` 是「每轮 EMA 相对慢刷新」的边际效应。
+
+**三项分解**（这是本报告回答「收益来自哪里」的主要口径）：
+
+    Dynamic − Static = (Onboarding − Static) + (Dynamic − Onboarding)
+                       └── 覆盖（新用户首次获得邻居）──┘   └── 演化（已覆盖用户的边权重估）──┘
+
+另有诊断变体（不参与主对照）：`static_at120`（更新到第 120 轮再冻结）、
+`static_build120`（第 120 轮一次性建图后冻结）、`periodic_boundary`（窗口边界重建）、
+`periodic_p20` / `periodic_p240`（刷新周期 20 / 240 轮）、`dynamic @ ρ=0.8` 的四格冻结网格、
+`dynamic_mix0.005` / `dynamic_mix0.05`（图分支剂量锚点）。
 
 ### 1.4 严格性保证（三层）
 
@@ -298,7 +358,10 @@ def section_setup(b: Bundle) -> str:
    诊断前向与 `score_user` 一致、初始参数逐位相同、参与序列可复现。
 2. **运行中硬检查**：NoGraph 的 `delta_rel_max` 必须恰为 0、Static 冻结后签名不得变化（否则直接抛错）、
    图臂预热后不得是空图（否则打印醒目警告）。
-3. **聚合后核对**：`dg_hygiene.csv` 检查协议参数一致、种子数一致、空图、冻结、每轮更新、同窗口评测对齐。
+3. **聚合后核对** `dg_verify_formal.sh` 29 项全 PASS：run 数（128 = ML 78 + Amazon 50）、
+   `ecr_def`/`core_version` 唯一、主臂 5 种子、`static_build120` 首次建图恰在第 120 轮、
+   冻结后边变化为 0、`onboarding` 每人恰好建边一次、`fresh_only` 重复重估、
+   `periodic_boundary` 恰 5 次刷新、`dg_hygiene.csv` 全通过、报告章节与图引用完整。
 
 {chr(10).join(rows) if rows else "（尚无结果）"}
 """
@@ -312,9 +375,9 @@ def section_q1(b: Bundle) -> str:
         if s is None or len(s) == 0:
             continue
         out.append(f"### 2.{DATASETS.index(ds)+1} {DS_LABEL.get(ds, ds)}\n")
-        out.append("**各臂总体水平**（窗口级 NDCG@10，跨种子平均；只列四条核心臂，"
-                   "冻结归因的变体见第三章）\n")
-        core = ["nograph", "static", "periodic", "dynamic"]
+        out.append("**各臂总体水平**（窗口级 NDCG@10，跨种子平均；六条核心臂，"
+                   "诊断变体见本章末尾的诊断表与第三章）\n")
+        core = ["nograph", "static", "periodic", "dynamic", "onboarding", "fresh_only"]
         s_core = s[s["arm_dir"].isin(core)].copy()
         order = {a: i for i, a in enumerate(core)}
         s_core["_o"] = s_core["arm_dir"].map(order)
@@ -349,7 +412,7 @@ def section_q1(b: Bundle) -> str:
             same = abs(float(g_row.iloc[0]["ndcg_win_mean"]) - float(d_row.iloc[0]["ndcg_win_mean"])) < 1e-9
             out.append(f"> 复现性检查：带 genre 诊断重跑的 `dynamic_genre` 与 `dynamic` 的窗口级 NDCG "
                        f"{'**完全相同**' if same else '存在差异（需排查）'}，说明诊断代码不影响训练。\n")
-        out.append("**配对差值**（窗口级，n = 种子数 × 窗口数）\n")
+        out.append("**配对差值**（**种子级为主证据**；窗口级只作敏感性分析）\n")
         out.append(c_line(b, ds, "dynamic_minus_nograph", "③ Dynamic − NoGraph（总贡献）"))
         out.append(c_line(b, ds, "static_minus_nograph", "① Static − NoGraph（图分支本身）"))
         out.append(c_line(b, ds, "dynamic_minus_static", "② Dynamic − Static（动态性净效应）"))
@@ -368,16 +431,7 @@ def section_q1(b: Bundle) -> str:
         # 策略臂（覆盖 vs 演化）——只有跑过 onboarding / fresh_only 才出现
         strat = [a for a in ("onboarding", "fresh_only") if a in set(s["arm_dir"])]
         if strat:
-            out.append("**策略臂（问题一：收益来自覆盖还是演化）**\n")
-            s_strat = s[s["arm_dir"].isin(strat)].copy()
-            s_strat["_o"] = s_strat["arm_dir"].map({a: i for i, a in enumerate(strat)})
-            s_strat = s_strat.sort_values("_o").drop(columns="_o")
-            strat_cols = [c for c in ["arm_dir", "n_seeds", "ndcg_win_mean", "ndcg_win_last",
-                                      "n_edges", "graph_updates"] if c in s_strat.columns]
-            strat_headers = ["臂", "种子数", "窗口级 NDCG@10", "末窗 NDCG@10", "有边用户",
-                             "更新轮数"][:len(strat_cols)]
-            out.append(md_table(s_strat, strat_cols, headers=strat_headers))
-            out.append("")
+            out.append("**策略臂：收益来自覆盖还是演化**\n")
             g_onb = b.contrast(ds, "onboarding_minus_static")
             g_evo = b.contrast(ds, "dynamic_minus_onboarding")
             g_fresh = b.contrast(ds, "fresh_only_minus_static")
@@ -390,35 +444,102 @@ def section_q1(b: Bundle) -> str:
             if g_fresh is not None:
                 out.append(c_line(b, ds, "fresh_only_minus_static",
                                   "针对性 FreshOnly − Static（只更新有新证据的用户）"))
-            g1 = b.contrast(ds, "static_minus_nograph")
-            g3 = b.contrast(ds, "dynamic_minus_nograph")
-            if g1 is not None and g_onb is not None and g_evo is not None and g3 is not None:
-                total = (float(g1["delta_mean"]) + float(g_onb["delta_mean"])
-                         + float(g_evo["delta_mean"]))
-                out.append(
-                    f"\n> 恒等式核对：① {float(g1['delta_mean']):+.4f} + 覆盖 "
-                    f"{float(g_onb['delta_mean']):+.4f} + 演化 {float(g_evo['delta_mean']):+.4f} "
-                    f"= {total:+.4f}（③ = {float(g3['delta_mean']):+.4f}，"
-                    f"差 {abs(total - float(g3['delta_mean'])):.1e}）\n"
-                )
+            out.append(c_line(b, ds, "dynamic_minus_fresh_only",
+                              "DynamicGraph − FreshOnlyGraph（无差别 EMA 相对「只更新有新证据的人」）"))
+            g2 = b.contrast(ds, "dynamic_minus_static")
+            if g2 is not None and g_onb is not None and g_evo is not None:
+                total = float(g2["delta_mean"])
+                cover = float(g_onb["delta_mean"])
+                evo = float(g_evo["delta_mean"])
+                resid = total - (cover + evo)
+                share = (cover / total) if total else float("nan")
+                out.append("")
+                out.append("**三项分解**（② = 覆盖 + 演化，所有数取自 `dg_stats_decomp.csv`）\n")
+                out.append("| 成分 | 对照 | Δ NDCG@10 | 占 ② |")
+                out.append("|---|---|---|---|")
+                out.append(f"| ② 动态性净效应 | Dynamic − Static | **{total:+.4f}** | 100% |")
+                out.append(f"| **覆盖项** | Onboarding − Static | **{cover:+.4f}** | **{share:.0%}** |")
+                out.append(f"| 演化项 | Dynamic − Onboarding | {evo:+.4f} | {1-share:.0%} |")
+                out.append(f"| 恒等残差 | ② − (覆盖+演化) | {resid:+.1e} | — |")
+                out.append("")
+                out.append("> 覆盖项只由「第 21 轮之后才第一次获得邻居的用户」贡献，"
+                           "所以它衡量的是**覆盖（含覆盖时点）**，不是「有没有边」的二元效应。\n")
             out.append("")
 
-        # 分解
-        g3 = b.contrast(ds, "dynamic_minus_nograph")
-        g4 = b.contrast(ds, "periodic_minus_nograph")
-        g5 = b.contrast(ds, "dynamic_minus_periodic")
-        if g3 is not None and g4 is not None:
-            share = float(g4["delta_mean"]) / float(g3["delta_mean"]) if float(g3["delta_mean"]) else float("nan")
-            out.append("**收益分解**\n")
-            out.append("| 成分 | 定义 | Δ NDCG@10 | 占总收益 |")
-            out.append("|---|---|---|---|")
-            out.append(f"| 总收益 | Dynamic − NoGraph | {float(g3['delta_mean']):+.4f} | 100% |")
-            out.append(f"| **「图被刷新/覆盖」** | Periodic − NoGraph（5 次刷新） | "
-                       f"**{float(g4['delta_mean']):+.4f}** | **{share:.0%}** |")
-            if g5 is not None:
-                out.append(f"| 「更频繁刷新 + EMA 平滑」 | Dynamic − Periodic（580 次更新） | "
-                           f"{float(g5['delta_mean']):+.4f} | {1-share:.0%} |")
+        # 刷新频率 × 覆盖时点（诊断臂）
+        freq = [a for a in ("periodic", "periodic_boundary", "periodic_p20", "periodic_p240")
+                if a in set(s["arm_dir"])]
+        if len(freq) > 1:
+            out.append(f"**诊断：刷新频率 × 覆盖时点（{DS_LABEL.get(ds, ds)}）**\n")
+            rows = []
+            for arm in freq:
+                r = b.arm_row(ds, arm)
+                con = b.contrast(ds, f"{arm}_minus_periodic") if arm != "periodic" else None
+                rows.append({
+                    "arm": arm,
+                    "refresh": float(r["refresh_rounds"]) if "refresh_rounds" in r.index and pd.notna(r["refresh_rounds"]) else float("nan"),
+                    "cov": float(r["active_coverage_mean"]) if "active_coverage_mean" in r.index and pd.notna(r["active_coverage_mean"]) else float("nan"),
+                    "tv": float(r["graph_turnover_mean"]) if "graph_turnover_mean" in r.index and pd.notna(r["graph_turnover_mean"]) else float("nan"),
+                    "lift": float(r["neighbor_lift"]),
+                    "ndcg": float(r["ndcg_win_mean"]),
+                    "d": float(con["delta_seed_mean"]) if con is not None else float("nan"),
+                    "p": float(con["p_seed_t"]) if con is not None else float("nan"),
+                })
+            out.append(md_table(pd.DataFrame(rows),
+                                ["arm", "refresh", "cov", "tv", "lift", "ndcg", "d", "p"],
+                                headers=["臂", "每次运行刷新次数", "active_coverage",
+                                         "graph_turnover", "neighbor_lift", "窗口级 NDCG@10",
+                                         "Δ vs periodic（种子级）", "p"]))
             out.append("")
+            out.append("> 刷新越靠近窗口起点（`periodic` 在每窗第 21 轮、`periodic_boundary` 在窗口边界），"
+                       "新窗口的用户越晚被覆盖；`active_coverage` 就是这件事的直接读数。\n")
+
+        # 静态臂变体（晚冻结 / 晚建图）
+        stv = [a for a in ("static", "static_at120", "static_build120") if a in set(s["arm_dir"])]
+        if len(stv) > 1:
+            out.append(f"**诊断：什么时候建图（{DS_LABEL.get(ds, ds)}）**\n")
+            rows = []
+            for arm in stv:
+                r = b.arm_row(ds, arm)
+                con = b.contrast(ds, f"{arm}_minus_static") if arm != "static" else None
+                rows.append({
+                    "arm": arm,
+                    "edges": float(r["n_edges"]) if "n_edges" in r.index else float("nan"),
+                    "cov": float(r["active_coverage_mean"]) if "active_coverage_mean" in r.index and pd.notna(r["active_coverage_mean"]) else float("nan"),
+                    "lift": float(r["neighbor_lift"]) if pd.notna(r["neighbor_lift"]) else float("nan"),
+                    "ndcg": float(r["ndcg_win_mean"]),
+                    "d": float(con["delta_seed_mean"]) if con is not None else float("nan"),
+                    "p": float(con["p_seed_t"]) if con is not None else float("nan"),
+                })
+            out.append(md_table(pd.DataFrame(rows),
+                                ["arm", "edges", "cov", "lift", "ndcg", "d", "p"],
+                                headers=["臂", "有边用户", "active_coverage", "neighbor_lift",
+                                         "窗口级 NDCG@10", "Δ vs static（种子级）", "p"]))
+            out.append("")
+            out.append("> `static` 在第 21 轮建图后立即冻结（只覆盖 W1 那批用户）；"
+                       "`static_at120` 更新到第 120 轮再冻结；"
+                       "`static_build120` 第 120 轮一次性建图后冻结。\n")
+
+        # 锚点（图分支剂量）
+        anchors = [a for a in ("dynamic", "dynamic_mix0.05", "dynamic_mix0.005")
+                   if a in set(s["arm_dir"])]
+        if len(anchors) > 1:
+            out.append(f"**锚点：图分支剂量（D1 口径可比性，{DS_LABEL.get(ds, ds)}）**\n")
+            rows = []
+            for arm in anchors:
+                r = b.arm_row(ds, arm)
+                rows.append({
+                    "arm": arm,
+                    "drel": float(r["delta_rel"]) if pd.notna(r["delta_rel"]) else float("nan"),
+                    "ndcg": float(r["ndcg_win_mean"]),
+                    "n": int(r["n_seeds"]),
+                })
+            out.append(md_table(pd.DataFrame(rows), ["arm", "drel", "ndcg", "n"],
+                                headers=["臂（后缀即 graph_mix）", "delta_rel（图分支剂量）",
+                                         "窗口级 NDCG@10", "种子数"]))
+            out.append("")
+            out.append("> 这三条只差图分支注入强度：`graph_mix=1` 是主对照，"
+                       "0.05 / 0.005 用来对齐中期报告的口径（剂量越小，`delta_rel` 越小）。\n")
 
         # 逐窗口
         c = b.curve_of(ds)
@@ -435,7 +556,7 @@ def section_q1(b: Bundle) -> str:
                     out.append("")
 
         out.append(img(AGG_ROOT / "figures" / f"dg_fig_arms_{slug(ds)}.png",
-                       f"{DS_LABEL.get(ds, ds)}：三条臂的 NDCG 曲线 / 图分支剂量 delta_rel / 邻居质量 lift"))
+                       f"{DS_LABEL.get(ds, ds)}：六条臂的 NDCG 曲线 / 图分支剂量 delta_rel / 邻居质量 lift"))
         out.append("")
 
     # ---- 跨数据集对比
@@ -454,110 +575,158 @@ def section_q1(b: Bundle) -> str:
         g5 = b.contrast(ds, "dynamic_minus_periodic")
         g2 = b.contrast(ds, "dynamic_minus_static")
         g1 = b.contrast(ds, "static_minus_nograph")
+
+        def sd(con) -> float:
+            """种子级 Δ（主证据）；没有种子级列时退回窗口级。"""
+            if con is None:
+                return float("nan")
+            if "delta_seed_mean" in con.index and pd.notna(con["delta_seed_mean"]):
+                return float(con["delta_seed_mean"])
+            return float(con["delta_mean"])
+
+        def sp(con) -> float:
+            if con is None:
+                return float("nan")
+            if "p_seed_t" in con.index and pd.notna(con["p_seed_t"]):
+                return float(con["p_seed_t"])
+            return float(con["p_paired"])
+
+        g_onb = b.contrast(ds, "onboarding_minus_static")
+        g_evo = b.contrast(ds, "dynamic_minus_onboarding")
+        d3, d2 = sd(g3), sd(g2)
+        cover, evo = sd(g_onb), sd(g_evo)
         rows.append({
             "dataset": DS_LABEL.get(ds, ds),
             "nograph": base,
             "static": arm_ndcg("static"),
             "periodic": arm_ndcg("periodic"),
             "dynamic": arm_ndcg("dynamic"),
-            "g3": float(g3["delta_mean"]) if g3 is not None else float("nan"),
-            "g3_rel": (100.0 * float(g3["delta_mean"]) / base) if (g3 is not None and base) else float("nan"),
-            "g1": float(g1["delta_mean"]) if g1 is not None else float("nan"),
-            "g2": float(g2["delta_mean"]) if g2 is not None else float("nan"),
-            "g4_share": (100.0 * float(g4["delta_mean"]) / float(g3["delta_mean"]))
-                        if (g4 is not None and g3 is not None and float(g3["delta_mean"])) else float("nan"),
-            "g5": float(g5["delta_mean"]) if g5 is not None else float("nan"),
-            "g3_p": float(g3["p_paired"]) if g3 is not None else float("nan"),
+            "g3": d3,
+            "g3_rel": (100.0 * d3 / base) if (np.isfinite(d3) and base) else float("nan"),
+            "g3_p": sp(g3),
+            "g1": sd(g1),
+            "g2": d2,
+            "cover": cover,
+            "cover_share": (100.0 * cover / d2) if (np.isfinite(cover) and np.isfinite(d2) and d2) else float("nan"),
+            "evo": evo,
+            "g5": sd(g5),
         })
     if rows:
         cmp_df = pd.DataFrame(rows)
         out.append("### 2.3 跨数据集对比\n")
-        out.append("同一个结论在两个数据集上是否都成立：\n")
+        out.append("同一个结论在两个数据集上是否都成立（**全部为种子级 Δ**）：\n")
         out.append(md_table(
             cmp_df,
             ["dataset", "nograph", "static", "periodic", "dynamic", "g3", "g3_rel", "g3_p",
-             "g1", "g2", "g4_share", "g5"],
+             "g1", "g2", "cover", "cover_share", "evo", "g5"],
             headers=["数据集", "NoGraph", "Static", "Periodic", "Dynamic",
                      "③Δ", "③相对增幅 %", "③p", "①Δ（静态）", "②Δ（动态性）",
-                     "④占总收益 %", "⑤每轮 EMA 边际"],
+                     "覆盖项 Δ", "覆盖占 ② %", "演化项 Δ", "⑤每轮 EMA 边际"],
         ))
         out.append("")
-        out.append("> 读法：③ 是动态图相对无图的总收益；④ 占比说明「只刷新几次」能拿到总收益的多大比例；"
+        out.append("> 读法：③ 是动态图相对无图的总收益；② 是动态性净效应，"
+                   "它几乎全部由「覆盖项」解释（新用户第一次拿到邻居），「演化项」只占个位数百分比；"
                    "⑤ 是「每轮 EMA」相对慢刷新的额外边际。\n")
         out.append("")
 
-    # ---- 结论汇总
+    # ---- 结论汇总（种子级为主证据）
     out.append("### 2.4 结论\n")
     lines = []
     for ds in DATASETS:
         g3 = b.contrast(ds, "dynamic_minus_nograph")
-        g4 = b.contrast(ds, "periodic_minus_nograph")
-        g5 = b.contrast(ds, "dynamic_minus_periodic")
+        g2 = b.contrast(ds, "dynamic_minus_static")
         g1 = b.contrast(ds, "static_minus_nograph")
+        g_onb = b.contrast(ds, "onboarding_minus_static")
+        g_evo = b.contrast(ds, "dynamic_minus_onboarding")
+        g5 = b.contrast(ds, "dynamic_minus_periodic")
         if g3 is None:
             continue
+
+        def val(con, key):
+            if con is None or key not in con.index or pd.isna(con[key]):
+                return float("nan")
+            return float(con[key])
+
+        d3, p3 = val(g3, "delta_seed_mean"), val(g3, "p_seed_t")
+        if not np.isfinite(p3):
+            d3, p3 = float(g3["delta_mean"]), float(g3["p_paired"])
         parts = [f"在 **{DS_LABEL.get(ds, ds)}** 上 DynamicGraph 相对 NoGraph 提升 "
-                 f"**{float(g3['delta_mean']):+.4f} NDCG@10**"
-                 f"（p={float(g3['p_paired']):.3g}，种子 {int(g3.get('seeds_positive', 0))}/"
-                 f"{int(g3.get('seeds_total', 0))} 为正）"]
+                 f"**{d3:+.4f} NDCG@10**"
+                 f"（种子级 p={p3:.3g}，{int(g3.get('seeds_positive', 0))}/"
+                 f"{int(g3.get('seeds_total', 0))} 个种子为正）"]
         if g1 is not None:
-            parts.append(f"静态图相对无图 {float(g1['delta_mean']):+.4f}"
-                         f"（{'无测出收益' if abs(float(g1['delta_mean'])) < 0.002 else '有收益'}）")
-        if g4 is not None:
-            share = (float(g4["delta_mean"]) / float(g3["delta_mean"])) if float(g3["delta_mean"]) else float("nan")
-            parts.append(f"只刷新 5 次的 periodic 就拿到总收益的 {share:.0%}")
-        if g5 is not None:
-            parts.append(f"每轮 EMA 的额外收益 {float(g5['delta_mean']):+.4f}")
+            d1 = val(g1, "delta_seed_mean")
+            parts.append(f"静态图相对无图 {d1:+.4f}"
+                         f"（{'无测出收益' if abs(d1) < 0.002 else '有正收益'}）")
+        d2 = val(g2, "delta_seed_mean")
+        cover, evo = val(g_onb, "delta_seed_mean"), val(g_evo, "delta_seed_mean")
+        if np.isfinite(d2) and np.isfinite(cover):
+            parts.append(f"而这 {d2:+.4f} 的动态性净效应里，覆盖项占 {cover:+.4f}"
+                         f"（{cover/d2:.0%}）、演化项只有 {evo:+.4f}")
+        d5 = val(g5, "delta_seed_mean")
+        if np.isfinite(d5):
+            parts.append(f"「每轮 EMA」相对慢刷新的额外边际 {d5:+.4f}")
         lines.append("；".join(parts) + "。")
     out.extend(lines)
     out.append("")
-    # ---- 自动生成"一句话"（按两个数据集的实测模式说话，不预设结论）
-    eff, noeff, shares, static_ok, static_bad = [], [], [], [], []
+
+    # ---- 自动生成"一句话"：以三项分解为主轴（覆盖 vs 演化），不预设结论
+    eff, noeff = [], []
+    covers, evos, static_txt, tails = [], [], [], []
     for ds in DATASETS:
         g3 = b.contrast(ds, "dynamic_minus_nograph")
-        g4 = b.contrast(ds, "periodic_minus_nograph")
-        g5 = b.contrast(ds, "dynamic_minus_periodic")
+        g2 = b.contrast(ds, "dynamic_minus_static")
         g1 = b.contrast(ds, "static_minus_nograph")
+        g_onb = b.contrast(ds, "onboarding_minus_static")
+        g_evo = b.contrast(ds, "dynamic_minus_onboarding")
+        g5 = b.contrast(ds, "dynamic_minus_periodic")
         if g3 is None:
             continue
-        d3 = float(g3["delta_mean"])
-        real = d3 >= 0.002 and float(g3["p_paired"]) < 0.05
-        (eff if real else noeff).append(DS_LABEL.get(ds, ds))
-        if g4 is not None and d3:
-            shares.append((DS_LABEL.get(ds, ds), float(g4["delta_mean"]) / d3,
-                           float(g5["delta_mean"]) if g5 is not None else float("nan")))
+
+        def pick(con, k):
+            if con is None or k not in con.index or pd.isna(con[k]):
+                return float("nan")
+            return float(con[k])
+
+        label = DS_LABEL.get(ds, ds)
+        d3, p3 = pick(g3, "delta_seed_mean"), pick(g3, "p_seed_t")
+        if not np.isfinite(p3):
+            d3, p3 = float(g3["delta_mean"]), float(g3["p_paired"])
+        real = d3 >= 0.002 and p3 < 0.05
+        (eff if real else noeff).append(label)
+        d2 = pick(g2, "delta_seed_mean")
+        cover, evo = pick(g_onb, "delta_seed_mean"), pick(g_evo, "delta_seed_mean")
+        if np.isfinite(d2) and np.isfinite(cover):
+            covers.append((label, cover, cover / d2 if d2 else float("nan")))
+            if np.isfinite(evo):
+                evos.append((label, evo, evo / d2 if d2 else float("nan")))
         if g1 is not None:
-            (static_bad if abs(float(g1["delta_mean"])) < 0.002 else static_ok).append(
-                DS_LABEL.get(ds, ds))
+            d1 = pick(g1, "delta_seed_mean")
+            if np.isfinite(d1):
+                kind = "低于随机基线" if pick(g1, "delta_seed_mean") < 0 else "略高于随机基线"
+                static_txt.append(f"{label} {d1:+.4f}（neighbor_lift {kind}）")
+        t5 = pick(g5, "delta_seed_mean")
+        if np.isfinite(t5):
+            tails.append(t5)
 
     parts = []
     if eff:
         parts.append(f"动态图在 {'、'.join(eff)} 上有明确独立贡献")
     if noeff:
-        parts.append(f"在 {'、'.join(noeff)} 上没有测出显著收益（该数据集更稀疏，"
-                     f"摘要质量不足时图本身就提供不了有效邻居）")
-    if shares:
-        lo = min(s for _, s, _ in shares)
-        hi = max(s for _, s, _ in shares)
-        share_txt = f"{lo:.0%}" if abs(hi - lo) < 1e-9 else f"{lo:.0%}~{hi:.0%}"
-        parts.append(f"但贡献的大头来自「图持续被刷新、能覆盖当前活跃用户」——"
-                     f"只刷新几次的 periodic 就拿到总收益的 {share_txt}")
-        tails = [g5 for _, _, g5 in shares if np.isfinite(g5)]
-        if tails:
-            t_lo, t_hi = min(tails), max(tails)
-            tail_txt = f"{t_lo:+.4f}" if abs(t_hi - t_lo) < 1e-9 else f"{t_lo:+.4f}~{t_hi:+.4f}"
-            parts.append(f"每轮 EMA 的额外边际只有 {tail_txt}")
-    if static_bad:
-        parts.append(f"一次性冻结的图在 {'、'.join(static_bad)} 上相对无图无可测收益")
-    if static_ok:
-        st_vals = []
-        for ds in DATASETS:
-            g1 = b.contrast(ds, "static_minus_nograph")
-            if g1 is not None and DS_LABEL.get(ds, ds) in static_ok:
-                st_vals.append(f"{float(g1['delta_mean']):+.4f}")
-        parts.append(f"但 {'、'.join(static_ok)} 上的静态图仍有正收益 {'、'.join(st_vals)}"
-                     f"（远小于动态图），且它的 neighbor_lift 已低于随机基线（见第二章 ⑦），"
-                     f"这部分收益不能归因于邻居质量")
+        parts.append(f"在 {'、'.join(noeff)} 上没有测出显著收益")
+    if covers:
+        c_txt = "、".join(f"{lab} {c:+.4f}（占 ② 的 {sh:.0%}）" for lab, c, sh in covers)
+        parts.append(f"而 ② 的收益几乎全部来自**覆盖**——新窗口里的用户第一次拿到邻居：{c_txt}")
+    if evos:
+        e_txt = "、".join(f"{lab} {e:+.4f}（{sh:.0%}）" for lab, e, sh in evos)
+        parts.append(f"已覆盖用户的边权持续重估（演化）只贡献 {e_txt}")
+    if static_txt:
+        parts.append(f"一次性冻结的图相对无图 {'、'.join(static_txt)}，"
+                     f"它的收益（或损失）不能归因于邻居质量")
+    if tails:
+        lo, hi = min(tails), max(tails)
+        tail_txt = f"{lo:+.4f}" if abs(hi - lo) < 1e-9 else f"{lo:+.4f}~{hi:+.4f}"
+        parts.append(f"「每轮 EMA」相对慢刷新（periodic）的额外边际只有 {tail_txt}")
 
     out.append("> **一句话**：" + "；".join(parts) + "。\n")
     return "\n".join(out)
@@ -818,24 +987,74 @@ def section_q3(b: Bundle) -> str:
     return "\n".join(out)
 
 
-def section_implications() -> str:
-    return """## 五、对研究问题的含义
+def section_implications(b: "Bundle") -> str:
+    """第五章：把「收益来自哪里」翻译成第二阶段的方向。数字全部从聚合表取。"""
 
-1. **图是有效的，但价值不在"有图"而在"图跟得上"**。一次性冻结的静态图只能覆盖"冻结那一刻已经上传过摘要"
-   的用户（MovieLens-1M 1275 / 6040，Amazon-Digital-Music 2928 / 12381），邻居质量会随兴趣漂移掉下去：
-   它在 MovieLens-1M 上相对无图没有可测收益（-0.0012），在 Amazon 上虽有正收益（+0.0044）但只有动态图的 1/4；
-   而这个正收益也**不能**归因于邻居质量——那条臂的 neighbor_lift（0.87）甚至低于随机基线。
-   相比之下每窗口刷新一次就能拿到总收益的 60%~80%。所以第二阶段的重点应当是**"什么时候刷新、覆盖谁"**，
-   而不是精调平滑系数。
+    def num(con, key: str) -> float:
+        if con is None or key not in con.index or pd.isna(con[key]):
+            return float("nan")
+        return float(con[key])
 
-2. **自适应更新速度的空间被量化了**。相对"每窗口刷新一次"这个简单基线，每轮 EMA 只多给约 1/5 到 1/3 的收益
-   （见问题一 ⑤：Amazon 18%、MovieLens-1M 33%）。任何自适应机制必须先超过这个基线才有意义。
+    cov_bits, ema_bits, static_bits = [], [], []
+    for ds in DATASETS:
+        s = b.arms_of(ds)
+        if s is None or len(s) == 0:
+            continue
+        lab = DS_LABEL.get(ds, ds)
+        g2 = b.contrast(ds, "dynamic_minus_static")
+        g_onb = b.contrast(ds, "onboarding_minus_static")
+        g_evo = b.contrast(ds, "dynamic_minus_onboarding")
+        g1 = b.contrast(ds, "static_minus_nograph")
+        g5 = b.contrast(ds, "dynamic_minus_periodic")
+        d2 = num(g2, "delta_seed_mean")
+        cover, evo = num(g_onb, "delta_seed_mean"), num(g_evo, "delta_seed_mean")
+        if np.isfinite(cover) and np.isfinite(d2) and d2:
+            cov_bits.append(f"{lab} 覆盖项 {cover:+.4f}（占 ② 的 {cover/d2:.0%}）")
+        if np.isfinite(evo) and np.isfinite(d2) and d2:
+            ema_bits.append(f"{lab} 演化项 {evo:+.4f}（{evo/d2:.0%}）")
+        st = b.arm_row(ds, "static")
+        if st is not None:
+            edges = float(st["n_edges"]) if pd.notna(st["n_edges"]) else float("nan")
+            cov = (float(st["active_coverage_mean"])
+                   if "active_coverage_mean" in st.index and pd.notna(st["active_coverage_mean"])
+                   else float("nan"))
+            lift = float(st["neighbor_lift"]) if pd.notna(st["neighbor_lift"]) else float("nan")
+            d1 = num(g1, "delta_seed_mean")
+            static_bits.append(
+                f"{lab}：末轮有边用户 {edges:.0f}、覆盖率 {cov:.0%}、"
+                f"neighbor_lift {lift:.2f}、Static−NoGraph {d1:+.4f}"
+            )
 
-3. **现行实现的冻结缺陷是组合式的**，改"状态保留规则"或"新边初值"任一项即可解除；但要注意
-   **NDCG@10 对这个缺陷完全不敏感**，因此论文里论证图更新机制时，必须同时报告邻居质量/边变化率等结构指标。
+    tail5 = []
+    for ds in DATASETS:
+        g5 = b.contrast(ds, "dynamic_minus_periodic")
+        v = num(g5, "delta_seed_mean")
+        if np.isfinite(v):
+            tail5.append(f"{DS_LABEL.get(ds, ds)} {v:+.4f}")
+    tail_txt = "、".join(tail5) if tail5 else "（无）"
 
-4. **"兴趣相似"不能作为"协同有效"的代理指标**。若论文要用 genre/类别相似度论证邻居构造的合理性，
-   需要同时给出"相似度提升幅度"与"收益提升幅度"，并明确这是群体层面的幅度差异而非个体预测能力。
+    return f"""## 五、对研究问题的含义
+
+1. **收益不在「有图」，而在「图覆盖了谁」**。三项分解（② = 覆盖 + 演化）显示：
+   {'；'.join(cov_bits) if cov_bits else '（无数据）'}。
+   也就是说 `DynamicGraph − StaticGraph` 这个差值，几乎全部由「新窗口里的用户第一次拿到邻居」解释，
+   而不是「已覆盖用户的边权被不断重估」。一次性冻结的静态图的收益之所以有限（MovieLens-1M 上甚至为负），
+   就是因为它只覆盖了冻结那一刻已经上传过摘要的用户（覆盖率 21%~23%，动态图是 87%~94%）：
+   {'；'.join(static_bits) if static_bits else '（无数据）'}。
+   ⇒ 第二阶段该优化的目标是**「什么时候把谁纳入图」**（覆盖时点 + 覆盖对象），
+   而不是把 EMA 的平滑系数调得更精细。
+
+2. **「持续重估」本身的空间被量化了**：{'；'.join(ema_bits) if ema_bits else '（无数据）'}。
+   相对「每人只建一次边」（onboarding 臂），每轮无差别 EMA 只多出这一点；
+   相对「每窗刷新一次」（periodic 臂）的额外边际是 {tail_txt}。
+   任何自适应更新机制必须先超过这两个简单基线，才有存在价值。
+
+3. **现行实现的冻结缺陷是组合式的**，改「状态保留规则」或「新边初值」任一项即可解除；但要注意
+   **NDCG@10 对这个缺陷不敏感**（邻居质量掉 0.24–0.34，NDCG 只动 1e-4 量级），
+   因此论文里论证图更新机制时，必须同时报告邻居质量 / 边变化率这些结构指标。
+
+4. **「兴趣相似」不能作为「协同有效」的代理指标**。若论文要用 genre/类别相似度论证邻居构造的合理性，
+   需要同时给出「相似度提升幅度」与「收益提升幅度」，并明确这是群体层面的幅度差异而非个体预测能力。
 """
 
 
@@ -844,20 +1063,25 @@ def section_limits() -> str:
 
 1. **数据集**：MovieLens-1M 与 Amazon-Digital-Music 两个；Amazon 侧没有 item 类别元数据，
    问题三只能用无标签口径（邻居质量）做复核，不能复现真实 Genre 分析。
-2. **规模**：每臂 3 个种子；窗口粒度固定为 5 段 × 120 轮，未做窗口长度敏感性。
+2. **规模**：主臂 5 个种子（统计以种子为单位，n=5）；刷新频率扫描与图分支剂量锚点按需只跑 3 个或 1 个种子，
+   它们的对照只在「与同数据集主臂同种子」的意义上成立。窗口粒度固定为 5 段 × 120 轮，未做窗口长度敏感性。
 3. **单机单构型**：所有对照都在同一台机器（2×RTX 3090）上跑完，避免设备间 dropout 随机流差异；
    但不同机器同 seed 的 CUDA 结果本身是逐位一致的。
 4. **用户级统计**：逐用户配对的样本量很大（万级），但同一用户跨窗口不是独立观测，
-   因此逐用户检验只作方向性证据，主证据仍是窗口级配对。
-5. **periodic 的周期**只取 120 轮（1 个窗口），未扫描更短/更长的刷新间隔，
-   "六成收益来自刷新"这个比例依赖于该周期。
-6. **跑批稳定性**：Amazon 的 24 个 run 中有 2 个出现**解释器级偶发崩溃**，由流水线自动补跑完成。
-   值得注意的是崩溃点**每次都不一样**：`random._randbelow_with_getrandbits`（纯 Python 的数据加载）、
-   `build_eval_arrays_from_records`（序列构建）、`nn.Module._named_members`（模型参数遍历），
-   异常信息都是 `SystemError: error return without exception set` 或 `Segmentation fault (core dumped)`。
-   连不涉及 CUDA 的纯 Python 代码都会崩，说明这是**多进程环境下的偶发解释器故障**，
-   而不是某段代码的逻辑错误（同配置的其它种子都能正常跑完）。MovieLens 上也出现过 1 次同类问题。
-   建议跑长批次时保留自动补跑机制，并把每卡进程数控制在 2 个。
+   因此逐用户检验只作方向性证据；主证据是**种子级配对**（每个种子一个观测），窗口级只作敏感性分析。
+5. **periodic 的周期**：主对照取 120 轮（1 个窗口），另有 20 / 240 轮与「窗口边界刷新」三个诊断点。
+   诊断显示「每窗第 21 轮刷新」优于「窗口边界刷新」（-0.0058）与 240 轮（-0.0044），
+   所以「收益来自覆盖」这个结论依赖「刷新时点紧跟窗口开始」这个事实，而不是某个特定周期数值。
+6. **ECR 的两个口径**：`dg_summary.csv` 的 `avg_ecr` 是**评测点那一轮**的即时应变率，
+   对 periodic 这类「只在特定轮更新」的臂几乎恒为 0（评测点与更新轮错开）；
+   正式表一律用 `ecr_update_mean`（真的更新了的轮次上的 v2 定义均值）与 `graph_turnover`。
+   这也是为什么 periodic 的 `avg_ecr` 看起来是 0、而 `graph_turnover` 却是 0.96。
+7. **修复前后的口径**：本报告只用 F7（上传时机）/ F8（时间切分泄漏）修复后的正式批次。
+   修复前的 `results/raw`、`results/raw_phase2b` 标为 legacy：它们的图建在「更新前的摘要」上，
+   数值不能与本表混比；同一批配置下单种子的修复前后对照见 `问题核实与修复清单_2026-11-08.md`。
+8. **跑批稳定性**：长批次里出现过极少数**解释器级偶发崩溃**（`SystemError: error return without exception set`
+   或 `Segmentation fault`，崩溃点每次不同，连纯 Python 的数据加载也会崩），由 `dg_run_formal_retry.sh`
+   自动补跑完成；正式批次的 128 个 run 全部收官，没有靠手工重跑补齐。
 """
 
 
@@ -873,44 +1097,39 @@ def section_repro(b: Bundle) -> str:
 ```bash
 cd /home/wl/exp_FedDIEG
 
-# 跑前自检（9 条严格性断言，秒级）
+# 跑前自检（9 条严格性断言，秒级）+ 修复项断言（34 项）
 python -X utf8 val_DynamicGraph/dg_selfcheck.py
+python -X utf8 feddieg_core/verify_fixes.py
 
-# 问题一 + 问题三（MovieLens-1M，含 periodic 重组）
-bash val_DynamicGraph/dg_run_parallel.sh
+# 正式批次（128 个 run，4 并发、每卡 2 进程；断点续跑、崩溃自动补跑）
+bash val_DynamicGraph/dg_run_formal_retry.sh all
 
-# 问题二（冻结归因 2x2）+ 无标签版问题三（MovieLens-1M）
-bash val_DynamicGraph/dg_run_supplement.sh
+# 阶段 4：聚合 + 冻结归因 + 邻居质量 + genre + 生成报告（写入隔离目录）
+bash val_DynamicGraph/dg_phase4.sh --all
 
-# Amazon：问题一 + 问题二（24 个 run，4 并发）
-bash val_DynamicGraph/dg_run_amazon.sh
-
-# 全部聚合
-python -X utf8 val_DynamicGraph/dg_aggregate.py
-python -X utf8 val_DynamicGraph/dg_freeze.py --dataset movielens-1m
-python -X utf8 val_DynamicGraph/dg_freeze.py --dataset "amazon-digital music"
-python -X utf8 val_DynamicGraph/dg_genre.py
-python -X utf8 val_DynamicGraph/dg_neighbor_quality.py --datasets "movielens-1m,amazon-digital music"
-
-# 生成本报告
-python -X utf8 val_DynamicGraph/dg_report.py
+# 阶段 5：种子级统计表 + 验收
+python -X utf8 val_DynamicGraph/dg_stats_formal.py
+bash val_DynamicGraph/dg_verify_formal.sh
 ```
 
 ### 7.2 数据与代码
 
 | 文件 | 作用 |
 |---|---|
-| `dg_common.py` | 三条臂定义（NullGraph / PolicyGraph）、图分支探针、冻结诊断、genre 诊断 |
+| `dg_common.py` | 六条臂定义（NullGraph / PolicyGraph）、图分支探针、冻结诊断、genre 诊断 |
 | `dg_run.py` | 单次运行（数据集, 臂, 种子） |
 | `dg_selfcheck.py` | 9 条严格性断言 |
-| `dg_aggregate.py` | 主对照聚合（问题一） |
+| `feddieg_core/verify_fixes.py` | 34 项修复断言（摘要上传时机 / 时间切分 / ECR 定义 / Top-K 边界） |
+| `dg_aggregate.py` | 主对照聚合（问题一 + 种子级统计） |
 | `dg_freeze.py` | 冻结归因（问题二） |
 | `dg_genre.py` | 真实 Genre 分析（问题三，ML-1M） |
 | `dg_neighbor_quality.py` | 无标签版问题三（双数据集） |
+| `dg_phase4.sh` / `dg_stats_formal.py` | 阶段 4 一键聚合 / 阶段 5 统计表 |
+| `dg_verify_formal.sh` | 29 项正式验收 |
 | `dg_report.py` | 生成本报告 |
 | `data/item_genres_ml1m.npz` | ML-1M 真实 18 类 genre 矩阵（物品覆盖 100%） |
 
-累计运行 **{n_runs}** 次训练（`results/raw/**/dg_summary.csv`）。
+累计运行 **{n_runs}** 次训练（`results/raw_formal/**/dg_summary.csv`）。
 """
 
 
@@ -929,9 +1148,9 @@ def main() -> None:
     parser.add_argument("--raw-root", type=Path, default=RAW_ROOT,
                         help="逐 run 结果根目录（默认 results/raw；正式复跑用 results/raw_formal）")
     args = parser.parse_args()
-    AGG_ROOT, FREEZE_ROOT = args.agg_root, args.freeze_root
-    GENRE_ROOT, QUALITY_ROOT = args.genre_root, args.quality_root
-    RAW_ROOT = args.raw_root
+    AGG_ROOT, FREEZE_ROOT = args.agg_root.resolve(), args.freeze_root.resolve()
+    GENRE_ROOT, QUALITY_ROOT = args.genre_root.resolve(), args.quality_root.resolve()
+    RAW_ROOT = args.raw_root.resolve()
 
     b = Bundle()
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
@@ -952,7 +1171,7 @@ def main() -> None:
     parts.append("\n---\n")
     parts.append(section_q3(b))
     parts.append("\n---\n")
-    parts.append(section_implications())
+    parts.append(section_implications(b))
     parts.append("\n---\n")
     parts.append(section_limits())
     parts.append("\n---\n")

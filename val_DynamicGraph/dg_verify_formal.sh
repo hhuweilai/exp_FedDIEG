@@ -75,13 +75,20 @@ ok(f"ecr_def 全为 v2：{ecr}") if ecr == ["v2_empty_to_full"] else no(f"ecr_de
 ok(f"core_version 唯一：{ver}") if len(ver) == 1 else no(f"core_version 有 {len(ver)} 种：{ver}")
 
 # 4.2 主臂 5 种子齐全
+#   注意：`dataset` 列存的是传给 --dataset 的原始名（Amazon 里带空格），
+#   而结果目录名是 slug（下划线），两套名字都要认。
+RAW_DS = {
+    "movielens-1m": ["movielens-1m"],
+    "amazon-digital_music": ["amazon-digital music", "amazon-digital_music"],
+}
 main = ["nograph", "static", "periodic", "dynamic", "onboarding", "fresh_only"]
-for ds in ("movielens-1m", "amazon-digital_music"):
+for ds, names in RAW_DS.items():
     for arm in main:
-        n = s[(s["dataset"] == ds) & (s["arm_dir"] == arm)]["seed"].nunique()
+        sub = s[s["dataset"].isin(names) & (s["arm_dir"] == arm)]
+        n = sub["seed"].nunique()
         ok(f"{ds}/{arm}: {n} 个种子") if n >= 5 else no(f"{ds}/{arm} 只有 {n}/5 个种子")
 
-# 4.3 static_build120：W1 无图，W2 起有图（这是它与 static_at120 的定义区别）
+# 4.3 static_build120：第 120 轮**一次性建图**后冻结（W1 前 119 轮无图，第 120 轮起边数恒定）
 rows = []
 for p in files:
     d = p.parent
@@ -90,15 +97,19 @@ for p in files:
     f = d / "dg_graph_round_metrics.csv"
     if not f.exists():
         continue
-    g = pd.read_csv(f)
-    w1 = g[g["window"] == 1]["n_edges"].max()
-    w2 = g[g["window"] == 2]["n_edges"].max() if (g["window"] == 2).any() else 0
-    rows.append((str(d.parent.parent.name), int(g["seed"].iloc[0]), float(w1), float(w2)))
+    g = pd.read_csv(f).sort_values("global_round")
+    pos = g[g["n_edges"] > 0]
+    first = int(pos["global_round"].min()) if not pos.empty else -1
+    later = g[g["global_round"] > 120]["n_edges"]
+    const = bool(later.nunique() == 1) if not later.empty else False
+    rows.append((str(d.parent.parent.name), int(g["seed"].iloc[0]), first, const))
 if rows:
-    bad1 = [r for r in rows if r[2] != 0]
-    bad2 = [r for r in rows if r[3] <= 0]
-    ok(f"static_build120：{len(rows)} 个 run 的 W1 边数全为 0") if not bad1 else no(f"static_build120 有 W1 就有图的 run：{bad1[:3]}")
-    ok(f"static_build120：{len(rows)} 个 run 的 W2 起都有图") if not bad2 else no(f"static_build120 有 W2 仍无图的 run：{bad2[:3]}")
+    bad1 = [r for r in rows if r[2] != 120]
+    ok(f"static_build120：{len(rows)} 个 run 的首次有图轮次都是第 120 轮") if not bad1 \
+        else no(f"static_build120 建图轮次异常：{bad1[:3]}")
+    bad2 = [r for r in rows if not r[3]]
+    ok(f"static_build120：{len(rows)} 个 run 在第 120 轮之后边数恒定（确实冻结）") if not bad2 \
+        else no(f"static_build120 建图后仍在变边：{bad2[:3]}")
 else:
     no("找不到 static_build120 的图轮指标")
 
@@ -115,26 +126,38 @@ for arm in ("static_at120", "static_build120"):
     want = 1 if arm == "static_build120" else 0
     ok(f"{arm}：build_only={want}") if bo == [want] else no(f"{arm} build_only 异常：{bo}")
 
-# 4.5 onboarding 覆盖：末窗口覆盖率应接近 1（每次有摘要就建边）
+# 4.5 onboarding 覆盖：每个用户最终都有邻居（一有摘要就上图）
+#     注意 active_coverage 是「逐轮在当窗评估用户上取比例」，早轮还没轮到上传的用户当然没边，
+#     所以判定用「首次覆盖人数 / 更新次数」，「全轮平均覆盖」只作为参考值打印。
 onb = s[s["arm_dir"] == "onboarding"]
 if onb.empty:
     no("没有 onboarding 的 run")
 else:
+    nu = onb["n_users"].astype(float)
+    fc = onb["n_first_covered"].astype(float)
+    fu = onb["n_user_updates"].astype(float)
+    ok(f"onboarding：{len(onb)} 个 run 的首次覆盖人数 == 用户总数（{int(nu.min())}）") if (fc == nu).all() \
+        else no(f"onboarding 首次覆盖人数不足：{list(zip(fc.astype(int), nu.astype(int)))[:3]}")
+    ok(f"onboarding：每个用户恰好建边一次（更新 {int(fu.min())}~{int(fu.max())} 次 == 用户数）") if (fu == nu).all() \
+        else no(f"onboarding 更新次数不等于用户数：{list(zip(fu.astype(int), nu.astype(int)))[:3]}")
     cov = onb["mean_active_coverage"].astype(float)
-    ok(f"onboarding 覆盖均值 {cov.mean():.4f}（≥0.95：新用户一有摘要就上图）") if cov.min() >= 0.95 \
-        else no(f"onboarding 覆盖偏低：min={cov.min():.4f}")
-    up = onb["n_user_updates"].astype(float)
-    ok(f"onboarding 更新次数 {up.min():.0f}~{up.max():.0f}") if up.min() > 0 else no("onboarding 更新次数为 0")
+    ok(f"onboarding 全轮平均覆盖 {cov.mean():.4f}（参考值：含早轮尚未上传的用户）") if cov.min() >= 0.85 \
+        else no(f"onboarding 平均覆盖偏低：min={cov.min():.4f}")
 
-# 4.6 fresh_only 比 onboarding 更新更少（只给「新上传者」建边）
+# 4.6 fresh_only 与 onboarding 的触发条件确实不同
+#     onboarding：只给「还没有邻居的人」建边 ⇒ 每人恰好 1 次（n_user_updates == n_users）
+#     fresh_only：给「自上次更新后有新上传」的人**重估** ⇒ 同一用户被多次更新（n_user_updates ≫ n_users）
 fo = s[s["arm_dir"] == "fresh_only"]
 if fo.empty or onb.empty:
     no("缺少 fresh_only 或 onboarding 的 run")
 else:
-    if fo["n_user_updates"].mean() < onb["n_user_updates"].mean():
-        ok(f"fresh_only 更新次数均值 {fo['n_user_updates'].mean():.0f} < onboarding {onb['n_user_updates'].mean():.0f}")
-    else:
-        no("fresh_only 更新次数没有少于 onboarding（触发条件可能没生效）")
+    nu = fo["n_users"].astype(float)
+    fu = fo["n_user_updates"].astype(float)
+    ok(f"fresh_only：累计更新 {int(fu.min())}~{int(fu.max())} 次 ≫ 用户数 {int(nu.min())}（重复重估，触发条件与 onboarding 不同）") \
+        if (fu > nu).all() else no(f"fresh_only 的更新次数没有超过用户数：{list(zip(fu.astype(int), nu.astype(int)))[:3]}")
+    cfo, con = fo["mean_active_coverage"].astype(float), onb["mean_active_coverage"].astype(float)
+    ok(f"fresh_only 覆盖 {cfo.mean():.4f} vs onboarding {con.mean():.4f}（覆盖面同量级，差别在更新对象）") \
+        if abs(cfo.mean() - con.mean()) < 0.15 else no(f"两条臂覆盖率差异过大：{cfo.mean():.4f} vs {con.mean():.4f}")
 
 # 4.7 periodic_boundary：每个窗口边界刷新一次 = 5 次
 pb = s[s["arm_dir"] == "periodic_boundary"]
@@ -161,7 +184,19 @@ else:
     ok(f"dynamic 平均 graph_turnover={tv.mean():.4f}（>0.05：图在演化）") if tv.min() > 0.05 \
         else no(f"dynamic turnover 偏低：min={tv.min():.4f}")
 
-# 4.9 hygiene 全通过
+# 4.9 turnover 语义自查：它是「本轮被更新用户的邻居集合变化」的 Jaccard 距离。
+#     onboarding 每次都是 ∅→K 的首次建边 ⇒ 必然 1.0；dynamic 是 EMA 增量 ⇒ 远小于 1。
+#     （所以两者的 turnover 不能直接比大小，报告里必须写清口径）
+if not onb.empty:
+    tv = onb["mean_graph_turnover"].astype(float)
+    ok("onboarding 的 graph_turnover ≡ 1.0（首次建边 ∅→K，符合定义）") if (abs(tv - 1.0) < 1e-6).all() \
+        else no(f"onboarding turnover 不等于 1.0：{sorted(set(tv.round(4)))[:5]}")
+if not dyn.empty and not onb.empty:
+    ok(f"dynamic 的 turnover 明显小于 onboarding（{dyn['mean_graph_turnover'].mean():.3f} vs "
+       f"{onb['mean_graph_turnover'].mean():.3f}：增量更新 vs 首次建边）") \
+        if dyn["mean_graph_turnover"].mean() < 0.6 else no("dynamic 的 turnover 接近 1（不像增量更新）")
+
+# 4.10 hygiene 全通过
 h = pd.read_csv(agg / "tables" / "dg_hygiene.csv")
 bad = h[h["ok"].astype(int) == 0]
 if bad.empty:
@@ -169,7 +204,7 @@ if bad.empty:
 else:
     no(f"hygiene 有 {len(bad)} 项未通过：{bad['check'].tolist()[:5]}")
 
-# 4.10 种子级检验列存在（B5 口径已落地）
+# 4.11 种子级检验列存在（B5 口径已落地）
 c = pd.read_csv(agg / "tables" / "dg_contrasts.csv")
 need = {"delta_seed_mean", "ci95_seed_lo", "ci95_seed_hi", "p_seed_t", "seeds_positive", "seeds_total"}
 miss = need - set(c.columns)

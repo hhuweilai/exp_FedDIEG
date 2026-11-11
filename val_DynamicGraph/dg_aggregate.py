@@ -457,12 +457,21 @@ def hygiene_checks(sums: pd.DataFrame, rounds: pd.DataFrame) -> pd.DataFrame:
             detail += f"；{legacy} 个 run 为 legacy（首次建边/reset 记 0）"
         add(dataset, "ECR 定义版本（信息项，不参与失败判定）", True, detail)
 
+        # 种子数一致只对**主臂**有要求：诊断臂（periodic_p20/p240、dynamic_mix*、
+        # 冻结网格变体、genre 诊断）本来就按需要跑更少的种子。
         per_arm = part.groupby("arm_dir")["seed"].nunique()
+        main_counts = per_arm.reindex(
+            [a for a in (ARM_NOGRAPH, ARM_STATIC, ARM_PERIODIC, ARM_DYNAMIC,
+                         ARM_ONBOARDING, ARM_FRESH_ONLY) if a in per_arm.index]
+        )
+        detail = ", ".join(f"{k}:{v}" for k, v in per_arm.items())
+        if len(main_counts) < len(per_arm):
+            detail += "（诊断臂的种子数允许不同）"
         add(
             dataset,
             "每条臂的种子数一致",
-            int(per_arm.nunique()) == 1,
-            ", ".join(f"{k}:{v}" for k, v in per_arm.items()),
+            int(main_counts.nunique()) <= 1,
+            detail,
         )
 
         sub = rounds[(rounds["dataset"] == dataset) & (rounds["arm"] == ARM_NOGRAPH)]
@@ -1124,8 +1133,11 @@ def main() -> None:
                 )
             else:
                 graph_rounds["graph_turnover"] = np.nan
+        # 先按 (数据集, 臂, 种子) 汇总，再跨种子取均值 —— 否则 update_rounds /
+        # refresh_rounds 会是「所有种子的轮次数之和」（5 个种子就变成 5 倍，
+        # 读起来像「每 run 500 轮都在更新」，实际是每 run 100 轮）。
         gdiag = (
-            graph_rounds.groupby(["dataset", "arm_dir"])
+            graph_rounds.groupby(["dataset", "arm_dir", "seed"])
             .agg(
                 update_rounds=("is_update", "sum"),
                 refresh_rounds=("is_refresh", "sum"),
@@ -1133,6 +1145,16 @@ def main() -> None:
                 ecr_update_mean=("ecr_round_mean", "mean"),
                 graph_turnover_mean=("graph_turnover", "mean"),
                 active_coverage_mean=("active_coverage", "mean"),
+            )
+            .reset_index()
+            .groupby(["dataset", "arm_dir"])
+            .agg(
+                update_rounds=("update_rounds", "mean"),
+                refresh_rounds=("refresh_rounds", "mean"),
+                ecr_update_mean=("ecr_update_mean", "mean"),
+                graph_turnover_mean=("graph_turnover_mean", "mean"),
+                active_coverage_mean=("active_coverage_mean", "mean"),
+                n_seeds_graph=("seed", "nunique"),
             )
             .reset_index()
         )

@@ -35,7 +35,7 @@ MODE="all"
 for a in "$@"; do
     case "$a" in
         --agg-only) MODE="agg" ;;
-        --all) MODE="all" ;;
+        --all|all) MODE="all" ;;
         *) echo "未知参数：$a（用法：--agg-only | --all）" >&2; exit 2 ;;
     esac
 done
@@ -68,8 +68,11 @@ fi
 echo ""
 echo "---- 2/5 冻结归因（ρ=0.8 的 2x2 网格）----"
 mkdir -p "$FZ"
-"$PY" -X utf8 "$VAL_DIR/dg_freeze.py" --root "$RAW" --out "$FZ" \
-    || echo "[warn] 冻结归因失败（可能网格 run 还没齐）"
+for ds in "movielens-1m" "amazon-digital music"; do
+    echo "  [$ds]"
+    "$PY" -X utf8 "$VAL_DIR/dg_freeze.py" --root "$RAW" --out "$FZ" --dataset "$ds" \
+        || echo "[warn] 冻结归因失败（$ds：可能网格 run 还没齐）"
+done
 
 echo ""
 echo "---- 3/5 无标签版问题三（邻居质量）----"
