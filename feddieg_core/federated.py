@@ -261,6 +261,8 @@ class FedTrainer:
                 optimizer.step()
 
                 user_loss += float(loss.item())
+                # 这里只是一个「本轮确实训练过」的哨兵值：训练前的 s_i **不会**被上传，
+                # 下面 F7 那段会用更新后的参数重算并覆盖它（见 285-302 行）。
                 last_summary = current_s_i.detach()
                 if delta is not None:
                     last_delta = delta.detach()
