@@ -1097,7 +1097,7 @@ def section_repro(b: Bundle) -> str:
 ```bash
 cd /home/wl/exp_FedDIEG
 
-# 跑前自检（9 条严格性断言，秒级）+ 修复项断言（34 项）
+# 跑前自检（9 条严格性断言，秒级）+ 修复项断言（37 项）
 python -X utf8 val_DynamicGraph/dg_selfcheck.py
 python -X utf8 feddieg_core/verify_fixes.py
 
@@ -1119,7 +1119,7 @@ bash val_DynamicGraph/dg_verify_formal.sh
 | `dg_common.py` | 六条臂定义（NullGraph / PolicyGraph）、图分支探针、冻结诊断、genre 诊断 |
 | `dg_run.py` | 单次运行（数据集, 臂, 种子） |
 | `dg_selfcheck.py` | 9 条严格性断言 |
-| `feddieg_core/verify_fixes.py` | 34 项修复断言（摘要上传时机 / 时间切分 / ECR 定义 / Top-K 边界） |
+| `feddieg_core/verify_fixes.py` | 37 项修复断言（摘要上传时机 / 时间切分 / ECR 定义 / Top-K 边界 / 四个快速实验的口径审计） |
 | `dg_aggregate.py` | 主对照聚合（问题一 + 种子级统计） |
 | `dg_freeze.py` | 冻结归因（问题二） |
 | `dg_genre.py` | 真实 Genre 分析（问题三，ML-1M） |

@@ -35,6 +35,10 @@ import torch.optim as optim
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from feddieg_core.summary_upload import upload_summary_after_update  # noqa: E402
 
 BASELINE_METHODS = ("FedMF", "FedSASRec", "GPFedRec", "FCUCR", "TarDGR", "F3CRec", "DGFedRS")
 ALL_METHODS = BASELINE_METHODS + ("FedDIEG",)
@@ -981,9 +985,11 @@ def run_method(method: str, data: FastData, cfg: FastConfig, device: torch.devic
                 if method == "FedMF":
                     feats = model(users, seq)
                     local_feats = feats
+                    local_forward = lambda: model(users, seq)
                 elif method == "GPFedRec":
                     local_feats = model(seq)
                     feats = local_feats
+                    local_forward = lambda: model(seq)
                     if use_memory and norm_bank is not None:
                         retrieved, retrieval_mask = build_retrieved_memory(
                             users,
@@ -1010,6 +1016,7 @@ def run_method(method: str, data: FastData, cfg: FastConfig, device: torch.devic
                             if cfg.fcucR_noise_std > 0:
                                 kb_feats = kb_feats + torch.randn_like(kb_feats) * cfg.fcucR_noise_std
                     feats, local_feats = model(seq, kb_feats)
+                    local_forward = lambda: model(seq, kb_feats)
                 elif method == "TarDGR":
                     retrieved = retrieval_mask = None
                     if use_memory and norm_bank is not None:
@@ -1021,9 +1028,11 @@ def run_method(method: str, data: FastData, cfg: FastConfig, device: torch.devic
                             cfg.tardgr_retrieval_topk,
                         )
                     feats, local_feats = model(seq, retrieved, retrieval_mask)
+                    local_forward = lambda: model(seq, retrieved, retrieval_mask)
                 elif method == "F3CRec":
                     local_feats = model(seq)
                     feats = local_feats
+                    local_forward = lambda: model(seq)
                     if use_memory and norm_bank is not None:
                         retrieved, retrieval_mask = build_retrieved_memory(
                             users,
@@ -1056,6 +1065,12 @@ def run_method(method: str, data: FastData, cfg: FastConfig, device: torch.devic
                         cfg.dgfedrs_aug_mix,
                         cfg.dgfedrs_noise_std,
                     )
+                    local_forward = lambda: model.forward_augmented(  # noqa: E731
+                        seq,
+                        augmented_seq,
+                        cfg.dgfedrs_aug_mix,
+                        cfg.dgfedrs_noise_std,
+                    )
                 elif method == "FedDIEG":
                     neighbors = weights = graph_mask = None
                     if use_memory and norm_bank is not None:
@@ -1069,9 +1084,13 @@ def run_method(method: str, data: FastData, cfg: FastConfig, device: torch.devic
                             cfg.feddieg_min_sim,
                         )
                     feats, local_feats = model(seq, neighbors, weights, graph_mask)
+                    local_forward = lambda: model(  # noqa: E731
+                        seq, neighbors, weights, graph_mask
+                    )
                 else:
                     feats = model(seq)
                     local_feats = feats
+                    local_forward = lambda: model(seq)  # noqa: E731
                 pos_logits = (feats * model.item_emb(pos)).sum(dim=-1)
                 neg_logits = (feats * model.item_emb(neg)).sum(dim=-1)
                 loss = bce_seq_loss(pos_logits, neg_logits, mask)
@@ -1104,10 +1123,17 @@ def run_method(method: str, data: FastData, cfg: FastConfig, device: torch.devic
                     update_f3crec_item_temporal_mean(model, seq, pos, neg, cfg.f3crec_temporal_beta)
                 losses.append(loss.item())
                 if method in MEMORY_METHODS:
-                    if local_feats.dim() == 2:
-                        new_memory = local_feats.detach()
-                    else:
-                        new_memory = masked_sequence_mean(local_feats.detach(), seq)
+                    # 【F7 口径，2026-11-11 统一】上传摘要必须在本地训练完成后重算：
+                    # 论文写「客户端完成本地训练后上传当前短期兴趣摘要」，旧实现取的是
+                    # optimizer.step() 之前那次前向的 local_feats（训练前的摘要）。
+                    # local_forward 是各方法在**训练这一步**用的同一次前向（同序列、同邻居），
+                    # 这里只是换更新后的参数重跑一次。
+                    def _forward_summary_for_upload() -> torch.Tensor:
+                        out = local_forward()
+                        local = out[1] if isinstance(out, tuple) else out
+                        return local if local.dim() == 2 else masked_sequence_mean(local, seq)
+
+                    new_memory = upload_summary_after_update(model, _forward_summary_for_upload)
                     update_memory_bank(method, users, new_memory, memory_bank, active_clients, cfg)
         avg_loss = float(np.mean(losses)) if losses else 0.0
         print(f"[{method}] Round {round_idx:03d}/{cfg.rounds} | Loss {avg_loss:.4f} | {time.time() - round_start:.2f}s", end="")

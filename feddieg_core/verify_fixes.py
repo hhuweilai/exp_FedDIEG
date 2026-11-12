@@ -45,6 +45,10 @@ from feddieg_core.model import (
     is_personal_param,
     split_state_keys,
 )
+from feddieg_core.summary_upload import (  # 摘要上传时点的统一实现（F7）
+    assert_upload_summary,
+    upload_summary_after_update,
+)
 
 PASSED: list[str] = []
 FAILED: list[str] = []
@@ -571,6 +575,82 @@ def group_d() -> None:
         "D5 上传摘要 = 本地训练**完成后**重算（不再是训练前的 s_i）",
         gap_post < 1e-6 and gap_pre > 1e-4,
         f"与训练后 max|Δ|={gap_post:.2e}；与训练前 max|Δ|={gap_pre:.2e}",
+    )
+
+    # ---------------- F7b：统一实现 upload_summary_after_update 的语义（快速实验也走它）
+    class _ToySummaryModel(torch.nn.Module):
+        """只有一层线性 + dropout 的玩具模型：用来验证「训练后 / eval 下」取摘要。"""
+
+        def __init__(self) -> None:
+            super().__init__()
+            self.lin = torch.nn.Linear(4, 4, bias=False)
+            self.drop = torch.nn.Dropout(0.5)
+
+        def forward(self, x: torch.Tensor) -> torch.Tensor:
+            return self.drop(self.lin(x))
+
+    torch.manual_seed(0)
+    toy = _ToySummaryModel()
+    x_toy = torch.randn(3, 4)
+    toy.eval()
+    with torch.no_grad():
+        pre_toy = toy(x_toy).clone()          # 训练前（eval：关 dropout，可比）
+    with torch.no_grad():
+        for p in toy.parameters():
+            p.add_(0.5)                        # 模拟 optimizer.step() 改了参数
+    toy.train()                                # 让 helper 自己切 eval 再切回来
+    uploaded = upload_summary_after_update(toy, lambda: toy(x_toy))
+    toy.eval()
+    with torch.no_grad():
+        post_toy = toy(x_toy).clone()
+    toy.train()
+    gap_post = float((uploaded - post_toy).abs().max())
+    gap_pre = float((uploaded - pre_toy).abs().max())
+    check(
+        "D6 统一实现：上传摘要 = 更新后参数在 eval 下的前向（且不改模型的 training 状态）",
+        gap_post < 1e-6 and gap_pre > 1e-4 and toy.training and not uploaded.requires_grad,
+        f"与训练后 max|Δ|={gap_post:.2e}；与训练前 max|Δ|={gap_pre:.2e}；training={toy.training}",
+    )
+    ok_assert = True
+    try:
+        assert_upload_summary(uploaded, post_toy, pre_toy)
+    except AssertionError:
+        ok_assert = False
+    raised_on_wrong = False
+    try:
+        assert_upload_summary(pre_toy, post_toy)   # 把「训练前」当上传摘要 → 必须报错
+    except AssertionError:
+        raised_on_wrong = True
+    check(
+        "D7 assert_upload_summary 能挡住「旧口径」（训练前摘要当上传值会报错）",
+        ok_assert and raised_on_wrong,
+        f"正例通过={ok_assert}；反例报错={raised_on_wrong}",
+    )
+
+    # ---------------- F7c：仓库级审计——四个快速实验脚本都改成训练后上传
+    fast_sites = {
+        "exp_01_fast_gpu/run_exp01_fast_gpu.py": "new_memory = local_feats.detach()",
+        "exp_02_fast_gpu/run_exp02_fast_gpu.py": "new_memory = local_feats.detach()",
+        "exp_03_fast_gpu/run_exp03_fast_gpu.py": "new_memory = short_summary.detach()",
+        "exp_04_fast_gpu/run_exp04_fast_gpu.py": "new_memory = summaries.detach()",
+    }
+    audited, bad = [], []
+    for rel, old_pattern in fast_sites.items():
+        path = ROOT / rel
+        if not path.exists():
+            bad.append(f"{rel}: 文件不存在")
+            continue
+        src = path.read_text(encoding="utf-8")
+        uses_helper = "upload_summary_after_update" in src
+        leftover = old_pattern in src
+        if uses_helper and not leftover:
+            audited.append(rel)
+        else:
+            bad.append(f"{rel}: 用统一实现={uses_helper} 旧口径残留={leftover}")
+    check(
+        "D8 四个快速实验（exp_01~exp_04）统一走 upload_summary_after_update，无旧口径残留",
+        not bad,
+        f"通过 {len(audited)}/4" + (f"；问题：{bad}" if bad else ""),
     )
 
 

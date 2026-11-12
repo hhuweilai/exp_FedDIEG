@@ -42,6 +42,10 @@ import torch.optim as optim
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from feddieg_core.summary_upload import upload_summary_after_update  # noqa: E402
 
 BASELINE_METHODS = ("FedMF", "FCUCR", "F3CRec", "DGFedRS")
 DEFAULT_METHODS = BASELINE_METHODS + ("FedDIEG",)
@@ -1105,10 +1109,16 @@ def train_batches(
                 update_f3crec_item_temporal_mean(model, seq, pos, neg, cfg.f3crec_temporal_beta)
             losses.append(float(loss.item()))
             if allow_memory_update and memory_bank is not None and active_clients is not None:
-                with torch.no_grad():
-                    if method in MEMORY_METHODS or method.startswith("Ours"):
-                        new_memory = summaries.detach()
-                        update_memory_bank(method, batch_users, new_memory, memory_bank, active_clients, cfg)
+                if method in MEMORY_METHODS or method.startswith("Ours"):
+                    # 【F7 口径，2026-11-11 统一】上传摘要必须在本地训练完成后重算：
+                    # 旧实现上传的是 optimizer.step() 之前那次前向的 summaries。
+                    def _forward_summary_for_upload() -> torch.Tensor:
+                        return forward_method(
+                            method, model, batch_users, seq, cfg, memory_bank, active_clients
+                        )[1]
+
+                    new_memory = upload_summary_after_update(model, _forward_summary_for_upload)
+                    update_memory_bank(method, batch_users, new_memory, memory_bank, active_clients, cfg)
     return float(np.mean(losses)) if losses else 0.0
 
 

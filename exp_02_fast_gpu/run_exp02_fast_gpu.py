@@ -36,6 +36,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from feddieg_core.summary_upload import upload_summary_after_update  # noqa: E402
+
 from exp_01_fast_gpu.run_exp01_fast_gpu import (  # noqa: E402
     ALL_METHODS,
     FCUCRModel,
@@ -628,9 +630,11 @@ def run_method_over_windows(
                     if method == "FedMF":
                         feats = model(users, seq)
                         local_feats = feats
+                        local_forward = lambda: model(users, seq)
                     elif method == "GPFedRec":
                         local_feats = model(seq)
                         feats = local_feats
+                        local_forward = lambda: model(seq)
                         if use_memory and norm_bank is not None:
                             retrieved, retrieval_mask = build_retrieved_memory(
                                 users, memory_bank, active_clients, norm_bank, cfg.gpfedrec_neighbors
@@ -649,6 +653,7 @@ def run_method_over_windows(
                                 if cfg.fcucR_noise_std > 0:
                                     kb_feats = kb_feats + torch.randn_like(kb_feats) * cfg.fcucR_noise_std
                         feats, local_feats = model(seq, kb_feats)
+                        local_forward = lambda: model(seq, kb_feats)
                     elif method == "TarDGR":
                         retrieved = retrieval_mask = None
                         if use_memory and norm_bank is not None:
@@ -656,9 +661,11 @@ def run_method_over_windows(
                                 users, memory_bank, active_clients, norm_bank, cfg.tardgr_retrieval_topk
                             )
                         feats, local_feats = model(seq, retrieved, retrieval_mask)
+                        local_forward = lambda: model(seq, retrieved, retrieval_mask)
                     elif method == "F3CRec":
                         local_feats = model(seq)
                         feats = local_feats
+                        local_forward = lambda: model(seq)
                         if use_memory and norm_bank is not None:
                             retrieved, retrieval_mask = build_retrieved_memory(
                                 users, memory_bank, active_clients, norm_bank, cfg.f3crec_replay_topk
@@ -687,6 +694,12 @@ def run_method_over_windows(
                             cfg.dgfedrs_aug_mix,
                             cfg.dgfedrs_noise_std,
                         )
+                        local_forward = lambda: model.forward_augmented(  # noqa: E731
+                            seq,
+                            augmented_seq,
+                            cfg.dgfedrs_aug_mix,
+                            cfg.dgfedrs_noise_std,
+                        )
                     elif method == "FedDIEG":
                         neighbors = weights = graph_mask = None
                         if use_memory and norm_bank is not None:
@@ -700,9 +713,13 @@ def run_method_over_windows(
                                 cfg.feddieg_min_sim,
                             )
                         feats, local_feats = model(seq, neighbors, weights, graph_mask)
+                        local_forward = lambda: model(  # noqa: E731
+                            seq, neighbors, weights, graph_mask
+                        )
                     else:
                         feats = model(seq)
                         local_feats = feats
+                        local_forward = lambda: model(seq)  # noqa: E731
 
                     pos_logits = (feats * model.item_emb(pos)).sum(dim=-1)
                     neg_logits = (feats * model.item_emb(neg)).sum(dim=-1)
@@ -735,10 +752,14 @@ def run_method_over_windows(
                         update_f3crec_item_temporal_mean(model, seq, pos, neg, cfg.f3crec_temporal_beta)
                     losses.append(loss.item())
                     if method in MEMORY_METHODS:
-                        if local_feats.dim() == 2:
-                            new_memory = local_feats.detach()
-                        else:
-                            new_memory = masked_sequence_mean(local_feats.detach(), seq)
+                        # 【F7 口径，2026-11-11 统一】上传摘要必须在本地训练完成后重算
+                        # （旧实现取 optimizer.step() 之前那次前向的 local_feats）。
+                        def _forward_summary_for_upload() -> torch.Tensor:
+                            out = local_forward()
+                            local = out[1] if isinstance(out, tuple) else out
+                            return local if local.dim() == 2 else masked_sequence_mean(local, seq)
+
+                        new_memory = upload_summary_after_update(model, _forward_summary_for_upload)
                         update_memory_bank(method, users, new_memory, memory_bank, active_clients, cfg)
 
             avg_loss = float(np.mean(losses)) if losses else 0.0

@@ -33,6 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from feddieg_core.summary_upload import upload_summary_after_update  # noqa: E402
+
 from exp_01_fast_gpu.run_exp01_fast_gpu import (  # noqa: E402
     ALL_METHODS,
     FastConfig,
@@ -698,7 +700,11 @@ def train_variant(
                     temp_losses.append(float(temp_loss.item()))
                     struct_losses.append(float(struct_loss.item()))
 
-                    new_memory = short_summary.detach()
+                    # 【F7 口径，2026-11-11 统一】上传摘要必须在本地训练完成后重算：
+                    # 旧实现用的是 optimizer.step() 之前那次前向的 short_summary。
+                    new_memory = upload_summary_after_update(
+                        model, lambda: model(seq, neighbors, weights, gmask)[1]
+                    )
                     momentum = min(max(variant.memory_momentum, 0.0), 0.99)
                     seen = active_clients[users].float().unsqueeze(-1)
                     memory_bank[users] = seen * (momentum * memory_bank[users] + (1.0 - momentum) * new_memory) + (
